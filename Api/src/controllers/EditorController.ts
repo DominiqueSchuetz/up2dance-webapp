@@ -2,15 +2,15 @@ import { IController } from "./interfaces/IController";
 import { IHttpServer } from "../server/IHttpServer";
 import { Request, Response, Next } from "restify";
 import { Repository } from "../repository/Repository";
-import { ICustomer } from "../models/interfaces/ICustomer";
+import { IEditor } from "../models/interfaces/IEditor";
 import { Helpers } from "../lib/helpers";
-require('dotenv').config()
+require('dotenv').config();
 
-import * as CustomerSchema from '../models/Customer';
+import * as EditorSchema from '../models/Editor';
 
-export class CustomerController implements IController {
+export class EditorController implements IController {
 
-    repository = new Repository<ICustomer>(CustomerSchema);
+    repository = new Repository<IEditor>(EditorSchema);
     helpers = new Helpers();
 
     /**
@@ -19,22 +19,46 @@ export class CustomerController implements IController {
      */
     initialize(httpServer: IHttpServer): void {
 
-        httpServer.get('/customers', this.list.bind(this));
+        /**
+         * Get all Editors in database
+         */
+        httpServer.get('/api/auth/all', this.list.bind(this));
 
-        httpServer.get('/customer/:id', this.getById.bind(this));
+        /**
+         * Get a Editor by id from database
+         */
+        httpServer.get('/api/auth/:id', this.getById.bind(this));
 
-        httpServer.post('/customer/signIn', this.signIn.bind(this));
+        /**
+         * Register a new Editor
+         */
+        httpServer.post('/api/auth/register', this.register.bind(this));
 
-        httpServer.post('/customer/signOut', this.signIn.bind(this));
+        /**
+         * Sign in a registered Editor
+         */
+        httpServer.post('/api/auth/signIn', this.signIn.bind(this));
 
-        httpServer.post('/customer/register', this.register.bind(this));
+        /**
+         * Sign out a registered Editor
+         */
+        httpServer.post('/api/auth/signOut', this.signIn.bind(this));
 
-        httpServer.post('/customer/testForJWT', this.onlySignInUsersAreAllowedToDoThis.bind(this));
+        /**
+         * Testing jwt functionallity
+         */
+        httpServer.post('/api/auth/testForJWT', this.onlySignInUsersAreAllowedToDoThis.bind(this));
 
-        httpServer.put('/customer/:id', this.update.bind(this));
+        /**
+         * Update a registered Editor
+         */
+        httpServer.put('/api/auth/:id', this.update.bind(this));
 
-        httpServer.del('/customer/:id', this.remove.bind(this));
-    }
+        /**
+         * Delete a registered Editor
+         */
+        httpServer.del('/api/auth/:id', this.remove.bind(this));
+    };
 
     /**
      * 

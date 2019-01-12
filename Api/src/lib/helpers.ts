@@ -2,9 +2,9 @@ import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 
 import { Repository } from "../repository/Repository";
-import { ICustomer } from "../models/interfaces/ICustomer";
+import { IEditor } from "../models/interfaces/IEditor";
 
-import * as CustomerSchema from '../models/Customer';
+import * as EditorSchema from '../models/Editor';
 import * as  mongoose from 'mongoose';
 require('dotenv').config()
 
@@ -12,7 +12,7 @@ require('dotenv').config()
 
 export class Helpers {
 
-    repository: Repository<ICustomer> = new Repository<ICustomer>(CustomerSchema);
+    repository: Repository<IEditor> = new Repository<IEditor>(EditorSchema);
 
     /**
      * 
@@ -64,7 +64,7 @@ export class Helpers {
      * 
      * @param id id which is used by mongoose
      */
-    public async isUserInDatabase(id: mongoose.Types.ObjectId): Promise<false | ICustomer> {
+    public async isUserInDatabase(id: mongoose.Types.ObjectId): Promise<false | IEditor> {
         const user = await this.repository.getById(id);
         if (user) {
             return user;

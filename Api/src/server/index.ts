@@ -3,6 +3,7 @@ import { RequestHandler, Server } from "restify";
 import { CONTROLLERS } from '../controllers/index';
 
 import * as restify from 'restify';
+import * as config from '../../config';
 
 
 export class ApiServer implements IHttpServer {
@@ -60,8 +61,9 @@ export class ApiServer implements IHttpServer {
                 res.send(500, error);
             }
         });
-        console.log(`Added route ${method.toLocaleUpperCase()}: ${url}`);
+        console.log('\x1b[36m%s\x1b[0m', `Added route ${method.toLocaleUpperCase()}: ${url}`);
     };
+
 
     /**
      * Start the server
@@ -69,10 +71,17 @@ export class ApiServer implements IHttpServer {
      */
     public start(port: number): void {
 
-        this._restifyServer = restify.createServer();
+        this._restifyServer = restify.createServer({
+            name: config.name
+        });
 
+        //server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
+        //server.use(restifyPlugins.acceptParser(server.acceptable));
+        //server.use(restifyPlugins.queryParser({ mapParams: true }));
         this._restifyServer.use(restify.plugins.bodyParser());
         this._restifyServer.use(restify.plugins.queryParser());
+        this._restifyServer.use(restify.plugins.multipartBodyParser())
+        this._restifyServer.use(restify.plugins.fullResponse())
 
         /**
          * Init the Controller
@@ -82,7 +91,7 @@ export class ApiServer implements IHttpServer {
         });
 
         this._restifyServer.listen(port, () => {
-            console.log(`Server is up and running on port ${port}`);
+            console.log('\x1b[33m%s\x1b[0m',`${this._restifyServer.name} is up and running on port ${port}`);
         });
     };
 };

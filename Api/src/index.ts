@@ -1,4 +1,5 @@
 import { ApiServer } from "./server/index";
+import * as config from '../config';
 
 const apiServer = new ApiServer();
-apiServer.start(+process.env.PORT || 8080);
+apiServer.start(config.port);

@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export interface ICustomer extends Document {
+export interface IEditor extends Document {
     firstName: string;
     lastName: string;
     email: string;

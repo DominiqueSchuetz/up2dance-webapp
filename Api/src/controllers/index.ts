@@ -1,7 +1,7 @@
-import { CustomerController } from "./CustomerController";
+import { EditorController } from "./EditorController";
 import { EventController } from './EventController'
 
 export const CONTROLLERS = [
-    new CustomerController(),
+    new EditorController(),
     new EventController(),
 ];

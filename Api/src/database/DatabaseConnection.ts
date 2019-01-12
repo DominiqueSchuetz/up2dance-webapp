@@ -1,5 +1,6 @@
 import { Connection } from "mongoose";
 import * as mongoose from 'mongoose'
+import * as config from '../../config';
 
 export class DatabaseConnection {
 
@@ -30,13 +31,19 @@ export class DatabaseConnection {
         if (this.mongooseInstance) return this.mongooseInstance;
 
         this.mongooseConnection = mongoose.connection;
-        this.mongooseConnection.once("open", () => {
-            console.log('Connect to MongoDB ==> CustomerService');
+        
+        this.mongooseConnection.on('error', (err) => {
+            console.error(err);
+            process.exit(1);
         });
 
-        this.mongooseInstance = mongoose.connect('mongodb://localhost:27017/up2dance', { useNewUrlParser: true });
+        this.mongooseConnection.once("open", () => {
+            console.log('\x1b[33m%s\x1b[0m', 'Connect to MongoDB');
+        });
+
+        this.mongooseInstance = mongoose.connect(config.db.uri, { useNewUrlParser: true });
         this.mongooseInstance = mongoose.set('useCreateIndex', true);
-        
+
         return this.mongooseInstance;
     };
 };
