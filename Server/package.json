@@ -1,0 +1,48 @@
+{
+    "name": "rest-api-up2dance",
+    "version": "1.0.0",
+    "description": "REST-Api",
+    "main": "",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "start": "npm run build:live",
+        "build": "tsc -p .",
+        "build:live": "nodemon --watch 'Api/**/*.ts' --exec 'ts-node' src/index.ts",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "api",
+        "auth",
+        "jsonwebtoken",
+        "mongoDB",
+        "mongoose",
+        "restify",
+        "nodeJS",
+        "typescript"
+    ],
+    "author": "Dominique Schuetz <dominique.schuetz@icloud.com>",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "3.0.3",
+        "dotenv": "6.2.0",
+        "jsonwebtoken": "8.4.0",
+        "mongoose": "5.4.3",
+        "nodemon": "1.18.9",
+        "restify": "7.5.0",
+        "request": "2.88.0",
+        "ts-node": "7.0.1",
+        "typescript": "3.2.2"
+    },
+    "devDependencies": {
+        "@types/bcrypt": "3.0.0",
+        "@types/dotenv": "6.1.0",
+        "@types/jsonwebtoken": "8.3.0",
+        "@types/mongodb": "3.1.18",
+        "@types/mongoose": "5.3.7",
+        "@types/node": "10.12.18",
+        "@types/restify": "7.2.7",
+        "ts-node": "7.0.1"
+    }
+}
