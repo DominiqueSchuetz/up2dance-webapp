@@ -61,43 +61,64 @@ export class EditorController implements IController {
     };
 
     /**
-     * 
+     * GET all editors
      * @param req 
      * @param res 
      */
-    private list(req: Request, res: Response): void {
-        this.repository.list((err, result) => {
-            if (!err && result) {
-                result instanceof Array && result.length > 0 ? res.send(200, result) : res.send(200, { 'Info': 'No Customers in database so far.' });
+    private async list(req: Request, res: Response): Promise<void> {
+        try {
+            const allEditors = await this.repository.list();
+            if (allEditors.length > 0) {
+                res.send(200, allEditors)
             } else {
-                res.send(404, err)
+                res.send(200, { "Info": "No Editors in database so far." })
             }
-        });
+        } catch (error) {
+            res.send(404, error.message);
+        };
     };
 
     /**
-     * 
+     * GET editors by id
      * @param req 
      * @param res 
      */
     private async getById(req: Request, res: Response): Promise<void> {
         const id = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
+        const jwtToken = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
+
         // Take the Object and compare the Password
-        if (id) {
-            try {
-                res.send(await this.repository.getById(req.params.id, (err, result) => {
-                    if (!err) {
-                        res.send(201, result);
-                        // Compare the given Password from jwt
+        if (id && jwtToken) {
+            const verifiedToken = await this.helpers.verfiyJwtToken(jwtToken);
+            if (verifiedToken) {
+                const user = await this.helpers.isUserInDatabase(id);
+                if (user) {
+                    const emailJWT = Object(verifiedToken).user.email;
+                    const emailID = Object(user).email;
+                    if (emailID === emailJWT) {
+                        try {
+                            res.send(await this.repository.getById(id, (err, result) => {
+                                if (!err) {
+                                    res.send(201, result);
+                                } else {
+                                    res.send(200, { 'Info': 'Could not FIND Customers by given id.' });
+                                }
+                            }));
+                        } catch (error) {
+                        }
                     } else {
-                        res.send(200, { 'Info': 'Could not FIND Customers by given id.' });
+                        res.send(404, { "Info": "ueiuh" })
                     }
-                }));
-            } catch (error) {
-                //console.log(error);
+                } else {
+
+                    console.log('ee');
+                    res.send(404, { "Info": "ueiuh" })
+                }
+
+
+            } else {
+                res.send(404, { "Info": "No valid jwt token" });
             }
-        } else {
-            res.send(200, 'No valid id in query.');
         }
     };
 

@@ -1,6 +1,7 @@
 import { Connection } from "mongoose";
 import * as mongoose from 'mongoose'
 import * as config from '../../config';
+import { MongoError } from "mongodb";
 
 export class DatabaseConnection {
 
@@ -26,25 +27,32 @@ export class DatabaseConnection {
         DatabaseConnection.connectToMongoDB();
     };
 
-    public static connectToMongoDB(): Connection {
+    public static async connectToMongoDB(): Promise<Connection> {
 
-        if (this.mongooseInstance) return this.mongooseInstance;
+        try {
+            if (this.mongooseInstance) return this.mongooseInstance;
 
-        this.mongooseConnection = mongoose.connection;
-        
-        this.mongooseConnection.on('error', (err) => {
-            console.error(err);
-            process.exit(1);
-        });
+            this.mongooseConnection = mongoose.connection;
 
-        this.mongooseConnection.once("open", () => {
-            console.log('\x1b[33m%s\x1b[0m', 'Connect to MongoDB');
-        });
+            // this.mongooseConnection.on('error', (err) => {
+            //     console.error(err);
+            //     process.exit(1);
+            // });
 
-        this.mongooseInstance = mongoose.connect(config.db.uri, { useNewUrlParser: true });
-        this.mongooseInstance = mongoose.set('useCreateIndex', true);
+            this.mongooseConnection.once("open", () => {
+                console.log('\x1b[33m%s\x1b[0m', 'Connect to MongoDB');
+            });
 
-        return this.mongooseInstance;
+            const mongooseConnect = await mongoose.connect(config.db.uri, { useNewUrlParser: true });
+
+            if (mongooseConnect) {
+                this.mongooseInstance = mongooseConnect;
+                this.mongooseInstance = mongoose.set('useCreateIndex', true);
+            }
+            return this.mongooseInstance;
+        } catch (error) {
+            console.log('\x1b[31m', ' :( Could not connect to database. Right Port? ', error.name);
+        }
     };
 };
 

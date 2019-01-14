@@ -53,11 +53,19 @@ export class Helpers {
 
     /**
      * 
-     * @param token which was sent by the client
+     * @param jwttoken which was sent by the client
      */
-    public async verfiyJwtToken(token: string): Promise<object | string> {
-        const splitedToken = token.split(" ")[1];
-        return await verify(splitedToken, 'process.env.JWT_KEY');
+    public verfiyJwtToken(jwttoken: string): Promise<object | string> {
+        const splitedToken = jwttoken.split(" ")[1];
+        return new Promise((resolve, reject) => {
+            const verifiedObject = verify(splitedToken, 'process.env.JWT_KEY')
+            if (verifiedObject) {
+                resolve(verifiedObject);
+            } else {
+                reject(false);
+            }
+        });
+        //return await verify(splitedToken, 'process.env.JWT_KEY');
     };
 
     /**

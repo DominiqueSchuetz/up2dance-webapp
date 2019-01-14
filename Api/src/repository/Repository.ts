@@ -19,9 +19,15 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
     /**
      * List all Customers in Database
      */
-    public list(callback: (error: any, result: any) => void): void {
-        this._model.find((err, res) => {
-            callback(err, res);
+    public list(): Promise<T[]> {
+        return new Promise((resolve, reject) => {
+            this._model.find((err, res) => {
+                if (!err && res) {
+                    resolve(res);
+                } else {
+                    reject(err);
+                };
+            });
         });
     };
 
@@ -37,7 +43,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
                 return item;
             }
         } catch (error) {
-            callback(error, {});
+            callback(error, {"Info": "Could not find any user by given id"});
         }
     };
 

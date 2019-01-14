@@ -56,9 +56,10 @@ export class ApiServer implements IHttpServer {
         this._restifyServer[method](url, async (req, res, next) => {
             try {
                 await requestHandler(req, res, next);
+                next();
             } catch (error) {
-                console.error(error);
                 res.send(500, error);
+                next();
             }
         });
         console.log('\x1b[36m%s\x1b[0m', `Added route ${method.toLocaleUpperCase()}: ${url}`);
