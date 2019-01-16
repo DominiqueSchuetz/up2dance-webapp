@@ -65,17 +65,31 @@ export class EditorController implements IController {
      * @param req 
      * @param res 
      */
-    private async list(req: Request, res: Response): Promise<void> {
-        try {
-            const allEditors = await this.repository.list();
-            if (allEditors.length > 0) {
-                res.send(200, allEditors)
+    // private async list(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const allEditors = await this.repository.list();
+    //         if (allEditors.length > 0) {
+    //             res.send(200, allEditors)
+    //         } else {
+    //             res.send(200, { "Info": "No Editors in database so far." })
+    //         }
+    //     } catch (error) {
+    //         res.send(404, error.message);
+    //     };
+    // };
+
+    private list(req: Request, res: Response) {
+        this.repository.list((err, result) => {
+            if (!err && result) {
+                if (result.length > 0) {
+                    res.send(200, { "Info": result })
+                } else {
+                    res.send(200, { "Info": "No Editors in database so far." })
+                }
             } else {
-                res.send(200, { "Info": "No Editors in database so far." })
+                res.send(404, { "Error": "Error in find all editors" });
             }
-        } catch (error) {
-            res.send(404, error.message);
-        };
+        });
     };
 
     /**
