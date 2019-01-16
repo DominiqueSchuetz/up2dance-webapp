@@ -65,31 +65,22 @@ export class EditorController implements IController {
      * @param req 
      * @param res 
      */
-    // private async list(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const allEditors = await this.repository.list();
-    //         if (allEditors.length > 0) {
-    //             res.send(200, allEditors)
-    //         } else {
-    //             res.send(200, { "Info": "No Editors in database so far." })
-    //         }
-    //     } catch (error) {
-    //         res.send(404, error.message);
-    //     };
-    // };
 
-    private list(req: Request, res: Response) {
-        this.repository.list((err, result) => {
-            if (!err && result) {
-                if (result.length > 0) {
-                    res.send(200, { "Info": result })
+    private async list(req: Request, res: Response, next?: Next): Promise<void> {
+        try {
+            const allEditors = await this.repository.list();
+            if (allEditors && (allEditors instanceof Array)) {
+                if (allEditors.length > 0) {
+                    res.send(200, { "Info": allEditors });
                 } else {
-                    res.send(200, { "Info": "No Editors in database so far." })
+                    res.send(200, { "Info": "No Editors in database so far." });
                 }
             } else {
                 res.send(404, { "Error": "Error in find all editors" });
             }
-        });
+        } catch (error) {
+            res.send(404, { "Error": "Error in list()" });
+        };
     };
 
     /**
@@ -146,29 +137,41 @@ export class EditorController implements IController {
         const email = typeof req.body.email == 'string' && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
         const password = typeof req.body.password == 'string' && req.body.password.trim().length > 5 ? req.body.password.trim() : false;
 
-        if (email && password) {
-            try {
-                await this.repository.getByEmail(email, async (err, result) => {
-                    if (!err && result) {
-                        const userIsAuthenticated = await this.helpers.verfiyUserObject(password, result.password, email)
-                        if (userIsAuthenticated) {
-                            const jwtToken = await this.helpers.createJwtToken(result);
-                            console.log(jwtToken);
-                            res.send('Hey, ' + result.firstName)
-                        } else {
-                            res.send({ 'Info': 'User is not authenticated ==> ' });
-                        }
-                    } else {
-                        res.send({ 'Info': 'User with  given Email was not found ==> ' + err });
-                    }
-                });
+        // if (email && password) {
+        //     try {
+        //         await this.repository.getByEmail(email, async (err, result) => {
+        //             if (!err && result) {
+        //                 const userIsAuthenticated = await this.helpers.verfiyUserObject(password, result.password, email)
+        //                 if (userIsAuthenticated) {
+        //                     const jwtToken = await this.helpers.createJwtToken(result);
+        //                     console.log(jwtToken);
+        //                     res.send('Hey, ' + result.firstName)
+        //                 } else {
+        //                     res.send({ 'Info': 'User is not authenticated ==> ' });
+        //                 }
+        //             } else {
+        //                 res.send({ 'Info': 'User with  given Email was not found ==> ' + err });
+        //             }
+        //         });
 
-            } catch (error) {
-                res.send('Could not find a valid registered user ==> ', error.message);
-            }
-        } else {
-            res.send(200, 'No valid Customers.');
-        }
+        //     } catch (error) {
+        //         res.send('Could not find a valid registered user ==> ', error.message);
+        //     }
+        // } else {
+        //     res.send(200, 'No valid Customers.');
+        // }
+
+        // this.repository.list((err, result) => {
+        //     if (!err && result) {
+        //         if (result.length > 0) {
+        //             res.send(200, { "Info": result })
+        //         } else {
+        //             res.send(200, { "Info": "No Editors in database so far." })
+        //         }
+        //     } else {
+        //         res.send(404, { "Error": "Error in find all editors" });
+        //     }
+        // });
     };
 
     /**
@@ -212,21 +215,24 @@ export class EditorController implements IController {
         const password = typeof req.body.password == 'string' && req.body.password.trim().length > 5 ? req.body.password.trim() : false;
         const secretKey = typeof req.body.secretKey == 'string' && req.body.secretKey.trim().length === 18 && req.body.secretKey.trim() === process.env.SECRET_KEY ? true : false;
 
-
         if (firstName && lastName && email && password && secretKey) {
             try {
                 const passwordEnc = await this.helpers.decrypt(password);
-                req.body.password = passwordEnc;
-
-                await this.repository.create(req.body, async (err, result) => {
-                    if (!err) {
-                        res.send(201, result);
-                    } else {
-                        res.send({ 'Info': 'User already exists ==> ' + err });
+                if (passwordEnc) {
+                    req.body.password = passwordEnc;
+                    try {
+                        const result = await this.repository.create(req.body);
+                        if (result && result._id) {
+                            res.send(200, result);
+                        } else {
+                            res.send(200, { "Message": Object(result).name });
+                        }
+                    } catch (error) {
+                        res.send(404, { "Error": "Error in create()" });
                     }
-                });
+                }
             } catch (error) {
-
+                res.send(404, { "Error": "Error in decrypt()" });
             }
         } else {
             res.send(200, 'No valid Customers.');
