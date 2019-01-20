@@ -46,11 +46,6 @@ export class EditorController implements IController {
         httpServer.post('/api/auth/signOut', this.signIn.bind(this));
 
         /**
-         * Testing jwt functionallity
-         */
-        httpServer.post('/api/auth/testForJWT', this.onlySignInUsersAreAllowedToDoThis.bind(this));
-
-        /**
          * Update a registered Editor
          */
         httpServer.put('/api/auth/:id', this.update.bind(this));
@@ -166,14 +161,6 @@ export class EditorController implements IController {
      * 
      * @param req 
      * @param res 
-     */
-    private async onlySignInUsersAreAllowedToDoThis(req: Request, res: Response): Promise<void> {
-    }
-
-    /**
-     * 
-     * @param req 
-     * @param res 
      * @param next 
      */
     private async register(req: Request, res: Response, next?: Next): Promise<void> {
@@ -262,7 +249,7 @@ export class EditorController implements IController {
         } else {
             res.send(200, { "Info": "No valid id or token" });
         }
-    }
+    };
 
     /**
      * 
@@ -296,5 +283,5 @@ export class EditorController implements IController {
         } else {
             res.send(200, { "Info": "No valid id or token" });
         }
-    }
+    };
 }
