@@ -1,3 +1,5 @@
+import { Model, Document } from "mongoose";
+
 import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 
@@ -10,7 +12,7 @@ require('dotenv').config()
 
 //import { Document } from "mongoose";
 
-export class Helpers {
+export class Helpers<T extends Document> {
 
     repository: Repository<IEditor> = new Repository<IEditor>(EditorSchema);
 
@@ -18,7 +20,7 @@ export class Helpers {
      * 
      * @param password 
      */
-    public decrypt(password: string): Promise<string> {
+    public encrypt(password: string): Promise<string> {
         return hash(password, 8);
     };
 
@@ -26,58 +28,64 @@ export class Helpers {
      * 
      * @param result 
      */
-    public async createJwtToken(result: any): Promise<string> {
-
-        // Is user in databse
-        const user = await this.isUserInDatabase(result.id);
-        if (user) {
-            // sign(payload, secretKey, expiresIn)
-            const jwtToken = await sign({ user },
-                'process.env.JWT_KEY', {
-                    expiresIn: '1h'
-                });
-            return jwtToken;
-        }
+    public async createJwtToken(result: T): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            const token: string = sign({ result }, 'process.env.JWT_KEY', { expiresIn: '1h' });
+            if (token) {
+                return resolve(token)
+            } else {
+                reject(null);
+            }
+        });
     };
 
     /**
      * 
      * @param password 
      * @param hashedPassword 
-     * @param email 
      */
-    public async verfiyUserObject(password: any, hashedPassword: any, email): Promise<boolean> {
-        const reqUserIsUserInDatabse = await compare(password, hashedPassword);
-        return reqUserIsUserInDatabse && email ? true : false;
+    public async comparingPasswords(password: string, hashedPassword: string): Promise<boolean> {
+        try {
+            const result = await compare(password, hashedPassword);
+            if (result) {
+                return result;
+            }
+        } catch (error) {
+            return error;
+        }
     };
 
     /**
      * 
      * @param jwttoken which was sent by the client
      */
-    public verfiyJwtToken(jwttoken: string): Promise<object | string> {
-        const splitedToken = jwttoken.split(" ")[1];
+    public verfiyJwtToken(jwttoken: string): Promise<string | object> {
         return new Promise((resolve, reject) => {
-            const verifiedObject = verify(splitedToken, 'process.env.JWT_KEY')
-            if (verifiedObject) {
+            const splitedToken: string = jwttoken.split(" ")[1];
+            const verifiedObject: string | object = verify(splitedToken, 'process.env.JWT_KEY')
+            if (typeof verifiedObject == 'object' && Object(verifiedObject).result._id) {
                 resolve(verifiedObject);
             } else {
                 reject(false);
             }
         });
-        //return await verify(splitedToken, 'process.env.JWT_KEY');
     };
 
     /**
      * 
-     * @param id id which is used by mongoose
+     * @param id 
+     * @param jwtToken 
      */
-    public async isUserInDatabase(id: mongoose.Types.ObjectId): Promise<false | IEditor> {
-        const user = await this.repository.getById(id);
-        if (user) {
-            return user;
-        } else {
-            return false;
+    public async authorizeItem(id: mongoose.Types.ObjectId, jwtToken: string): Promise<boolean> {
+        try {
+            const verifiedObject: string | object = await this.verfiyJwtToken(jwtToken);
+            if (typeof verifiedObject == 'object' && Object(verifiedObject).result._id === id) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            return error;
         }
     };
 };

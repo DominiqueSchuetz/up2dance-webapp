@@ -4,6 +4,7 @@ import { Request, Response, Next } from "restify";
 import { Repository } from "../repository/Repository";
 import { IEditor } from "../models/interfaces/IEditor";
 import { Helpers } from "../lib/helpers";
+import * as  mongoose from 'mongoose';
 require('dotenv').config();
 
 import * as EditorSchema from '../models/Editor';
@@ -73,7 +74,7 @@ export class EditorController implements IController {
                 if (allEditors.length > 0) {
                     res.send(200, { "Info": allEditors });
                 } else {
-                    res.send(200, { "Info": "No Editors in database so far." });
+                    res.send(200, { "Info": "No items in database so far." });
                 }
             } else {
                 res.send(404, { "Error": "Error in find all editors" });
@@ -89,41 +90,31 @@ export class EditorController implements IController {
      * @param res 
      */
     private async getById(req: Request, res: Response): Promise<void> {
-        const id = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
-        const jwtToken = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
+        const id: mongoose.Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
+        const jwtToken: string | boolean = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
 
-        // Take the Object and compare the Password
         if (id && jwtToken) {
-            const verifiedToken = await this.helpers.verfiyJwtToken(jwtToken);
-            if (verifiedToken) {
-                const user = await this.helpers.isUserInDatabase(id);
-                if (user) {
-                    const emailJWT = Object(verifiedToken).user.email;
-                    const emailID = Object(user).email;
-                    if (emailID === emailJWT) {
-                        try {
-                            res.send(await this.repository.getById(id, (err, result) => {
-                                if (!err) {
-                                    res.send(201, result);
-                                } else {
-                                    res.send(200, { 'Info': 'Could not FIND Customers by given id.' });
-                                }
-                            }));
-                        } catch (error) {
+            try {
+                const authResult = await this.helpers.authorizeItem(id, jwtToken);
+                if (typeof authResult === 'boolean' && authResult === true) {
+                    try {
+                        const result = await this.repository.getById(id);
+                        if (result && result._id) {
+                            res.send(200, { "Info": result });
+                        } else {
+                            res.send(200, { "Info": "Could not found any item by given id" });
                         }
-                    } else {
-                        res.send(404, { "Info": "ueiuh" })
+                    } catch (error) {
+                        res.send(404, { "Error": "Error in getById()" });
                     }
                 } else {
-
-                    console.log('ee');
-                    res.send(404, { "Info": "ueiuh" })
+                    res.send(200, { "Info": "Could not authorized by given parameters", "JWT-message": Object(authResult).message });
                 }
-
-
-            } else {
-                res.send(404, { "Info": "No valid jwt token" });
+            } catch (error) {
+                res.send(404, { "Error": "Error in authorizeItem()" });
             }
+        } else {
+            res.send(200, { "Info": "No valid id or token" });
         }
     };
 
@@ -133,45 +124,42 @@ export class EditorController implements IController {
      * @param res 
      */
     private async signIn(req: Request, res: Response): Promise<void> {
-
         const email = typeof req.body.email == 'string' && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
         const password = typeof req.body.password == 'string' && req.body.password.trim().length > 5 ? req.body.password.trim() : false;
 
-        // if (email && password) {
-        //     try {
-        //         await this.repository.getByEmail(email, async (err, result) => {
-        //             if (!err && result) {
-        //                 const userIsAuthenticated = await this.helpers.verfiyUserObject(password, result.password, email)
-        //                 if (userIsAuthenticated) {
-        //                     const jwtToken = await this.helpers.createJwtToken(result);
-        //                     console.log(jwtToken);
-        //                     res.send('Hey, ' + result.firstName)
-        //                 } else {
-        //                     res.send({ 'Info': 'User is not authenticated ==> ' });
-        //                 }
-        //             } else {
-        //                 res.send({ 'Info': 'User with  given Email was not found ==> ' + err });
-        //             }
-        //         });
-
-        //     } catch (error) {
-        //         res.send('Could not find a valid registered user ==> ', error.message);
-        //     }
-        // } else {
-        //     res.send(200, 'No valid Customers.');
-        // }
-
-        // this.repository.list((err, result) => {
-        //     if (!err && result) {
-        //         if (result.length > 0) {
-        //             res.send(200, { "Info": result })
-        //         } else {
-        //             res.send(200, { "Info": "No Editors in database so far." })
-        //         }
-        //     } else {
-        //         res.send(404, { "Error": "Error in find all editors" });
-        //     }
-        // });
+        if (email && password) {
+            try {
+                const result = await this.repository.searchForItem(email);
+                if (result && result._id) {
+                    try {
+                        const auth = await this.helpers.comparingPasswords(password, result.password);
+                        if (auth) {
+                            try {
+                                const jwtToken = await this.helpers.createJwtToken(result);
+                                if (jwtToken) {
+                                    res.send('Hey ' + result.firstName + ' you are now logged in');
+                                    console.log(jwtToken);
+                                } else {
+                                    res.send(404, { "Info": "Could not create JWT-Token" });
+                                }
+                            } catch (error) {
+                                res.send(404, { "Error": "Error in createJwtToken()" });
+                            }
+                        } else {
+                            res.send(404, { "Info": "Could not authenticate with given password" });
+                        }
+                    } catch (error) {
+                        res.send(404, { "Error": "Error in comparingPasswords()" });
+                    }
+                } else {
+                    res.send(404, { "Info": "Your email address might be wrong" });
+                }
+            } catch (error) {
+                res.send(404, { "Error": "Error in searchForItem()" });
+            }
+        } else {
+            res.send(200, 'No valid username or password.');
+        }
     };
 
     /**
@@ -180,25 +168,6 @@ export class EditorController implements IController {
      * @param res 
      */
     private async onlySignInUsersAreAllowedToDoThis(req: Request, res: Response): Promise<void> {
-
-        const jwtToken = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
-        if (jwtToken) {
-            try {
-                const verifyUser = await this.helpers.verfiyJwtToken(jwtToken);
-                if (verifyUser) {
-                    console.log('You are allowed to do this')
-
-                    // let test = JSON.stringify(verifyUser).split('firstName":"')[1]
-                    // let test2 = test.split('","lastName')[0]
-                    // console.log(test2);
-                    res.send({ 'Bearer ': jwtToken })
-                }
-            } catch (error) {
-                console.log('Not allowed to do this')
-                console.log('Something went wrong after verifying a user ==> ', error.message);
-                res.send({ 'Info': error.message })
-            }
-        }
     }
 
     /**
@@ -208,7 +177,6 @@ export class EditorController implements IController {
      * @param next 
      */
     private async register(req: Request, res: Response, next?: Next): Promise<void> {
-
         const firstName = typeof req.body.firstName == 'string' && req.body.firstName.trim().length > 1 ? req.body.firstName.trim() : false;
         const lastName = typeof req.body.lastName == 'string' && req.body.lastName.trim().length > 1 ? req.body.lastName.trim() : false;
         const email = typeof req.body.email == 'string' && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
@@ -217,7 +185,7 @@ export class EditorController implements IController {
 
         if (firstName && lastName && email && password && secretKey) {
             try {
-                const passwordEnc = await this.helpers.decrypt(password);
+                const passwordEnc = await this.helpers.encrypt(password);
                 if (passwordEnc) {
                     req.body.password = passwordEnc;
                     try {
@@ -232,12 +200,12 @@ export class EditorController implements IController {
                     }
                 }
             } catch (error) {
-                res.send(404, { "Error": "Error in decrypt()" });
+                res.send(404, { "Error": "Error in encrypt()" });
             }
         } else {
             res.send(200, 'No valid Customers.');
         }
-    }
+    };
 
     /**
      * 
@@ -245,23 +213,54 @@ export class EditorController implements IController {
      * @param res 
      */
     private async update(req: Request, res: Response): Promise<void> {
-        const id = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
-        const body = typeof req.body == 'object' && req.body != null ? req.body : false;
+        const id: mongoose.Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
+        const jwtToken: string | boolean = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
+        const firstName = typeof req.body.firstName == 'string' && req.body.firstName.trim().length > 1 ? req.body.firstName.trim() : false;
+        const lastName = typeof req.body.lastName == 'string' && req.body.lastName.trim().length > 1 ? req.body.lastName.trim() : false;
+        const email = typeof req.body.email == 'string' && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
+        const password = typeof req.body.password == 'string' && req.body.password.trim().length > 5 ? req.body.password.trim() : false;
+        const instrument = typeof req.body.instrument == 'string' ? req.body.instrument.trim() : false;
 
-        if (id && body) {
+        if (id && jwtToken) {
             try {
-                res.send(await this.repository.update(req.params.id, req.body, (err, result) => {
-                    if (!err) {
-                        res.send(201, result)
-                    } else {
-                        res.send(200, { 'Info': 'Could not UPDATE the Customers by given id or payload.' });
+                const authResult = await this.helpers.authorizeItem(id, jwtToken);
+                if ((typeof authResult === 'boolean' && authResult === true) && (firstName && lastName && email && password || instrument)) {
+                    try {
+                        const passwordEnc = await this.helpers.encrypt(password);
+                        if (passwordEnc) {
+                            req.body.password = passwordEnc;
+                            try {
+                                const result = await this.repository.update(id, req.body);
+                                if (result && result._id) {
+                                    try {
+                                        const jwtToken = await this.helpers.createJwtToken(result);
+                                        if (jwtToken) {
+                                            res.send(200, { "Info": result });
+                                            console.log(jwtToken);
+                                        } else {
+                                            res.send(404, { "Info": "Could not create JWT-Token" });
+                                        }
+                                    } catch (error) {
+                                        res.send(404, { "Error": "Error in createJwtToken()" });
+                                    }
+                                } else {
+                                    res.send(200, { "Info": "Could not found any item by given id" });
+                                }
+                            } catch (error) {
+                                res.send(404, { "Error": "Error in update()" });
+                            }
+                        }
+                    } catch (error) {
+                        res.send(404, { "Error": "Error in encrypt()" });
                     }
-                }));
+                } else {
+                    res.send(200, { "Info": "Could not authorized by given parameters", "JWT-message": Object(authResult).message });
+                }
             } catch (error) {
-
+                res.send(404, { "Error": "Error in authorizeItem()" });
             }
         } else {
-            res.send(200, 'No valid id or payload');
+            res.send(200, { "Info": "No valid id or token" });
         }
     }
 
@@ -271,20 +270,31 @@ export class EditorController implements IController {
      * @param res 
      */
     private async remove(req: Request, res: Response): Promise<void> {
-        const id = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
-        if (id) {
+        const id: mongoose.Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
+        const jwtToken: string | boolean = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
+
+        if (id && jwtToken) {
             try {
-                res.send(await this.repository.delete(req.params.id, (err, result) => {
-                    if (!err) {
-                        res.send(201, result);
-                    } else {
-                        res.send(200, { 'Info': 'Could not DELETE the Customers by given id.' });
+                const authResult = await this.helpers.authorizeItem(id, jwtToken);
+                if (typeof authResult === 'boolean' && authResult === true) {
+                    try {
+                        const result = await this.repository.delete(id);
+                        if (result && Object(result).n == 1 && Object(result).ok == 1) {
+                            res.send(200, { "Info": "Delete item successfully" });
+                        } else {
+                            res.send(200, { "Info": "Could not found any item by given id" });
+                        }
+                    } catch (error) {
+                        res.send(404, { "Error": "Error in delete()" });
                     }
-                }));
+                } else {
+                    res.send(200, { "Info": "Could not authorized by given parameters", "JWT-message": Object(authResult).message });
+                }
             } catch (error) {
+                res.send(404, { "Error": "Error in authorizeItem()" });
             }
         } else {
-            res.send(200, 'No valid id.');
+            res.send(200, { "Info": "No valid id or token" });
         }
     }
 }

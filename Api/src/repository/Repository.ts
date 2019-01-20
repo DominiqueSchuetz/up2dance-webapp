@@ -36,6 +36,22 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
+    public async searchForItem(email: string): Promise<T> {
+        try {
+            const item: T = await this._model.findOne({ email }).exec();
+            if (item) {
+                return item;
+            }
+        } catch (error) {
+            return error;
+        }
+    };
+
+    /**
+     * 
+     * @param id 
+     * @param callback 
+     */
     public async getById(id: mongoose.Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
         try {
             const item: T = await this._model.findOne({ _id: id }).exec();
@@ -85,9 +101,9 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param item 
      * @param callback 
      */
-    public async  update(id: mongoose.Types.ObjectId, item: T, callback?: (error: any, result: any) => void): Promise<T> {
+    public async update(id: mongoose.Types.ObjectId, item: T, callback?: (error: any, result: any) => void): Promise<T> {
         try {
-            const updatedItem: T = await this._model.updateOne({ _id: id }, item).exec();
+            const updatedItem: T = await this._model.findOneAndUpdate({ _id: id }, item, {new: true}).exec();
             if (updatedItem) {
                 return updatedItem;
             }
