@@ -15,8 +15,8 @@ export class ApiServer implements IHttpServer {
      * @param url 
      * @param requestHandler 
      */
-    get(url: string, requestHandler: RequestHandler): void {
-        this.addRoute('get', url, requestHandler);
+    get(url: string, checkAuth: RequestHandler, requestHandler: RequestHandler): void {
+        this.addRoute('get', url, checkAuth, requestHandler);
     };
 
     /**
@@ -24,8 +24,8 @@ export class ApiServer implements IHttpServer {
      * @param url 
      * @param requestHandler 
      */
-    post(url: string, requestHandler: RequestHandler): void {
-        this.addRoute('post', url, requestHandler);
+    post(url: string, checkAuth: RequestHandler, requestHandler: RequestHandler): void {
+        this.addRoute('post', url, checkAuth, requestHandler);
     };
 
     /**
@@ -33,8 +33,8 @@ export class ApiServer implements IHttpServer {
      * @param url 
      * @param requestHandler 
      */
-    put(url: string, requestHandler: RequestHandler): void {
-        this.addRoute('put', url, requestHandler);
+    put(url: string, checkAuth: RequestHandler, requestHandler: RequestHandler): void {
+        this.addRoute('put', url, checkAuth, requestHandler);
     };
 
     /**
@@ -42,8 +42,8 @@ export class ApiServer implements IHttpServer {
      * @param url 
      * @param requestHandler 
      */
-    del(url: string, requestHandler: RequestHandler): void {
-        this.addRoute('del', url, requestHandler);
+    del(url: string, checkAuth: RequestHandler, requestHandler: RequestHandler): void {
+        this.addRoute('del', url, checkAuth, requestHandler);
     };
 
     /**
@@ -52,14 +52,13 @@ export class ApiServer implements IHttpServer {
      * @param url 
      * @param requestHandler 
      */
-    private addRoute(method: 'get' | 'post' | 'put' | 'del', url: string, requestHandler: RequestHandler): void {
-        this._restifyServer[method](url, async (req, res, next) => {
+    private addRoute(method: 'get' | 'post' | 'put' | 'del', url: string, checkAuth: RequestHandler, requestHandler: RequestHandler): void {
+        this._restifyServer[method](url, checkAuth, (req, res, next) => {
             try {
-                await requestHandler(req, res, next);
+                requestHandler(req, res, next);
                 next();
             } catch (error) {
                 res.send(500, error);
-                next();
             }
         });
         console.log('\x1b[36m%s\x1b[0m', `Added route ${method.toLocaleUpperCase()}: ${url}`);
@@ -92,7 +91,7 @@ export class ApiServer implements IHttpServer {
         });
 
         this._restifyServer.listen(port, () => {
-            console.log('\x1b[33m%s\x1b[0m',`${this._restifyServer.name} is up and running on port ${port}`);
+            console.log('\x1b[33m%s\x1b[0m', `${this._restifyServer.name} is up and running on port ${port}`);
         });
     };
 };

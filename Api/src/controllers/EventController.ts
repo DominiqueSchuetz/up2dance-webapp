@@ -8,6 +8,7 @@ import * as  mongoose from 'mongoose';
 require('dotenv').config();
 
 import * as EventSchema from '../models/Event';
+import { checkAuth } from "../lib/auth-service";
 
 export class EventController implements IController {
 
@@ -23,7 +24,7 @@ export class EventController implements IController {
         /**
          * Get all Editors in database
          */
-        httpServer.get('/api/event/all', this.list.bind(this));
+        //httpServer.get('/api/event/all', this.list.bind(this));
 
         /**
          * Get a Editor by id from database
@@ -33,7 +34,7 @@ export class EventController implements IController {
         /**
          * Register a new Editor
          */
-        httpServer.post('/api/event/create', this.create.bind(this));
+        httpServer.post('/api/event/create', checkAuth, this.create.bind(this));
 
         /**
          * Sign in a registered Editor
@@ -164,12 +165,15 @@ export class EventController implements IController {
      * @param next 
      */
     private async create(req: Request, res: Response, next?: Next): Promise<void> {
-        const eventName = typeof req.body.eventName == 'string' && req.body.eventName.trim().length > 1 ? req.body.eventName.trim() : false;
-        const eventDate = typeof req.body.eventDate == 'string' && req.body.eventDate? req.body.eventDate : false;
 
         
-        
-        
+
+        const eventName = typeof req.body.eventName == 'string' && req.body.eventName.trim().length > 1 ? req.body.eventName.trim() : false;
+        const eventDate = typeof req.body.eventDate == 'string' && req.body.eventDate ? req.body.eventDate : false;
+
+
+
+
         // const lastName = typeof req.body.lastName == 'string' && req.body.lastName.trim().length > 1 ? req.body.lastName.trim() : false;
         // const email = typeof req.body.email == 'string' && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
         // const password = typeof req.body.password == 'string' && req.body.password.trim().length > 5 ? req.body.password.trim() : false;
@@ -178,8 +182,8 @@ export class EventController implements IController {
         if (eventName && eventDate) {
             try {
                 const result = await this.repository.create(req.body);
-                console.log(req.body);
-                
+                //console.log(req.body);
+
                 res.send(200, result)
             } catch (error) {
                 res.send(error.message)
