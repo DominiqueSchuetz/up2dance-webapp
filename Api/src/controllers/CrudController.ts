@@ -2,19 +2,28 @@ import { IController } from "./interfaces/IController";
 import { IHttpServer } from "../server/IHttpServer";
 import { Request, Response, Next } from "restify";
 import { Repository } from "../repository/Repository";
-import { IEvent } from "../models/interfaces/IEvent";
 import { Helpers } from "../lib/helpers";
-import * as  mongoose from 'mongoose';
 require('dotenv').config();
 
-import * as EventSchema from '../models/Event';
+import { Document, Model } from "mongoose";
 import { checkAuth } from "../lib/auth-service";
 
-export class EventController implements IController {
+export class CrudController<T extends Document> implements IController {
 
-    repository = new Repository<IEvent>(EventSchema);
-    helpers = new Helpers();
-
+    private _model: Model<any>;
+    private _routes: string;
+    private _repository : Repository<T>
+    
+    /**
+     * 
+     * @param schemaModel 
+     */
+    constructor(routes: string, schemaModel: Model<Document>) {
+        this._model = schemaModel;
+        this._routes = routes;
+        this._repository = new Repository<T>(this._model);
+    };
+    
     /**
      * 
      * @param httpServer 
@@ -22,30 +31,29 @@ export class EventController implements IController {
     initialize(httpServer: IHttpServer): void {
 
         /**
-         * Get all Events in database
+         * Get all Items in database
          */
-        httpServer.get('/api/event/all', this.list.bind(this));
-
-
-        /**
-         * Create a new Event
-         */
-        httpServer.post('/api/event/create', checkAuth, this.create.bind(this));
+        httpServer.get('/api/' + this._routes + '/all', this.list.bind(this));
 
         /**
-         * Get a Event by id from database
+         * Create a new Item
          */
-        httpServer.get('/api/event/:id', this.getById.bind(this));
+        httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
 
         /**
-         * Update a registered Event
+         * Get a Item by id from database
          */
-        httpServer.put('/api/event/:id', checkAuth, this.update.bind(this));
+        httpServer.get('/api/' + this._routes + '/:id', this.getById.bind(this));
 
         /**
-         * Delete a registered Event
+         * Update a registered Item
          */
-        httpServer.del('/api/event/:id', checkAuth, this.remove.bind(this));
+        httpServer.put('/api/' + this._routes + '/:id', checkAuth, this.update.bind(this));
+
+        /**
+         * Delete a registered Item
+         */
+        httpServer.del('/api/' + this._routes + '/:id', checkAuth, this.remove.bind(this));
     };
 
     /**
@@ -56,15 +64,15 @@ export class EventController implements IController {
 
     private async list(req: Request, res: Response, next?: Next): Promise<void> {
         try {
-            const allEvents = await this.repository.list();
-            if (allEvents && (allEvents instanceof Array)) {
-                if (allEvents.length > 0) {
-                    res.send(201, { "Info": allEvents });
+            const allItems = await this._repository.list();
+            if (allItems && (allItems instanceof Array)) {
+                if (allItems.length > 0) {
+                    res.send(201, { "Info": allItems });
                 } else {
                     res.send(200, { "Info": "No items in database so far." });
                 }
             } else {
-                res.send(404, { "Error": "Error in find all events" });
+                res.send(404, { "Error": "Error in find all Items" });
             }
         } catch (error) {
             res.send(404, { "Error": "Error in list()" });
@@ -78,14 +86,14 @@ export class EventController implements IController {
      */
     private async getById(req: Request, res: Response): Promise<void> {
         try {
-            const result = await this.repository.getById(req.params.id);
+            const result = await this._repository.getById(req.params.id);
             if (result && result._id) {
                 res.send(201, result)
             } else {
                 res.send(500, { "Message": Object(result).name });
             }
         } catch (error) {
-            res.send(500, { 'Error': 'Upps, error in event create function' });
+            res.send(500, { 'Error': 'Upps, error in Item create function' });
         }
     };
 
@@ -97,14 +105,14 @@ export class EventController implements IController {
      */
     private async create(req: Request, res: Response, next?: Next): Promise<void> {
         try {
-            const result = await this.repository.create(req.body);
+            const result = await this._repository.create(req.body);
             if (result && result._id) {
                 res.send(201, result)
             } else {
                 res.send(500, { "Message": Object(result).name });
             }
         } catch (error) {
-            res.send(500, { 'Error': 'Upps, error in event create function' });
+            res.send(500, { 'Error': 'Upps, error in Item create function' });
         }
     };
 
@@ -115,14 +123,14 @@ export class EventController implements IController {
      */
     private async update(req: Request, res: Response): Promise<void> {
         try {
-            const result = await this.repository.update(req.params.id, req.body);
+            const result = await this._repository.update(req.params.id, req.body);
             if (result && result._id) {
                 res.send(201, result)
             } else {
                 res.send(500, { "Message": Object(result).name });
             }
         } catch (error) {
-            res.send(500, { 'Error': 'Upps, error in event create function' });
+            res.send(500, { 'Error': 'Upps, error in Item create function' });
         }
     };
 
@@ -133,7 +141,7 @@ export class EventController implements IController {
      */
     private async remove(req: Request, res: Response): Promise<void> {
         try {
-            const result = await this.repository.delete(req.params.id);
+            const result = await this._repository.delete(req.params.id);
             if (result && Object(result).n == 1 && Object(result).ok == 1) {
                 res.send(201, { "Info": "Delete item successfully" });
             } else {

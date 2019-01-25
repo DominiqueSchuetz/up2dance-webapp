@@ -103,7 +103,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      */
     public async update(id: mongoose.Types.ObjectId, item: T, callback?: (error: any, result: any) => void): Promise<T> {
         try {
-            const updatedItem: T = await this._model.findOneAndUpdate({ _id: id }, item, {new: true}).exec();
+            const updatedItem: T = await this._model.findOneAndUpdate({ _id: id }, item, { new: true }).exec();
             if (updatedItem) {
                 return updatedItem;
             }
