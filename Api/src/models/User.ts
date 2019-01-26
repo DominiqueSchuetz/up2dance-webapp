@@ -1,5 +1,5 @@
 import { DatabaseConnection } from "../database/DatabaseConnection";
-import { IEditor } from "./interfaces/IEditor";
+import { IUser } from "./interfaces/IUser";
 import { Schema } from "mongoose";
 const mongooseStringQuery = require('mongoose-string-query');
 const timestamps = require('mongoose-timestamp');
@@ -7,11 +7,11 @@ const timestamps = require('mongoose-timestamp');
 //var mongoose = DataAccess.mongooseInstance;
 var mongooseConnection = DatabaseConnection.mongooseConnection;
 
-class EditorSchema extends Schema {
+class UserSchema extends Schema {
 
     static get schema() {
 
-        let schema =  new Schema({
+        let schema = new Schema({
             firstName: {
                 required: true,
                 type: String,
@@ -39,8 +39,8 @@ class EditorSchema extends Schema {
                 enum: ['drums', 'keys', 'bass', 'singer', 'guitar', 'musician'],
                 default: 'musician',
             }
-        }, 
-        { minimize: false },
+        },
+            { minimize: false },
         );
 
         schema.plugin(mongooseStringQuery);
@@ -50,5 +50,5 @@ class EditorSchema extends Schema {
     };
 };
 
-let schema = mongooseConnection.model<IEditor>("Editor", EditorSchema.schema);
+let schema = mongooseConnection.model<IUser>("User", UserSchema.schema);
 export = schema;

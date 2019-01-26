@@ -3,18 +3,10 @@ import { Model, Document } from "mongoose";
 import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 
-import { Repository } from "../repository/Repository";
-import { IEditor } from "../models/interfaces/IEditor";
-
-import * as EditorSchema from '../models/Editor';
 import * as  mongoose from 'mongoose';
 require('dotenv').config()
 
-//import { Document } from "mongoose";
-
 export class Helpers<T extends Document> {
-
-    repository: Repository<IEditor> = new Repository<IEditor>(EditorSchema);
 
     /**
      * 
