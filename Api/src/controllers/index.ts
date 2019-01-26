@@ -4,14 +4,15 @@ import { AuthController } from "./AuthController";
 import * as EventSchema from '../models/Event';
 import { IEvent } from "../models/interfaces/IEvent";
 
-// import * as EditorSchema from '../models/Editor';
-// import { IEditor } from "../models/interfaces/IEditor";
+import * as NewsSchema from '../models/News';
+import { INews } from "../models/interfaces/INews";
 
 const authController = new AuthController();
 const eventController = new CrudController<IEvent>('event', EventSchema);
-//const authController = new CrudController<IEditor>('auth', EditorSchema);
+const newsController = new CrudController<INews>('news', NewsSchema);
 
 export const CONTROLLERS = [
     authController,
     eventController,
+    newsController,
 ];

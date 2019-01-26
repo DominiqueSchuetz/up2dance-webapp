@@ -71,7 +71,7 @@ class EventSchema extends Schema {
                 trim: true,
             },
             hidden: {
-                type: String,
+                type: Boolean,
                 required: true,
                 enum: [true, false],
                 default: 'true',
