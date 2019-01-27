@@ -12,8 +12,9 @@ export class CrudController<T extends Document> implements IController {
 
     private _model: Model<any>;
     private _routes: string;
-    private _repository : Repository<T>
-    
+    private _repository: Repository<T>;
+    private _helpers = new Helpers();
+
     /**
      * 
      * @param schemaModel 
@@ -23,7 +24,7 @@ export class CrudController<T extends Document> implements IController {
         this._routes = routes;
         this._repository = new Repository<T>(this._model);
     };
-    
+
     /**
      * 
      * @param httpServer 
@@ -106,13 +107,18 @@ export class CrudController<T extends Document> implements IController {
     private async create(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const result = await this._repository.create(req.body);
-            if (result && result._id) {
+            if (result && result._id && !Object(result).event) {
                 res.send(201, result)
+            } else if (result && result._id && Object(result).event) {
+                const jwtToken = req.headers.authorization;
+                const resultReq = await this._helpers.sendPostRequestToNewRoute('/api/event/create', Object(result).event, jwtToken);
+                res.send(201, result);
             } else {
+                console.log('in errr');
                 res.send(500, { "Message": Object(result).name });
             }
         } catch (error) {
-            res.send(500, { 'Error': 'Upps, error in Item create function' });
+            res.send(500, { 'Error': error });
         }
     };
 

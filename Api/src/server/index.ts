@@ -56,7 +56,7 @@ export class ApiServer implements IHttpServer {
         this._restifyServer[method](url, checkAuth, (req, res, next) => {
             try {
                 requestHandler(req, res, next);
-                next();
+                return next();
             } catch (error) {
                 res.send(500, error);
             }

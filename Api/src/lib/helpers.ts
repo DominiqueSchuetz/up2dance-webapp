@@ -2,6 +2,7 @@ import { Model, Document } from "mongoose";
 
 import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
+import { request } from "http";
 
 import * as  mongoose from 'mongoose';
 require('dotenv').config()
@@ -80,4 +81,65 @@ export class Helpers<T extends Document> {
             return error;
         }
     };
+
+    public sendPostRequestToNewRoute(path, payload, token): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            let respondedEventObject = {};
+            let requestDetails = {
+                'protocol': 'http:',
+                'hostname': 'localhost',
+                'port': 8080,
+                'method': 'POST',
+                'path': path,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'authorization': token
+                },
+            }
+            // // Send a request
+            let req = request(requestDetails, (res) => {
+
+                res.setEncoding('utf8');
+                res.on('data', (eventObject) => {
+                    respondedEventObject = JSON.parse(eventObject);
+                    resolve(respondedEventObject);
+                });
+                res.on('end', () => { });
+                //callback(res);
+            });
+            req.on('error', (e) => {
+                console.error(`problem with request: ${e.message}`);
+            });
+            // write data to request body
+            req.write(JSON.stringify(payload));
+            req.end();
+
+
+
+
+            // const req = request(requestDetails, (res) => {
+            //     console.log(`STATUS: ${res.statusCode}`);
+            //     console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+            //     res.setEncoding('utf8');
+            //     res.on('data', (chunk) => {
+            //         console.log(`BODY: ${chunk}`);
+            //     });
+            //     res.on('end', () => {
+            //         console.log('No more data in response.');
+            //     });
+            // });
+
+            // req.on('error', (e) => {
+            //     console.error(`problem with request: ${e.message}`);
+            // });
+
+            // // write data to request body
+            // req.write(JSON.stringify(payload));
+            // req.end();
+
+
+
+
+        });
+    }
 };
