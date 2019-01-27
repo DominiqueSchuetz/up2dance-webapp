@@ -17,6 +17,16 @@ class EventSchema extends Schema {
                 type: String,
                 trim: true,
             },
+            paSystem: {
+                required: false,
+                type: Boolean,
+                trim: true,
+            },
+            salary: {
+                required: false,
+                type: Boolean,
+                trim: true,
+            },
             address: {
                 street: {
                     type: String,
@@ -58,7 +68,7 @@ class EventSchema extends Schema {
             },
             eventDate: {
                 type: Date,
-                required: false,
+                required: true,
             },
             timeStart: {
                 type: Date,

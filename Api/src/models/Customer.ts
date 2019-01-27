@@ -26,6 +26,11 @@ class CustomerSchema extends Schema {
                 type: String,
                 trim: true,
             },
+            companyName: {
+                required: false,
+                type: String,
+                trim: true,
+            },
             phone: {
                 required: true,
                 type: String,
