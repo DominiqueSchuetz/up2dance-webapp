@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const result = require('dotenv').config();
-import { Document, Model } from "mongoose";
+import { Document } from "mongoose";
 require('dotenv').config()
 
 
