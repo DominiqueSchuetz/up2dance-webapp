@@ -1,5 +1,9 @@
 import { CrudController } from "./CrudController";
 import { AuthController } from "./AuthController";
+import { MediaController } from "./MediaController";
+import { CustomerController } from "./CustomerController";
+import { EventController } from "./EventController";
+import { NewsController } from "./NewsController";
 
 import * as EventSchema from '../models/Event';
 import { IEvent } from "../models/interfaces/IEvent";
@@ -12,25 +16,17 @@ import { IMedia } from "../models/interfaces/IMedia";
 
 import * as CustomerSchema from '../models/Customer';
 import { ICustomer } from "../models/interfaces/ICustomer";
-import { MediaController } from "./MediaController";
-import { CustomerController } from "./CustomerController";
 
 const authController = new AuthController();
 const customerController: CrudController<ICustomer> = new CustomerController('customer', CustomerSchema);
 const mediaController: CrudController<IMedia> = new MediaController('media', MediaSchema);
-
-
-// const eventController = new CrudController<IEvent>('event', EventSchema);
-// const newsController = new CrudController<INews>('news', NewsSchema);
-// const mediaController = new CrudController<IMedia>('media', MediaSchema);
-// const customerController = new CrudController<ICustomer>('customer', CustomerSchema);
-
+const eventController: CrudController<IEvent> = new EventController('event', EventSchema);
+const newsController: CrudController<INews> = new NewsController('news', NewsSchema);
 
 export const CONTROLLERS = [
     authController,
     customerController,
-    mediaController
-    // eventController,
-    // newsController,
-    // mediaController,
+    mediaController,
+    eventController,
+    newsController,
 ];
