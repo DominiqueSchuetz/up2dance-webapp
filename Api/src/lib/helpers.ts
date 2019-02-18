@@ -1,8 +1,8 @@
-import { Model, Document } from "mongoose";
-
+import { Document } from "mongoose";
 import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 import { request } from "http";
+import { renameSync, unlink } from "fs";
 
 import * as  mongoose from 'mongoose';
 require('dotenv').config()
@@ -136,10 +136,25 @@ export class Helpers<T extends Document> {
             // // write data to request body
             // req.write(JSON.stringify(payload));
             // req.end();
+        });
+    }
 
-
-
-
+    /**
+     * uploadFileToFolder
+     */
+    public uploadFileToFolder(req: any): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            for (var key in req.files) {
+                if (req.files.hasOwnProperty(key)) {
+                    renameSync(req.files[key].path, `${__dirname}/../uploads/${req.files[key].name}`);
+                    unlink(req.files[key].path, (err) => {
+                        if (!err) {
+                            reject('Error in uploading a file')
+                        }
+                    });
+                    resolve(true);
+                }
+            };
         });
     }
 };

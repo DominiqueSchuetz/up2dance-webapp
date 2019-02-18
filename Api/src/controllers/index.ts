@@ -12,17 +12,25 @@ import { IMedia } from "../models/interfaces/IMedia";
 
 import * as CustomerSchema from '../models/Customer';
 import { ICustomer } from "../models/interfaces/ICustomer";
+import { MediaController } from "./MediaController";
+import { CustomerController } from "./CustomerController";
 
 const authController = new AuthController();
-const eventController = new CrudController<IEvent>('event', EventSchema);
-const newsController = new CrudController<INews>('news', NewsSchema);
-const mediaController = new CrudController<IMedia>('media', MediaSchema);
-const customerController = new CrudController<ICustomer>('customer', CustomerSchema);
+const customerController: CrudController<ICustomer> = new CustomerController('customer', CustomerSchema);
+const mediaController: CrudController<IMedia> = new MediaController('media', MediaSchema);
+
+
+// const eventController = new CrudController<IEvent>('event', EventSchema);
+// const newsController = new CrudController<INews>('news', NewsSchema);
+// const mediaController = new CrudController<IMedia>('media', MediaSchema);
+// const customerController = new CrudController<ICustomer>('customer', CustomerSchema);
+
 
 export const CONTROLLERS = [
     authController,
-    eventController,
-    newsController,
-    mediaController,
     customerController,
+    mediaController
+    // eventController,
+    // newsController,
+    // mediaController,
 ];

@@ -1,8 +1,8 @@
 import { RequestHandler, Next } from "restify";
 
 export interface IHttpServer {
-    get(url: string, checkAuth?: RequestHandler, requestHandler?: RequestHandler): void;
-    post(url: string, checkAuth?: RequestHandler, requestHandler?: RequestHandler): void;
-    put(url: string, checkAuth?: RequestHandler, requestHandler?: RequestHandler): void;
-    del(url: string, checkAuth?: RequestHandler, requestHandler?: RequestHandler): void;
+    get(url: string, ...RequestHandler): void;
+    post(url: string, ...RequestHandler): void;
+    put(url: string, ...RequestHandler): void;
+    del(url: string, ...RequestHandler): void;
 };

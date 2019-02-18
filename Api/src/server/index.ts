@@ -5,7 +5,6 @@ import { CONTROLLERS } from '../controllers/index';
 import * as restify from 'restify';
 import * as config from '../../config';
 
-
 export class ApiServer implements IHttpServer {
 
     private _restifyServer: Server;
@@ -78,10 +77,19 @@ export class ApiServer implements IHttpServer {
         //server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
         //server.use(restifyPlugins.acceptParser(server.acceptable));
         //server.use(restifyPlugins.queryParser({ mapParams: true }));
-        this._restifyServer.use(restify.plugins.bodyParser());
-        this._restifyServer.use(restify.plugins.queryParser());
-        this._restifyServer.use(restify.plugins.multipartBodyParser())
-        this._restifyServer.use(restify.plugins.fullResponse())
+
+        //this._restifyServer.use(checkAuth);
+        this._restifyServer.use(restify.plugins.bodyParser({
+            mapParams: false,
+        }));
+
+
+        // this._restifyServer.use(uploadFile);
+
+
+        // this._restifyServer.use(restify.plugins.queryParser());
+        // this._restifyServer.use(restify.plugins.multipartBodyParser())
+        // this._restifyServer.use(restify.plugins.fullResponse())
 
         /**
          * Init the Controller

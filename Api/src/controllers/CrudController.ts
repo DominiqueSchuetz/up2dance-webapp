@@ -8,13 +8,12 @@ require('dotenv').config();
 
 import { Document, Model } from "mongoose";
 import { checkAuth } from "../lib/auth-service";
-1
-export class CrudController<T extends Document> implements IController {
 
+export abstract class CrudController<T extends Document> implements IController {
     private _model: Model<any>;
     private _routes: string;
     private _repository: Repository<T>;
-    private _helpers = new Helpers();
+    //private _helpers = new Helpers();
 
     /**
      * 
@@ -105,18 +104,18 @@ export class CrudController<T extends Document> implements IController {
      * @param res 
      * @param next 
      */
-    private async create(req: Request, res: Response, next?: Next): Promise<void> {
+    public async create(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const result: T = await this._repository.create(req.body);
             if (result && result._id && !Object(result).event) {
                 res.send(201, result)
             } else if (result && result._id && Object(result).event) {
                 try {
-                    const resultReq = await this._helpers
-                        .sendPostRequestToNewRoute('/api/event/create', Object(result).event, req.headers.authorization);
-                    if (resultReq) {
-                        await new MailService<T>().sendMailToClient(result);
-                    }
+                    //const resultReq = await this._helpers
+                    //    .sendPostRequestToNewRoute('/api/event/create', Object(result).event, req.headers.authorization);
+                    //if (resultReq) {
+                    //    await new MailService<T>().sendMailToClient(result);
+                    // }
                 } catch (error) {
                     res.send(500, { 'Error': error });
                 }
