@@ -7,7 +7,6 @@ require('dotenv').config()
 export class MailService<T extends Document> {
 
     public sendMailToClient(customerPayload: T) {
-
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {

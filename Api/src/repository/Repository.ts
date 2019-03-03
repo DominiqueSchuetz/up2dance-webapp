@@ -68,9 +68,9 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param email 
      * @param callback 
      */
-    public async getByEmail(email: string, callback?: (error: any, result: T) => void): Promise<T> {
+    public async getByEmail(mail: string, callback?: (error: any, result: T) => void): Promise<T> {
         try {
-            const item: T = await this._model.findOne({ email: email }).exec();
+            const item: T = await this._model.findOne({ mail }).exec();
             if (item) {
                 return item;
             }

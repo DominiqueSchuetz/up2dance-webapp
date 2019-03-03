@@ -32,12 +32,13 @@ class CustomerSchema extends Schema {
                 trim: true,
             },
             phone: {
-                required: true,
+                required: false,
                 type: String,
                 trim: true,
             },
             mail: {
-                required: false,
+                required: true,
+                unique: true,
                 type: String,
                 trim: true,
             },

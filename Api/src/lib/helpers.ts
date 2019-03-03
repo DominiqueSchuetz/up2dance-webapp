@@ -96,7 +96,7 @@ export class Helpers<T extends Document> {
                     'authorization': token
                 },
             }
-            // // Send a request
+            // Send a request
             let req = request(requestDetails, (res) => {
 
                 res.setEncoding('utf8');
@@ -142,19 +142,36 @@ export class Helpers<T extends Document> {
     /**
      * uploadFileToFolder
      */
-    public uploadFileToFolder(req: any): Promise<boolean> {
+    public uploadFileToFolder(req: any): Promise<string | boolean> {
         return new Promise((resolve, reject) => {
-            for (var key in req.files) {
-                if (req.files.hasOwnProperty(key)) {
-                    renameSync(req.files[key].path, `${__dirname}/../uploads/${req.files[key].name}`);
-                    unlink(req.files[key].path, (err) => {
-                        if (!err) {
-                            reject('Error in uploading a file')
+            if (req.files.hasOwnProperty('file')) {
+                for (var key in req.files) {
+
+                    // Accepts only file sizes less or equal than 5 Mbit
+                    const sizeMax = 1024 * 1024 * 5 >= req.files[key].size ? true : false;
+                    const availableTypes = ['image/png', 'image/jpeg', 'application/pdf'];
+
+                    if (req.files && availableTypes.indexOf(req.files[key].type) > -1 && sizeMax) {
+
+                        if (req.files.hasOwnProperty(key)) {
+
+                            const pathToDisk: string = `${__dirname}/../../public/uploads/others/${req.files[key].name}`;
+
+                            renameSync(req.files[key].path, pathToDisk);
+                            unlink(req.files[key].path, (err) => {
+                                if (!err) {
+                                    reject('Error in uploading a file')
+                                }
+                            });
+                            resolve(pathToDisk);
                         }
-                    });
-                    resolve(true);
-                }
-            };
+                    } else {
+                        reject('Error in uploading a file');
+                    }
+                };
+            } else {
+                resolve(true);
+            }
         });
     }
 };

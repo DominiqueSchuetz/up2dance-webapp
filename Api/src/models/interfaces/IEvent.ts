@@ -1,4 +1,5 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
+
 
 export interface IEvent extends Document {
     eventName: string;
@@ -10,4 +11,5 @@ export interface IEvent extends Document {
     timeEnd: Date;
     salary : string;
     hidden: boolean;
+    customerId: Types.ObjectId;
 };

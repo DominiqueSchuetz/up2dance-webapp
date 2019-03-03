@@ -21,12 +21,6 @@ class MediaSchema extends Schema {
                 required: false,
                 type: String,
                 trim: true,
-            },
-            format: {
-                type: String,
-                required: false,
-                enum: ['.png', '.jpg', '.jpeg'],
-                default: 'png',
             }
         },
             { minimize: false },

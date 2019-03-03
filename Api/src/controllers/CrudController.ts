@@ -2,8 +2,6 @@ import { IController } from "./interfaces/IController";
 import { IHttpServer } from "../server/IHttpServer";
 import { Request, Response, Next } from "restify";
 import { Repository } from "../repository/Repository";
-import { Helpers } from "../lib/helpers";
-import { MailService } from "../lib/mailService";
 require('dotenv').config();
 
 import { Document, Model } from "mongoose";
@@ -12,8 +10,7 @@ import { checkAuth } from "../lib/auth-service";
 export abstract class CrudController<T extends Document> implements IController {
     private _model: Model<any>;
     private _routes: string;
-    private _repository: Repository<T>;
-    //private _helpers = new Helpers();
+    protected _repository: Repository<T>;
 
     /**
      * 
@@ -85,7 +82,7 @@ export abstract class CrudController<T extends Document> implements IController 
      * @param req 
      * @param res 
      */
-    private async getById(req: Request, res: Response): Promise<void> {
+    protected async getById(req: Request, res: Response): Promise<void> {
         try {
             const result = await this._repository.getById(req.params.id);
             if (result && result._id) {
@@ -104,24 +101,12 @@ export abstract class CrudController<T extends Document> implements IController 
      * @param res 
      * @param next 
      */
-    public async create(req: Request, res: Response, next?: Next): Promise<void> {
+    protected async create(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const result: T = await this._repository.create(req.body);
-            if (result && result._id && !Object(result).event) {
-                res.send(201, result)
-            } else if (result && result._id && Object(result).event) {
-                try {
-                    //const resultReq = await this._helpers
-                    //    .sendPostRequestToNewRoute('/api/event/create', Object(result).event, req.headers.authorization);
-                    //if (resultReq) {
-                    //    await new MailService<T>().sendMailToClient(result);
-                    // }
-                } catch (error) {
-                    res.send(500, { 'Error': error });
-                }
+            if (result && result._id) {
                 res.send(201, result);
             } else {
-                console.log('in errr');
                 res.send(500, { "Message": Object(result).name });
             }
         } catch (error) {
@@ -165,4 +150,3 @@ export abstract class CrudController<T extends Document> implements IController 
         }
     };
 };
-

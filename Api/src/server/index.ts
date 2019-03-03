@@ -79,16 +79,26 @@ export class ApiServer implements IHttpServer {
         //server.use(restifyPlugins.queryParser({ mapParams: true }));
 
         //this._restifyServer.use(checkAuth);
+
         this._restifyServer.use(restify.plugins.bodyParser({
-            mapParams: false,
+            mapParams: true,
         }));
+
+
+        // this._restifyServer.use(restify.plugins.serveStatic({
+        //     directory: '',
+        // }));
+
+
+
+        // this._restifyServer.use(restify.plugins.multipartBodyParser());
 
 
         // this._restifyServer.use(uploadFile);
 
 
         // this._restifyServer.use(restify.plugins.queryParser());
-        // this._restifyServer.use(restify.plugins.multipartBodyParser())
+        //
         // this._restifyServer.use(restify.plugins.fullResponse())
 
         /**
