@@ -15,25 +15,35 @@ export class MailService<T extends Document> {
             }
         });
 
-        const paText = Object(customerPayload).pa == true ? 'Ja, ist vorhanden. ' : 'Nein, ist nicht vorhanden. ';
+        const companyName = Object(customerPayload).companyName ? Object(customerPayload).companyName : 'keine Angabe';
+        const timeStart = Object(customerPayload).event.timeStart ? Object(customerPayload).event.timeStart : 'noch keine Angabe';
+        const timeEnd = Object(customerPayload).event.timeEnd ? Object(customerPayload).event.timeEnd : 'noch keine Angabe';
+        const comment = Object(customerPayload).event.comment ? Object(customerPayload).event.comment : 'noch keine Angabe';
+        const salary = Object(customerPayload).event.salary ? Object(customerPayload).event.salary : 'noch keine Angabe';
+        const paSystem = Object(customerPayload).event.paSystem == true ? 'Ja, ist vorhanden. ' : 'Nein, ist nicht vorhanden. ';
 
         const mailOptions = {
             from: process.env.MAIL_ADDRESS_GMAIL,
             to: process.env.MAIL_RECIPIENT,
-            subject: 'Anfrage von ' + Object(customerPayload).firstName + ' ' + Object(customerPayload).lastName + '(' + Object(customerPayload).companyName + ')' +
-                ' für Konzert in ' + Object(customerPayload).event.address.city + ' am: ' + Object(customerPayload).event.eventDate,
-            text: 'Hallo Freunde, wir haben eine Anfrage für ' + '"' + Object(customerPayload).event.eventName + '"' + 'erhalten.' + '\n\n Der Gig wäre am ' +
-            Object(customerPayload).event.eventDate + ' von  ' + Object(customerPayload).event.timeStart + ' bis ' + Object(customerPayload).event.timeEnd + '(' + (Object(customerPayload).event.timeEnd - Object(customerPayload).event.timeStart) +
-                ' Stunden' + ')' + ' im wunderschönen ' + 'Leipzig. \n\n\n' +
+            subject: 'Anfrage von ' + Object(customerPayload).firstName + ' ' + Object(customerPayload).lastName + '(' + companyName + ')' +
+                ' für ein Konzert in ' + Object(customerPayload).event.address.city + ' am: ' + Object(customerPayload).event.eventDate,
+
+            text: 'Hallo Freunde, wir haben eine Anfrage(' + Object(customerPayload).event.eventType + ') für die Veranstaltung ' + '"'
+                + Object(customerPayload).event.eventName + '"' + 'erhalten.' + '\n\n Der Gig wäre am ' +
+                Object(customerPayload).event.eventDate + ' von  ' + timeStart + ' bis '
+                + timeEnd
+                + '(' + (timeEnd - timeStart) +
+                ' Stunden' + ')' + ' im wunderschönen ' + Object(customerPayload).event.address.city + ' .' + '\n\n\n' +
+
+                
+                '******************************* \n' +
+                'Anmerkung vom Kunden:\n\t' + comment + '\n\n\n' +
 
                 '******************************* \n' +
-                'Anmerkung vom Kunden:\n\t' + Object(customerPayload).event.comment + '\n\n\n' +
+                'Gage gesamt beträgt:\n\t' + salary + '€' + '\n\n\n' +
 
                 '******************************* \n' +
-                'Gage gesamt beträgt:\n\t' + Object(customerPayload).event.salary + '€' + '\n\n\n' +
-
-                '******************************* \n' +
-                'PA vorhanden ?:\n\t' + paText + '\n\n\n' +
+                'PA vorhanden ?:\n\t' + paSystem + '\n\n\n' +
 
                 '******************************* \n' +
                 'Anfahrt zum Gig: \n\t' +
@@ -43,13 +53,13 @@ export class MailService<T extends Document> {
                 '******************************* \n' +
                 'Kontaktperson: \n\t' +
                 Object(customerPayload).firstName + ' ' + Object(customerPayload).lastName + '\n\t' +
-                Object(customerPayload).companyName + '\n\t' +
-                Object(customerPayload).companyName + '\n\t' +
-                Object(customerPayload).companyName + '\n\n\n' +
+                companyName + '\n\t' +
+                Object(customerPayload).mail + '\n\t' +
+                Object(customerPayload).phone + '\n\n\n' +
                 'Mit freundlichen Grüßen\n\n' +
                 'Up2Dance.eu'
-        
-        
+
+
         };
 
         return new Promise((resolve, reject) => {

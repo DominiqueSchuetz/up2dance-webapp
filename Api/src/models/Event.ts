@@ -17,6 +17,12 @@ class EventSchema extends Schema {
                 type: String,
                 trim: true,
             },
+            eventType: {
+                type: String,
+                required: true,
+                enum: ['Stadtfest', 'private Versanstaltung', 'Hochzeit', 'öffentliche Veranstaltung', 'sonstiges'],
+                default: 'sonstiges',
+            },
             paSystem: {
                 required: false,
                 type: Boolean,

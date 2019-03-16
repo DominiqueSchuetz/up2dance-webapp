@@ -1,6 +1,7 @@
 import { DatabaseConnection } from "../database/DatabaseConnection";
 import { IUser } from "./interfaces/IUser";
 import { Schema } from "mongoose";
+import * as MediaSchema from '../models/Media';
 const mongooseStringQuery = require('mongoose-string-query');
 const timestamps = require('mongoose-timestamp');
 
@@ -38,6 +39,16 @@ class UserSchema extends Schema {
                 required: true,
                 enum: ['drums', 'keys', 'bass', 'singer', 'guitar', 'musician'],
                 default: 'musician',
+            },
+            comment: {
+                type: String,
+                required: false,
+                trim: true
+            },
+            media: {
+                required: false,
+                type: Schema.Types.Mixed,
+                ref: MediaSchema
             }
         },
             { minimize: false },
