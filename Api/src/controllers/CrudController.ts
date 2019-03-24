@@ -1,6 +1,6 @@
 import { IController } from "./interfaces/IController";
 import { IHttpServer } from "../server/IHttpServer";
-import { Request, Response, Next } from "restify";
+import { Request, Response, Next, plugins } from "restify";
 import { Repository } from "../repository/Repository";
 require('dotenv').config();
 
@@ -42,6 +42,17 @@ export abstract class CrudController<T extends Document> implements IController 
          * Get a Item by id from database
          */
         httpServer.get('/api/' + this._routes + '/:id', this.getById.bind(this));
+
+
+        /**
+         * Get a Item by mediaName from local folder
+         */
+        //httpServer.get('/api/' + 'files' + '/', plugins.serveStatic({ directory: './public/uploads/others/', appendRequestPath: false }), this.test.bind(this));
+
+
+        // server.get('/public/*', // don't forget the `/*`
+        //     restify.plugins.serveStaticFiles('./documentation/v1')
+        // );
 
         /**
          * Update a registered Item
@@ -137,7 +148,7 @@ export abstract class CrudController<T extends Document> implements IController 
      * @param req 
      * @param res 
      */
-    private async remove(req: Request, res: Response): Promise<void> {
+    protected async remove(req: Request, res: Response): Promise<void> {
         try {
             const result = await this._repository.delete(req.params.id);
             if (result && Object(result).n == 1 && Object(result).ok == 1) {

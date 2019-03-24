@@ -150,12 +150,12 @@ export class Helpers<T extends Document> {
                     // Accepts only file sizes less or equal than 5 Mbit
                     const sizeMax = 1024 * 1024 * 5 >= req.files[key].size ? true : false;
                     const availableTypes = ['image/png', 'image/jpeg', 'application/pdf'];
-
+                    
                     if (req.files && availableTypes.indexOf(req.files[key].type) > -1 && sizeMax) {
 
                         if (req.files.hasOwnProperty(key)) {
 
-                            const pathToDisk: string = `${__dirname}/../../public/uploads/others/${req.files[key].name}`;
+                            const pathToDisk: string = `./public/uploads/others/${req.files[key].name}`;
 
                             renameSync(req.files[key].path, pathToDisk);
                             unlink(req.files[key].path, (err) => {

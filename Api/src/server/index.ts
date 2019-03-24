@@ -4,6 +4,7 @@ import { CONTROLLERS } from '../controllers/index';
 
 import * as restify from 'restify';
 import * as config from '../../config';
+import { server } from "spdy";
 
 export class ApiServer implements IHttpServer {
 
@@ -74,32 +75,13 @@ export class ApiServer implements IHttpServer {
             name: config.name
         });
 
-        //server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
-        //server.use(restifyPlugins.acceptParser(server.acceptable));
-        //server.use(restifyPlugins.queryParser({ mapParams: true }));
 
-        //this._restifyServer.use(checkAuth);
-
+        this._restifyServer.use(restify.plugins.acceptParser(this._restifyServer.acceptable));
+        this._restifyServer.use(restify.plugins.queryParser({ mapParams: true }));
         this._restifyServer.use(restify.plugins.bodyParser({
             mapParams: true,
         }));
 
-
-        // this._restifyServer.use(restify.plugins.serveStatic({
-        //     directory: '',
-        // }));
-
-
-
-        // this._restifyServer.use(restify.plugins.multipartBodyParser());
-
-
-        // this._restifyServer.use(uploadFile);
-
-
-        // this._restifyServer.use(restify.plugins.queryParser());
-        //
-        // this._restifyServer.use(restify.plugins.fullResponse())
 
         /**
          * Init the Controller
