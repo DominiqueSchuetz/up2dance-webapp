@@ -1,6 +1,6 @@
 import { IHttpServer } from "./IHttpServer";
 import { RequestHandler, Server } from "restify";
-import { CONTROLLERS } from '../controllers/index';
+import { CONTROLLERS } from '../controllers';
 
 import * as restify from 'restify';
 import * as config from '../../config';

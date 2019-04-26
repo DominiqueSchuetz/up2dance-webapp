@@ -1,11 +1,11 @@
-import { IController } from "./interfaces/IController";
-import { IHttpServer } from "../server/IHttpServer";
+import { IController } from "../interfaces/IController";
+import { IHttpServer } from "../../server/IHttpServer";
 import { Request, Response, Next, plugins } from "restify";
-import { Repository } from "../repository/Repository";
+import { Repository } from "../../repository/Repository";
 require('dotenv').config();
 
 import { Document, Model } from "mongoose";
-import { checkAuth } from "../lib/auth-service";
+import { checkAuth } from "../../lib/auth-service";
 
 export abstract class CrudController<T extends Document> implements IController {
     private _model: Model<any>;
@@ -39,20 +39,24 @@ export abstract class CrudController<T extends Document> implements IController 
         httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
 
         /**
+        * Register a new User
+        */
+        httpServer.post('/api/' + this._routes + '/register', this.register.bind(this));
+
+        /**
+        * Sign in a registered User
+        */
+        httpServer.post('/api/' + this._routes + '/signIn', this.signIn.bind(this));
+
+        /**
+        * Sign in a registered User
+        */
+        httpServer.post('/api/' + this._routes + '/signOut', this.signOut.bind(this));
+
+        /**
          * Get a Item by id from database
          */
         httpServer.get('/api/' + this._routes + '/:id', this.getById.bind(this));
-
-
-        /**
-         * Get a Item by mediaName from local folder
-         */
-        //httpServer.get('/api/' + 'files' + '/', plugins.serveStatic({ directory: './public/uploads/others/', appendRequestPath: false }), this.test.bind(this));
-
-
-        // server.get('/public/*', // don't forget the `/*`
-        //     restify.plugins.serveStaticFiles('./documentation/v1')
-        // );
 
         /**
          * Update a registered Item
@@ -71,7 +75,7 @@ export abstract class CrudController<T extends Document> implements IController 
      * @param res 
      */
 
-    private async list(req: Request, res: Response, next?: Next): Promise<void> {
+    protected async list(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const allItems = await this._repository.list();
             if (allItems && (allItems instanceof Array)) {
@@ -93,7 +97,7 @@ export abstract class CrudController<T extends Document> implements IController 
      * @param req 
      * @param res 
      */
-    protected async getById(req: Request, res: Response): Promise<void> {
+    protected async getById(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const result = await this._repository.getById(req.params.id);
             if (result && result._id) {
@@ -130,7 +134,7 @@ export abstract class CrudController<T extends Document> implements IController 
      * @param req 
      * @param res 
      */
-    private async update(req: Request, res: Response): Promise<void> {
+    protected async update(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const result = await this._repository.update(req.params.id, req.body);
             if (result && result._id) {
@@ -148,7 +152,7 @@ export abstract class CrudController<T extends Document> implements IController 
      * @param req 
      * @param res 
      */
-    protected async remove(req: Request, res: Response): Promise<void> {
+    protected async remove(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const result = await this._repository.delete(req.params.id);
             if (result && Object(result).n == 1 && Object(result).ok == 1) {
@@ -160,4 +164,29 @@ export abstract class CrudController<T extends Document> implements IController 
             res.send(500, { "Error": "Error in delete()" });
         }
     };
+
+    /**
+    * 
+    * @param req 
+    * @param res 
+    * @param next 
+    */
+    protected async register(req: Request, res: Response, next?: Next): Promise<void> { };
+
+    /**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+    protected async signIn(req: Request, res: Response, next?: Next): Promise<void> { };
+
+    /**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+    protected async signOut(req: Request, res: Response, next?: Next): Promise<void> { };
+
 };

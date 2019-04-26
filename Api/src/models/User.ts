@@ -15,16 +15,21 @@ class UserSchema extends Schema {
         let schema = new Schema({
             firstName: {
                 required: true,
+                lowercase: true,
                 type: String,
                 trim: true,
             },
             lastName: {
                 required: true,
+                lowercase: true,
                 type: String,
                 trim: true,
             },
             email: {
                 required: true,
+                lowercase: true,
+                match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/],
+                maxlength: 30,
                 unique: true,
                 type: String,
                 trim: true,

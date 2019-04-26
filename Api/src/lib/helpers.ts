@@ -142,15 +142,20 @@ export class Helpers<T extends Document> {
     /**
      * uploadFileToFolder
      */
+
+    // TODO Entweder ein file oder ne url
     public uploadFileToFolder(req: any): Promise<string | boolean> {
+
         return new Promise((resolve, reject) => {
+
             if (req.files.hasOwnProperty('file')) {
+
                 for (var key in req.files) {
 
                     // Accepts only file sizes less or equal than 5 Mbit
                     const sizeMax = 1024 * 1024 * 5 >= req.files[key].size ? true : false;
                     const availableTypes = ['image/png', 'image/jpeg', 'application/pdf'];
-                    
+
                     if (req.files && availableTypes.indexOf(req.files[key].type) > -1 && sizeMax) {
 
                         if (req.files.hasOwnProperty(key)) {
@@ -166,11 +171,13 @@ export class Helpers<T extends Document> {
                             resolve(pathToDisk);
                         }
                     } else {
-                        reject('Error in uploading a file');
+                        reject('Sorry, we only support ==> png, jpeg and pdf.');
                     }
                 };
-            } else {
+            } else if (req.body.hasOwnProperty('url')) {
                 resolve(true);
+            } else {
+                reject('No valid key value ==> need either a url or a file');
             }
         });
     }

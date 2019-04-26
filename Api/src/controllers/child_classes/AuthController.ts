@@ -1,116 +1,59 @@
-import { IController } from "./interfaces/IController";
-import { IHttpServer } from "../server/IHttpServer";
+import { IController } from "../interfaces/IController";
+import { IHttpServer } from "../../server/IHttpServer";
 import { Request, Response, Next } from "restify";
-import { Repository } from "../repository/Repository";
-import { IUser } from "../models/interfaces/IUser";
-import { Helpers } from "../lib/helpers";
+import { CrudController } from "../abstract_class/AbstractCrudController";
+import { IUser } from "../../models/interfaces/IUser";
+import { Helpers } from "../../lib/helpers";
 import * as  mongoose from 'mongoose';
 require('dotenv').config();
 
-import * as UserSchema from '../models/User';
+export class AuthController extends CrudController<IUser> {
 
-export class AuthController implements IController {
+    private _helpers = new Helpers();
 
-    repository = new Repository<IUser>(UserSchema);
-    helpers = new Helpers();
 
-    /**
-     * 
-     * @param httpServer 
-     */
-    initialize(httpServer: IHttpServer): void {
-
-        /**
-         * Get all User in database
-         */
-        httpServer.get('/api/auth/all', this.list.bind(this));
-
-        /**
-         * Get a User by id from database
-         */
-        httpServer.get('/api/auth/:id', this.getById.bind(this));
-
-        /**
-         * Register a new User
-         */
-        httpServer.post('/api/auth/register', this.register.bind(this));
-
-        /**
-         * Sign in a registered User
-         */
-        httpServer.post('/api/auth/signIn', this.signIn.bind(this));
-
-        /**
-         * Sign out a registered User
-         */
-        httpServer.post('/api/auth/signOut', this.signIn.bind(this));
-
-        /**
-         * Update a registered User
-         */
-        httpServer.put('/api/auth/:id', this.update.bind(this));
-
-        /**
-         * Delete a registered User
-         */
-        httpServer.del('/api/auth/:id', this.remove.bind(this));
-    };
-
-    /**
-     * GET all User
+     /**
+     * GET all editors
      * @param req 
      * @param res 
      */
 
-    private async list(req: Request, res: Response, next?: Next): Promise<void> {
+    protected async list(req: Request, res: Response, next?: Next): Promise<void> {
+        // TODO Get a JWT Token
         try {
-            const allUser = await this.repository.list();
-            if (allUser.length > 0) {
-                res.send(200, { "Info": allUser });
+            const allItems = await this._repository.list();
+            if (allItems && (allItems instanceof Array)) {
+                if (allItems.length > 0) {
+                    res.send(201, { "Info": allItems });
+                } else {
+                    res.send(200, { "Info": "No items in database so far." });
+                }
             } else {
-                res.send(200, { "Info": "No User in database so far." });
+                res.send(404, { "Error": "Error in find all Items" });
             }
         } catch (error) {
-            res.send(500, { "Error": "Error in list()" });
+            res.send(404, { "Error": "Error in list()" });
         };
     };
 
     /**
-     * GET User by id
-     * @param req 
-     * @param res 
-     */
-    private async getById(req: Request, res: Response): Promise<void> {
-        try {
-            const result = await this.repository.getById(req.params.id);
-            if (result && result._id) {
-                res.send(200, { "Info": result });
-            } else {
-                res.send(404, { "Info": "Could not found any item by given id" });
-            }
-        } catch (error) {
-            res.send(500, { "Error": "Error in getById()" })
-        }
-    }
-
-    /**
      * 
      * @param req 
      * @param res 
      */
-    private async signIn(req: Request, res: Response): Promise<void> {
+    protected async signIn(req: Request, res: Response): Promise<void> {
         const email = typeof req.body.email == 'string' && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
         const password = typeof req.body.password == 'string' && req.body.password.trim().length > 5 ? req.body.password.trim() : false;
 
         if (email && password) {
             try {
-                const result = await this.repository.searchForItem(email);
+                const result = await this._repository.searchForItem(email);
                 if (result && result._id) {
                     try {
-                        const auth = await this.helpers.comparingPasswords(password, result.password);
+                        const auth = await this._helpers.comparingPasswords(password, result.password);
                         if (auth) {
                             try {
-                                const jwtToken = await this.helpers.createJwtToken(result);
+                                const jwtToken = await this._helpers.createJwtToken(result);
                                 if (jwtToken) {
                                     res.send('Hey ' + result.firstName + ' you are now logged in');
                                     console.log(jwtToken);
@@ -143,7 +86,7 @@ export class AuthController implements IController {
      * @param res 
      * @param next 
      */
-    private async register(req: Request, res: Response, next?: Next): Promise<void> {
+    protected async register(req: Request, res: Response, next?: Next): Promise<void> {
         const firstName = typeof req.body.firstName == 'string' && req.body.firstName.trim().length > 1 ? req.body.firstName.trim() : false;
         const lastName = typeof req.body.lastName == 'string' && req.body.lastName.trim().length > 1 ? req.body.lastName.trim() : false;
         const email = typeof req.body.email == 'string' && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
@@ -152,25 +95,25 @@ export class AuthController implements IController {
 
         if (firstName && lastName && email && password && secretKey) {
             try {
-                const passwordEnc = await this.helpers.encrypt(password);
+                const passwordEnc = await this._helpers.encrypt(password);
                 if (passwordEnc) {
                     req.body.password = passwordEnc;
                     try {
-                        const result = await this.repository.create(req.body);
+                        const result = await this._repository.create(req.body);
                         if (result && result._id) {
                             res.send(200, result);
                         } else {
                             res.send(200, { "Message": Object(result).name });
                         }
                     } catch (error) {
-                        res.send(404, { "Error": "Error in create()" });
-                    }
+                        res.send(404, error);
+                    };
                 }
             } catch (error) {
-                res.send(404, { "Error": "Error in encrypt()" });
-            }
+                res.send(401, error);
+            };
         } else {
-            res.send(200, 'No valid Customers.');
+            res.send(403, 'No valid Customers.');
         }
     };
 
@@ -179,7 +122,7 @@ export class AuthController implements IController {
      * @param req 
      * @param res 
      */
-    private async update(req: Request, res: Response): Promise<void> {
+    protected async update(req: Request, res: Response): Promise<void> {
         const id: mongoose.Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
         const jwtToken: string | boolean = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
         const firstName = typeof req.body.firstName == 'string' && req.body.firstName.trim().length > 1 ? req.body.firstName.trim() : false;
@@ -190,17 +133,17 @@ export class AuthController implements IController {
 
         if (id && jwtToken) {
             try {
-                const authResult = await this.helpers.authorizeItem(id, jwtToken);
+                const authResult = await this._helpers.authorizeItem(id, jwtToken);
                 if ((typeof authResult === 'boolean' && authResult === true) && (firstName && lastName && email && password || instrument)) {
                     try {
-                        const passwordEnc = await this.helpers.encrypt(password);
+                        const passwordEnc = await this._helpers.encrypt(password);
                         if (passwordEnc) {
                             req.body.password = passwordEnc;
                             try {
-                                const result = await this.repository.update(id, req.body);
+                                const result = await this._repository.update(id, req.body);
                                 if (result && result._id) {
                                     try {
-                                        const jwtToken = await this.helpers.createJwtToken(result);
+                                        const jwtToken = await this._helpers.createJwtToken(result);
                                         if (jwtToken) {
                                             res.send(200, { "Info": result });
                                             console.log(jwtToken);
@@ -219,40 +162,6 @@ export class AuthController implements IController {
                         }
                     } catch (error) {
                         res.send(404, { "Error": "Error in encrypt()" });
-                    }
-                } else {
-                    res.send(200, { "Info": "Could not authorized by given parameters", "JWT-message": Object(authResult).message });
-                }
-            } catch (error) {
-                res.send(404, { "Error": "Error in authorizeItem()" });
-            }
-        } else {
-            res.send(200, { "Info": "No valid id or token" });
-        }
-    };
-
-    /**
-     * 
-     * @param req 
-     * @param res 
-     */
-    private async remove(req: Request, res: Response): Promise<void> {
-        const id: mongoose.Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
-        const jwtToken: string | boolean = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
-
-        if (id && jwtToken) {
-            try {
-                const authResult = await this.helpers.authorizeItem(id, jwtToken);
-                if (typeof authResult === 'boolean' && authResult === true) {
-                    try {
-                        const result = await this.repository.delete(id);
-                        if (result && Object(result).n == 1 && Object(result).ok == 1) {
-                            res.send(200, { "Info": "Delete item successfully" });
-                        } else {
-                            res.send(200, { "Info": "Could not found any item by given id" });
-                        }
-                    } catch (error) {
-                        res.send(404, { "Error": "Error in delete()" });
                     }
                 } else {
                     res.send(200, { "Info": "Could not authorized by given parameters", "JWT-message": Object(authResult).message });

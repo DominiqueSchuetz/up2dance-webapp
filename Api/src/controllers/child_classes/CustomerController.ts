@@ -1,8 +1,8 @@
-import { CrudController } from "./CrudController";
-import { ICustomer } from "../models/interfaces/ICustomer";
+import { CrudController } from "../abstract_class/AbstractCrudController";
+import { ICustomer } from "../../models/interfaces/ICustomer";
 import { Request, Response, Next } from "restify";
-import { Helpers } from "../lib/helpers";
-import { MailService } from "../lib/mailService";
+import { Helpers } from "../../lib/helpers";
+import { MailService } from "../../lib/mailService";
 
 export class CustomerController extends CrudController<ICustomer> {
     private _helpers = new Helpers();
