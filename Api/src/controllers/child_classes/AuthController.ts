@@ -12,28 +12,32 @@ export class AuthController extends CrudController<IUser> {
     private _helpers = new Helpers();
 
 
-     /**
-     * GET all editors
-     * @param req 
-     * @param res 
-     */
+    /**
+    * GET all editors
+    * @param req 
+    * @param res 
+    */
 
     protected async list(req: Request, res: Response, next?: Next): Promise<void> {
-        // TODO Get a JWT Token
         try {
-            const allItems = await this._repository.list();
-            if (allItems && (allItems instanceof Array)) {
-                if (allItems.length > 0) {
-                    res.send(201, { "Info": allItems });
-                } else {
-                    res.send(200, { "Info": "No items in database so far." });
-                }
-            } else {
-                res.send(404, { "Error": "Error in find all Items" });
+            const isUserAuthorized = await this._helpers.verfiyJwtToken(req.headers.authorization);
+            if (isUserAuthorized) {
+                const allItems = await this._repository.list();
+                if (allItems && (allItems instanceof Array)) {
+                    if (allItems.length > 0) {
+                        allItems.map((item) => 
+                        {
+                            item.firstName, item.lastName
+                        });
+                        res.send(201, { "Info": allItems });
+                    } else {
+                        res.send(200, { "Info": "No items in database so far." });
+                    }
+                } 
             }
         } catch (error) {
-            res.send(404, { "Error": "Error in list()" });
-        };
+            res.send(401, error.message);
+        }
     };
 
     /**
