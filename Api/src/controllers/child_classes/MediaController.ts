@@ -14,11 +14,10 @@ export class MediaController extends CrudController<IMedia> {
      * @param res 
      * @param next 
      */
-    public async create(req: Request, res: Response, next: Next): Promise<void> {
+    public async create(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             if (!req.files) {
                 res.send(201, { "Info": "There is no a file, right?" });
-                next();
             } else {
                 const fileUploaded = await this._helpers.uploadFileToFolder(req);
                 if (fileUploaded) {
@@ -46,7 +45,7 @@ export class MediaController extends CrudController<IMedia> {
      * @param req 
      * @param res 
      */
-    protected async getById(req: Request, res: Response, next: Next): Promise<void> {
+    protected async getById(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const result = await this._repository.getById(req.params.id);
             if (result && result._id) {

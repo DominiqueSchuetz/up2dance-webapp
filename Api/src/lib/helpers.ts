@@ -53,19 +53,15 @@ export class Helpers<T extends Document> {
      * @param jwttoken which was sent by the client
      */
     public verfiyJwtToken(jwttoken: string): Promise<string | object> {
-        try {
-            return new Promise((resolve, reject) => {
-                const splitedToken: string = jwttoken.split(" ")[1];
-                const verifiedObject: string | object = verify(splitedToken, 'process.env.JWT_KEY')
-                if (typeof verifiedObject == 'object' && Object(verifiedObject).result._id) {
-                    resolve(verifiedObject);
-                } else {
-                    reject(false);
-                }
-            });
-        } catch (error) {
-            return error;
-        }
+        return new Promise((resolve, reject) => {
+            const splitedToken: string = jwttoken.split(" ")[1];
+            const verifiedObject: string | object = verify(splitedToken, 'process.env.JWT_KEY')
+            if (typeof verifiedObject === 'object' && Object(verifiedObject).result._id) {
+                resolve(verifiedObject);
+            } else {
+                throw new Error('Info: Could not verify the jwt token');
+            }
+        });
     };
 
     /**
