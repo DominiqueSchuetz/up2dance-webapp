@@ -12,12 +12,17 @@ class MediaSchema extends Schema {
     static get schema() {
 
         let schema = new Schema({
-            url: {
+            fileUrl: {
                 required: false,
                 type: String,
                 trim: true,
             },
             filePath: {
+                required: false,
+                type: String,
+                trim: true,
+            },
+            fileName: {
                 required: false,
                 type: String,
                 trim: true,

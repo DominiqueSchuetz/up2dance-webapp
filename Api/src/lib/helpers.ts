@@ -143,14 +143,18 @@ export class Helpers<T extends Document> {
      * uploadFileToFolder
      */
 
-    // TODO Entweder ein file oder ne url
-    public uploadFileToFolder(req: any): Promise<string | boolean> {
+    // // TODO Entweder ein file oder ne url
+    public uploadFileToFolder(req: any): Promise<object | boolean | string> {
 
         return new Promise((resolve, reject) => {
 
-            if (req.files.hasOwnProperty('file')) {
+            if (req.files.hasOwnProperty('filePath')) {
+
+
+
 
                 for (var key in req.files) {
+
 
                     // Accepts only file sizes less or equal than 5 Mbit
                     const sizeMax = 1024 * 1024 * 5 >= req.files[key].size ? true : false;
@@ -160,7 +164,7 @@ export class Helpers<T extends Document> {
 
                         if (req.files.hasOwnProperty(key)) {
 
-                            const pathToDisk: string = `./public/uploads/others/${req.files[key].name}`;
+                            const pathToDisk: string = `./uploads/${req.files[key].name}`;
 
                             renameSync(req.files[key].path, pathToDisk);
                             unlink(req.files[key].path, (err) => {
@@ -168,13 +172,19 @@ export class Helpers<T extends Document> {
                                     reject('Error in uploading a file')
                                 }
                             });
-                            resolve(pathToDisk);
+
+                            let fileName: string = req.files.filePath.name.split(".")[0];
+                            let fileObject = {
+                                fileName: fileName,
+                                filePath: pathToDisk
+                            }
+                            resolve(fileObject);
                         }
                     } else {
                         reject('Sorry, we only support ==> png, jpeg and pdf.');
                     }
                 };
-            } else if (req.body.hasOwnProperty('url')) {
+            } else if (req.body.hasOwnProperty('fileUrl')) {
                 resolve(true);
             } else {
                 reject('No valid key value ==> need either a url or a file');

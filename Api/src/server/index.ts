@@ -4,7 +4,6 @@ import { CONTROLLERS } from '../controllers';
 
 import * as restify from 'restify';
 import * as config from '../../config';
-import { server } from "spdy";
 
 export class ApiServer implements IHttpServer {
 
@@ -81,7 +80,7 @@ export class ApiServer implements IHttpServer {
         this._restifyServer.use(restify.plugins.bodyParser({
             mapParams: true,
         }));
-
+    
 
         /**
          * Init the Controller

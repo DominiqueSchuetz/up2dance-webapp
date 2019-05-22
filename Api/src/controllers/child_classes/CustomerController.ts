@@ -1,10 +1,10 @@
-import { CrudController } from "../abstract_class/AbstractCrudController";
+import { BaseController } from "../abstract_class/BaseController";
 import { ICustomer } from "../../models/interfaces/ICustomer";
 import { Request, Response, Next } from "restify";
 import { Helpers } from "../../lib/helpers";
 import { MailService } from "../../lib/mailService";
 
-export class CustomerController extends CrudController<ICustomer> {
+export class CustomerController extends BaseController<ICustomer> {
     private _helpers = new Helpers();
 
     /**
@@ -13,7 +13,7 @@ export class CustomerController extends CrudController<ICustomer> {
      * @param res 
      * @param next 
      */
-    protected async create(req: Request, res: Response, next?: Next): Promise<void> {
+    public async create(req: Request, res: Response, next?: Next): Promise<void> {
 
         let foundCustomerObject: ICustomer;
 

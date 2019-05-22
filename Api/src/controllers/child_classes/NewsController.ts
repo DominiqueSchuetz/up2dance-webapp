@@ -1,4 +1,4 @@
-import { CrudController } from "../abstract_class/AbstractCrudController";
+import { BaseController } from "../abstract_class/BaseController";
 import { INews } from "../../models/interfaces/INews";
 
-export class NewsController extends CrudController<INews> {};
+export class NewsController extends BaseController<INews> {};

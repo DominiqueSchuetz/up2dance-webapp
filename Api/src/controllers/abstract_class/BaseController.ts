@@ -1,16 +1,18 @@
 import { IController } from "../interfaces/IController";
 import { IHttpServer } from "../../server/IHttpServer";
-import { Request, Response, Next, plugins } from "restify";
+import { Request, Response, Next } from "restify";
 import { Repository } from "../../repository/Repository";
-require('dotenv').config();
-
 import { Document, Model } from "mongoose";
 import { checkAuth } from "../../lib/auth-service";
+import { readFile } from "fs";
 
-export abstract class CrudController<T extends Document> implements IController {
+require('dotenv').config();
+
+export abstract class BaseController<T extends Document | null> implements IController {
     private _model: Model<any>;
     private _routes: string;
     protected _repository: Repository<T>;
+
 
     /**
      * 
@@ -21,6 +23,7 @@ export abstract class CrudController<T extends Document> implements IController 
         this._routes = routes;
         this._repository = new Repository<T>(this._model);
     };
+
 
     /**
      * 
@@ -39,19 +42,26 @@ export abstract class CrudController<T extends Document> implements IController 
         httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
 
         /**
-        * Register a new User
-        */
-        httpServer.post('/api/' + this._routes + '/register', this.register.bind(this));
+         * Create a new Item with file reference
+         */
+        httpServer.post('/api/' + this._routes + '/create_by_reference', checkAuth, this.createByReference.bind(this));
 
-        /**
-        * Sign in a registered User
-        */
-        httpServer.post('/api/' + this._routes + '/signIn', this.signIn.bind(this));
+        if (this._routes === 'user') {
+            /**
+            * Register a new User
+            */
+            httpServer.post('/api/' + this._routes + '/register', this.register.bind(this));
 
-        /**
-        * Sign in a registered User
-        */
-        httpServer.post('/api/' + this._routes + '/signOut', this.signOut.bind(this));
+            /**
+            * Sign in a registered User
+            */
+            httpServer.post('/api/' + this._routes + '/signin', this.signIn.bind(this));
+
+            /**
+            * Sign in a registered User
+            */
+            httpServer.post('/api/' + this._routes + '/signout', this.signOut.bind(this));
+        }
 
         /**
          * Get a Item by id from database
@@ -69,12 +79,12 @@ export abstract class CrudController<T extends Document> implements IController 
         httpServer.del('/api/' + this._routes + '/:id', checkAuth, this.remove.bind(this));
     };
 
+
     /**
      * GET all editors
      * @param req 
      * @param res 
      */
-
     protected async list(req: Request, res: Response, next?: Next): Promise<void> {
         try {
             const allItems = await this._repository.list();
@@ -91,6 +101,7 @@ export abstract class CrudController<T extends Document> implements IController 
             res.send(404, { "Error": "Error in list()" });
         };
     };
+
 
     /**
      * GET editors by id
@@ -110,13 +121,37 @@ export abstract class CrudController<T extends Document> implements IController 
         }
     };
 
+
+    /**
+     * GET files by filename
+     * @param req 
+     * @param res 
+     */
+    protected async getByFilePath(req: Request, res: Response, next?: Next): Promise<void> {
+        try {
+            console.log(req.params);
+
+            readFile('./uploads/' + req.params.filepath, (err: NodeJS.ErrnoException, data: Buffer) => {
+                if (!err && data) {
+                    res.writeHead(201, { 'Content-Type': 'image/png' });
+                    res.end(data);
+                } else {
+                    res.send(501, err);
+                };
+            });
+        } catch (error) {
+            res.send(404, error);
+        }
+    };
+
+
     /**
      * 
      * @param req 
      * @param res 
      * @param next 
      */
-    protected async create(req: Request, res: Response, next?: Next): Promise<void> {
+    public async create(req: Request, res: Response, next?: Next): Promise<void | string> {
         try {
             const result: T = await this._repository.create(req.body);
             if (result && result._id) {
@@ -128,6 +163,7 @@ export abstract class CrudController<T extends Document> implements IController 
             res.send(500, { 'Error': error });
         }
     };
+
 
     /**
      * 
@@ -147,6 +183,7 @@ export abstract class CrudController<T extends Document> implements IController 
         }
     };
 
+
     /**
      * 
      * @param req 
@@ -165,6 +202,16 @@ export abstract class CrudController<T extends Document> implements IController 
         }
     };
 
+
+    /**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+    public async createByReference(req: Request, res: Response, next?: Next): Promise<void | string> {};
+
+
     /**
     * 
     * @param req 
@@ -172,6 +219,7 @@ export abstract class CrudController<T extends Document> implements IController 
     * @param next 
     */
     protected async register(req: Request, res: Response, next?: Next): Promise<void> { };
+
 
     /**
      * 
@@ -181,6 +229,7 @@ export abstract class CrudController<T extends Document> implements IController 
      */
     protected async signIn(req: Request, res: Response, next?: Next): Promise<void> { };
 
+
     /**
      * 
      * @param req 
@@ -189,4 +238,12 @@ export abstract class CrudController<T extends Document> implements IController 
      */
     protected async signOut(req: Request, res: Response, next?: Next): Promise<void> { };
 
+
+    /**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+    protected async uploads(req: Request, res: Response, next?: Next): Promise<void> { };
 };

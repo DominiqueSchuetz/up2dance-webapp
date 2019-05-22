@@ -1,6 +1,7 @@
 import { Document } from "mongoose";
 
 export interface IMedia extends Document {
-    url: string;
+    fileUrl: string;
     filePath: string;
+    fileName: string;
 };

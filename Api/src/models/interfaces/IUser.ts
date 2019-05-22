@@ -7,4 +7,5 @@ export interface IUser extends Document {
     password: string;
     instrument: string;
     comment: string;
+    mediaId: string;
 };
