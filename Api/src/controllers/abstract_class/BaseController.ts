@@ -42,12 +42,15 @@ export abstract class BaseController<T extends Document | null> implements ICont
         /**
          * Create a new Item
          */
-        httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
+        httpServer.post('/api/' + this._routes + '/create', this.create.bind(this));
 
-        /**
-         * Create a new Item and save a reference
-         */
-        httpServer.post('/api/' + this._routes + '/createByFileReference',checkAuth, this.createByFileReference.bind(this));
+        if (this._routes !== 'media') {
+            /**
+             * Create a new Item and save a reference
+             */
+            httpServer.post('/api/' + this._routes + '/createByFileReference', checkAuth, this.createByFileReference.bind(this));
+        }
+
 
         if (this._routes === 'user') {
             /**

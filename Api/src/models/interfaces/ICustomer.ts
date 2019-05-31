@@ -7,5 +7,5 @@ export interface ICustomer extends Document {
     companyName: string,
     mobil: string;
     mail: string;
-    //event: object;
+    refId?: string;
 };

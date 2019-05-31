@@ -1,11 +1,7 @@
 import { Request, Response, Next } from "restify";
 import { BaseController } from "../abstract_class/BaseController";
-import * as MediaSchema from '../../models/Media';
-import { IMedia } from "../../models/interfaces/IMedia";
 import { IUser } from "../../models/interfaces/IUser";
-import { Helpers } from "../../lib/helpers";
 import * as  mongoose from 'mongoose';
-import { MediaController } from "./MediaController";
 require('dotenv').config();
 
 export class UserController extends BaseController<IUser> {

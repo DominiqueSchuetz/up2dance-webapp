@@ -1,9 +1,7 @@
 import { DatabaseConnection } from "../database/DatabaseConnection";
 import { ICustomer } from "./interfaces/ICustomer";
 import { Schema } from "mongoose";
-
-import * as EventSchema from '../models/Event';
-import * as  mongoose from 'mongoose';
+import * as EventSchema from "../models/Event";
 
 const mongooseStringQuery = require('mongoose-string-query');
 const timestamps = require('mongoose-timestamp');
@@ -42,11 +40,11 @@ class CustomerSchema extends Schema {
                 type: String,
                 trim: true,
             },
-            event: {
+            refId: {
+                type: Schema.Types.ObjectId,
+                ref: EventSchema,
                 required: false,
-                type: mongoose.Schema.Types.Mixed,
-                ref: EventSchema
-            }
+            },
         },
             { minimize: false },
         );

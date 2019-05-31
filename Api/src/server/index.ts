@@ -1,6 +1,7 @@
 import { IHttpServer } from "./IHttpServer";
 import { RequestHandler, Server } from "restify";
 import { CONTROLLERS } from '../controllers';
+import { cpus, totalmem, hostname } from "os";
 
 import * as restify from 'restify';
 import * as config from '../../config';
@@ -63,7 +64,6 @@ export class ApiServer implements IHttpServer {
         console.log('\x1b[36m%s\x1b[0m', `Added route ${method.toLocaleUpperCase()}: ${url}`);
     };
 
-
     /**
      * Start the server
      * @param port 
@@ -74,13 +74,11 @@ export class ApiServer implements IHttpServer {
             name: config.name
         });
 
-
         this._restifyServer.use(restify.plugins.acceptParser(this._restifyServer.acceptable));
         this._restifyServer.use(restify.plugins.queryParser({ mapParams: true }));
         this._restifyServer.use(restify.plugins.bodyParser({
             mapParams: true,
         }));
-    
 
         /**
          * Init the Controller
@@ -90,7 +88,7 @@ export class ApiServer implements IHttpServer {
         });
 
         this._restifyServer.listen(port, () => {
-            console.log('\x1b[33m%s\x1b[0m', `${this._restifyServer.name} is up and running on port ${port}`);
+            console.log('\x1b[33m%s\x1b[0m',`Started server with ${cpus().length} clusters on Host ${hostname} => http://localhost:${this._restifyServer.address().port} for Process Id ${process.pid}` );
         });
     };
 };

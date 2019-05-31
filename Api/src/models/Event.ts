@@ -1,6 +1,6 @@
 import { DatabaseConnection } from "../database/DatabaseConnection";
 import { IEvent } from "./interfaces/IEvent";
-import { Schema, Types } from "mongoose";
+import { Schema } from "mongoose";
 const mongooseStringQuery = require('mongoose-string-query');
 const timestamps = require('mongoose-timestamp');
 
@@ -91,12 +91,7 @@ class EventSchema extends Schema {
                 required: true,
                 enum: [true, false],
                 default: 'true',
-            },
-            customerId: {
-                type: Types.ObjectId,
-                required: false,
-                trim: true,
-            },
+            }
         },
             { minimize: false },
         );
