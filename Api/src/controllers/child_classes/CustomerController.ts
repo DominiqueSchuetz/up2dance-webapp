@@ -5,8 +5,7 @@ import { Helpers } from "../../lib/helpers";
 import { MailService } from "../../lib/mailService";
 
 export class CustomerController extends BaseController<ICustomer> {
-    private _helpers = new Helpers();
-
+    
     /**
      * 
      * @param req 

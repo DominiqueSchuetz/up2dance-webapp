@@ -50,11 +50,10 @@ class UserSchema extends Schema {
                 required: false,
                 trim: true
             },
-            mediaId: {
-                required: false,
-                unique: true,
-                type: String,
-                trim: true,
+            refId: {
+                type: Schema.Types.ObjectId,
+                ref: MediaSchema,
+                required: false
             }
         },
             { minimize: false },

@@ -1,7 +1,6 @@
 import { Model, Document } from "mongoose";
 import { IWrite } from './interfaces/IWrite';
 import { IRead } from './interfaces/IRead';
-
 import * as mongoose from 'mongoose';
 
 export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
@@ -89,6 +88,25 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
             const createdItem: T = await this._model.create(item)
             if (createdItem) {
                 return createdItem
+            }
+        } catch (error) {
+            return error;
+        }
+    };
+
+    /**
+     * 
+     * @param item 
+     * @param mongooseModel 
+     * @param callback 
+     */
+    public async createWithCallback(item, mongooseModel?: Model<any>, callback?: (error: any, result) => any): Promise<any> {
+        try {
+            const createdItem = await mongooseModel.create(item);
+            if (createdItem) {
+                return callback(null, createdItem)
+            } else {
+                return callback('error', null);
             }
         } catch (error) {
             return error;

@@ -6,4 +6,5 @@ export interface INews extends Document {
     author: string;
     comment: string;
     hidden: boolean;
+    refId?: string;
 };

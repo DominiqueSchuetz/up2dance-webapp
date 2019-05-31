@@ -1,12 +1,9 @@
 import { BaseController } from "../abstract_class/BaseController";
 import { Request, Response, Next, plugins } from "restify";
 import { IMedia } from "../../models/interfaces/IMedia";
-import { Helpers } from "../../lib/helpers";
 import { readFile, unlinkSync } from "fs";
 
 export class MediaController extends BaseController<IMedia> {
-
-    private _helpers = new Helpers();
 
     /**
      * 
@@ -15,6 +12,7 @@ export class MediaController extends BaseController<IMedia> {
      * @param next 
      */
     public async create(req: Request, res: Response, next?: Next): Promise<void> {
+        
         try {
             if (!req.files) {
                 res.send(201, { "Info": "This is not a file, right?" });
@@ -23,56 +21,24 @@ export class MediaController extends BaseController<IMedia> {
                 if (Object.keys(fileUploaded).length != 0 && fileUploaded.constructor === Object) {
                     req.body.filePath = Object(fileUploaded).filePath;
                     req.body.fileName = Object(fileUploaded).fileName;
-                }
-                try {
-                    const result: IMedia = await this._repository.create(req.body);
-                    console.log(result);
-                    
-                    if (result && result._id) {
-                        res.send(201, result);
-                    } else {
-                        res.send(500, { "Message": Object(result).name });
+                    try {
+                        const result: IMedia = await this._repository.create(req.body);
+                        if (result && result._id) {
+                            res.send(201, result);
+                        } else {
+                            res.send(500, { "Message": Object(result).name });
+                        }
+                    } catch (error) {
+                        res.send(500, error);
                     }
-                } catch (error) {
-                    res.send(500, error);
                 }
-
             };
         } catch (error) {
             res.send(401, error);
         }
     };
 
-
-    /**
-     * 
-     * @param req 
-     * @param res 
-     * @param next 
-     */
-    public async createByReference(req: Request, res: Response, next?: Next): Promise<void | string> {
-        let result: IMedia;
-        try {
-            if (!req.files) {
-                res.send(201, { "Info": "There is no a file, right?" });
-            } else {
-                const fileUploaded = await this._helpers.uploadFileToFolder(req);
-                if (fileUploaded) {
-                    try {
-                        typeof fileUploaded === 'boolean' ? req.body : req.body.filePath = Object(fileUploaded).filePath, req.body.fileName = Object(fileUploaded).fileName;
-                        result = await this._repository.create(req.body);
-                    } catch (error) {
-                        return error;
-                    }
-                }
-            };
-            return result._id;
-        } catch (error) {
-            res.send(401, error);
-        }
-    }
-
-
+    
     /**
      * GET editors by id
      * @param req 
@@ -179,6 +145,30 @@ export class MediaController extends BaseController<IMedia> {
         }
     };
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

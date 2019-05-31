@@ -25,6 +25,7 @@ export class Helpers<T extends Document> {
         return new Promise((resolve, reject) => {
             const token: string = sign({ result }, 'process.env.JWT_KEY', { expiresIn: '1h' });
             if (token) {
+                console.log(token);
                 return resolve(token)
             } else {
                 reject(null);
@@ -150,12 +151,7 @@ export class Helpers<T extends Document> {
 
             if (req.files.hasOwnProperty('filePath')) {
 
-
-
-
                 for (var key in req.files) {
-
-
                     // Accepts only file sizes less or equal than 5 Mbit
                     const sizeMax = 1024 * 1024 * 5 >= req.files[key].size ? true : false;
                     const availableTypes = ['image/png', 'image/jpeg', 'application/pdf'];

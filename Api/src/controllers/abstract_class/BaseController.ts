@@ -5,12 +5,15 @@ import { Repository } from "../../repository/Repository";
 import { Document, Model } from "mongoose";
 import { checkAuth } from "../../lib/auth-service";
 import { readFile } from "fs";
+import { Helpers } from "../../lib/helpers";
+import * as MediaSchema from "../../models/Media";
 
 require('dotenv').config();
 
 export abstract class BaseController<T extends Document | null> implements IController {
     private _model: Model<any>;
     private _routes: string;
+    protected _helpers = new Helpers();
     protected _repository: Repository<T>;
 
 
@@ -42,9 +45,9 @@ export abstract class BaseController<T extends Document | null> implements ICont
         httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
 
         /**
-         * Create a new Item with file reference
+         * Create a new Item and save a reference
          */
-        httpServer.post('/api/' + this._routes + '/create_by_reference', checkAuth, this.createByReference.bind(this));
+        httpServer.post('/api/' + this._routes + '/createByFileReference',checkAuth, this.createByFileReference.bind(this));
 
         if (this._routes === 'user') {
             /**
@@ -164,7 +167,6 @@ export abstract class BaseController<T extends Document | null> implements ICont
         }
     };
 
-
     /**
      * 
      * @param req 
@@ -202,16 +204,6 @@ export abstract class BaseController<T extends Document | null> implements ICont
         }
     };
 
-
-    /**
-     * 
-     * @param req 
-     * @param res 
-     * @param next 
-     */
-    public async createByReference(req: Request, res: Response, next?: Next): Promise<void | string> {};
-
-
     /**
     * 
     * @param req 
@@ -238,12 +230,32 @@ export abstract class BaseController<T extends Document | null> implements ICont
      */
     protected async signOut(req: Request, res: Response, next?: Next): Promise<void> { };
 
-
     /**
-     * 
-     * @param req 
-     * @param res 
-     * @param next 
-     */
-    protected async uploads(req: Request, res: Response, next?: Next): Promise<void> { };
+    * 
+    * @param req 
+    * @param res 
+    * @param next 
+    */
+    protected async createByFileReference(req: Request, res: Response, next?: Next): Promise<any> {
+        if (!req.files) res.send(200, { "Info": "There is no file on req object" });
+        const fileUploaded = await this._helpers.uploadFileToFolder(req);
+
+        if (Object.keys(fileUploaded).length != 0 && fileUploaded.constructor === Object) {
+
+            let newFileReqObject = {
+                fileName: Object(fileUploaded).fileName,
+                filePath: Object(fileUploaded).filePath ? Object(fileUploaded).filePath : Object(fileUploaded).fileUrl
+            }
+
+            this._repository.createWithCallback(newFileReqObject, MediaSchema, async (error, respMediaObject) => {
+                req.body.refId = respMediaObject._id;
+                const finalResult = await this._repository.create(req.body)
+                if (finalResult && finalResult._id) {
+                    res.send(201, finalResult);
+                } else {
+                    res.send(500, { "Message": Object(finalResult).name });
+                }
+            });
+        }
+    };
 };

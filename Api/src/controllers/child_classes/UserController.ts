@@ -10,8 +10,6 @@ require('dotenv').config();
 
 export class UserController extends BaseController<IUser> {
 
-    private _helpers = new Helpers();
-
     /**
      * 
      * @param req 
@@ -31,7 +29,6 @@ export class UserController extends BaseController<IUser> {
             res.send(401, error.message);
         };
     };
-
 
     /**
      * 
@@ -56,16 +53,8 @@ export class UserController extends BaseController<IUser> {
                     } else {
                         res.send(403, Object(createUser).errmsg);
                     }
-                } else {
-                    const mediaController: BaseController<IMedia> = new MediaController('media', MediaSchema);
-                    const respMedia = await mediaController.createByReference(req, res, next);
-                    req.body.mediaId = respMedia;
-                    const createUser = await this._repository.create(req.body);
-                    if (createUser._id) {
-                        res.send(201, { Info: "Hey " + createUser.firstName + ", you are successfully registered" });
-                    } else {
-                        res.send(403, Object(createUser).errmsg);
-                    }
+                } else { 
+                    this.createByFileReference(req, res)
                 }
             } catch (error) {
                 res.send(401, error.message);
@@ -74,7 +63,6 @@ export class UserController extends BaseController<IUser> {
             res.send(403, 'No valid Customers');
         }
     };
-
 
     /**
      * 
@@ -167,4 +155,4 @@ export class UserController extends BaseController<IUser> {
             res.send(200, { "Info": "No valid id or token" });
         }
     };
-}
+};

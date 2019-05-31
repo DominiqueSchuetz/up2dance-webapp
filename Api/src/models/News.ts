@@ -1,6 +1,7 @@
 import { DatabaseConnection } from "../database/DatabaseConnection";
 import { INews } from "./interfaces/INews";
 import { Schema } from "mongoose";
+import * as MediaSchema from '../models/Media';
 const mongooseStringQuery = require('mongoose-string-query');
 const timestamps = require('mongoose-timestamp');
 
@@ -37,6 +38,11 @@ class NewsSchema extends Schema {
                 required: true,
                 enum: [true, false],
                 default: 'true',
+            },
+            refId: {
+                type: Schema.Types.ObjectId,
+                ref: MediaSchema,
+                required: false
             }
         },
             { minimize: false },

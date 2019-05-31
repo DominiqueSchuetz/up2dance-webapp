@@ -23,7 +23,7 @@ class MediaSchema extends Schema {
                 trim: true,
             },
             fileName: {
-                required: false,
+                required: true,
                 type: String,
                 trim: true,
             }
