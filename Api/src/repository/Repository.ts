@@ -1,4 +1,4 @@
-import { Model, Document } from "mongoose";
+import { Model, Document, Query } from "mongoose";
 import { IWrite } from './interfaces/IWrite';
 import { IRead } from './interfaces/IRead';
 import * as mongoose from 'mongoose';
@@ -135,9 +135,9 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
-    public async delete(id: mongoose.Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
+    public async delete(id: mongoose.Types.ObjectId, callback?: (error: any, result: T) => void): Promise<{ok?: number; n?:number}> {
         try {
-            const deletedItem: T = await this._model.deleteOne({ _id: id }).exec();
+            const deletedItem = await this._model.deleteOne({ _id: id }).exec();
             if (deletedItem) {
                 return deletedItem;
             }

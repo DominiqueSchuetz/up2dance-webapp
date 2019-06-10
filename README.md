@@ -33,9 +33,11 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo
 
-## Running the tests
+## Start the server in differnet modes
 
-Explain how to run the automated tests for this system
+ $: npm start
+ $: NODE_ENV=development npm start
+ $: NODE_ENV=production npm start
 
 ### Break down into end to end tests
 
@@ -44,6 +46,11 @@ Explain what these tests test and why
 ```
 Give an example
 ```
+
+### SSL
+
+For Generationg the SSL cert and key use:
+$: openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
 
 ### And coding style tests
 

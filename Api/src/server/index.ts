@@ -1,7 +1,8 @@
 import { IHttpServer } from "./IHttpServer";
 import { RequestHandler, Server } from "restify";
 import { CONTROLLERS } from '../controllers';
-import { cpus, totalmem, hostname } from "os";
+import { cpus, hostname } from "os";
+import { readFileSync } from "fs";
 
 import * as restify from 'restify';
 import * as config from '../../config';
@@ -9,6 +10,7 @@ import * as config from '../../config';
 export class ApiServer implements IHttpServer {
 
     private _restifyServer: Server;
+    private _restifyHttpsServer: Server;
 
     /**
      * 
@@ -62,16 +64,36 @@ export class ApiServer implements IHttpServer {
             }
         });
         console.log('\x1b[36m%s\x1b[0m', `Added route ${method.toLocaleUpperCase()}: ${url}`);
+        this._restifyHttpsServer[method](url, checkAuth, (req, res, next) => {
+            try {
+                requestHandler(req, res, next);
+                return next();
+            } catch (error) {
+                res.send(500, error);
+            }
+        });
+        console.log('\x1b[36m%s\x1b[0m', `Added route ${method.toLocaleUpperCase()}: ${url}`);
     };
 
     /**
      * Start the server
      * @param port 
      */
-    public start(port: number): void {
+    public start(port?: number): void {
+
+        const certificate = readFileSync(config.default.root + '/src/server/sslcert/cert.pem');
+        const key = readFileSync(config.default.root + '/src/server/sslcert/key.pem')
 
         this._restifyServer = restify.createServer({
-            name: config.name
+            name: config.default.name
+        });
+
+        this._restifyHttpsServer = restify.createServer({
+            name: config.default.name,
+            certificate,
+            key,
+            requestCert: true,
+            rejectUnauthorized: true
         });
 
         this._restifyServer.use(restify.plugins.acceptParser(this._restifyServer.acceptable));
@@ -88,7 +110,11 @@ export class ApiServer implements IHttpServer {
         });
 
         this._restifyServer.listen(port, () => {
-            console.log('\x1b[33m%s\x1b[0m',`Started server with ${cpus().length} clusters on Host ${hostname} => http://localhost:${this._restifyServer.address().port} for Process Id ${process.pid}` );
+            console.log('\x1b[33m%s\x1b[0m', `[${config.default.envName}]-mode Started http server with ${cpus().length} clusters on Host ${hostname} => http://localhost:${config.default.httpPort} for Process Id ${process.pid}`);
+        });
+
+        this._restifyHttpsServer.listen(config.default.httpsPort, () => {
+            console.log('\x1b[33m%s\x1b[0m', `[${config.default.envName}]-mode Started https server with ${cpus().length} clusters on Host ${hostname} => https://localhost:${config.default.httpsPort} for Process Id ${process.pid}`);
         });
     };
 };

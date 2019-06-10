@@ -1,15 +1,28 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
+        "lib": [
+            "es5",
+            "es6",
+            "esnext.asynciterable",
+            "esnext.array",
+            "esnext.symbol",
+            "es2015.collection",
+            "es7",
+            "es2017",
+            "es2018"
+        ],
+        "target": "esnext",
         "module": "commonjs",
-        "target": "es6",
+        "noImplicitAny": false,
         "allowJs": true,
         "checkJs": true,
-        "noImplicitAny": false,
         "sourceMap": true,
-        "listFiles": true,
+        "outDir": "./dist",
+        "noFallthroughCasesInSwitch": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "removeComments": true,
-        "preserveConstEnums": true,
         "noEmitOnError": true,
         "moduleResolution": "node",
         "types": [
