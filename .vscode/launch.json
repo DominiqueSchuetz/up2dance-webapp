@@ -10,9 +10,9 @@
             ],
             "runtimeArgs": [
                 "-r",
-                "${workspaceRoot}/Api/node_modules/ts-node/register"
+                "${workspaceRoot}/server/node_modules/ts-node/register"
             ],
-            "cwd": "${workspaceFolder}/Api",
+            "cwd": "${workspaceFolder}/server",
             "protocol": "inspector",
             "internalConsoleOptions": "openOnSessionStart"
         },
