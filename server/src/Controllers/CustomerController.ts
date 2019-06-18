@@ -18,7 +18,7 @@ export class CustomerController extends BaseController<ICustomer> {
         let foundCustomerObject: ICustomer;
         let result;
         const hasEvent = typeof req.body.event === 'object' ? true : false;
-        const { firstName, lastName, companyName, phone, mail, comment } = req.body;
+        const { firstName, lastName, companyName, phone, mail, commentCustomer } = req.body;
 
         try {
             foundCustomerObject = await this._repository.getByEmail(mail);
@@ -30,12 +30,21 @@ export class CustomerController extends BaseController<ICustomer> {
                         companyName,
                         phone,
                         mail,
-                        comment,
+                        commentCustomer
                     };
                     try {
                         result = await this._repository.create(newCustomerObject);
                         if (result) {
-                            successResponse(res, result);
+                            try {
+                                const emailServiceResult = await new MailService(result, this._repository);
+                                if (emailServiceResult) {
+                                    successResponse(res, result);
+                                } else {
+                                    badRequestResponse(res, 'Could not sent the email');
+                                }
+                            } catch (error) {
+                                internalServerErrorResponse(res, error);
+                            }
                         } else {
                             badRequestResponse(res, 'Could not create new customer without event object')
                         }
@@ -49,7 +58,7 @@ export class CustomerController extends BaseController<ICustomer> {
                         companyName,
                         phone,
                         mail,
-                        comment,
+                        commentCustomer,
                     };
                     try {
                         await this._repository.createWithCallback(req.body.event, EventSchema, async (error, eventResultObject) => {
@@ -58,7 +67,16 @@ export class CustomerController extends BaseController<ICustomer> {
                             try {
                                 result = await this._repository.create(newCustomerObject);
                                 if (result) {
-                                    successResponse(res, result);
+                                    try {
+                                        const emailServiceResult = await new MailService(result, this._repository);
+                                        if (emailServiceResult) {
+                                            successResponse(res, result);
+                                        } else {
+                                            badRequestResponse(res, 'Could not sent the email');
+                                        }
+                                    } catch (error) {
+                                        internalServerErrorResponse(res, error);
+                                    }
                                 } else {
                                     badRequestResponse(res, 'Could not create new customer with event object')
                                 }
@@ -75,7 +93,16 @@ export class CustomerController extends BaseController<ICustomer> {
                     try {
                         result = await this._repository.update(foundCustomerObject._id, foundCustomerObject);
                         if (result) {
-                            successResponse(res, result);
+                            try {
+                                const emailServiceResult = await new MailService(result, this._repository);
+                                if (emailServiceResult) {
+                                    successResponse(res, result);
+                                } else {
+                                    badRequestResponse(res, 'Could not sent the email');
+                                }
+                            } catch (error) {
+                                internalServerErrorResponse(res, error);
+                            }
                         } else {
                             badRequestResponse(res, 'Could not update customer without event object')
                         }
@@ -85,12 +112,21 @@ export class CustomerController extends BaseController<ICustomer> {
                 } else {
                     try {
                         await this._repository.createWithCallback(req.body.event, EventSchema, async (error, eventResultObject) => {
-                            //if (error) throw new Error(error);
+                            if (error) throw new Error(error);
                             foundCustomerObject.refId = eventResultObject._id;
                             try {
                                 result = await this._repository.update(foundCustomerObject._id, foundCustomerObject);
                                 if (result) {
-                                    successResponse(res, result);
+                                    try {
+                                        const emailServiceResult = await new MailService(result, this._repository);
+                                        if (emailServiceResult) {
+                                            successResponse(res, result);
+                                        } else {
+                                            badRequestResponse(res, 'Could not sent the email');
+                                        }
+                                    } catch (error) {
+                                        internalServerErrorResponse(res, error);
+                                    }
                                 } else {
                                     badRequestResponse(res, 'Could not update customer with event object')
                                 }
@@ -106,32 +142,5 @@ export class CustomerController extends BaseController<ICustomer> {
         } catch (error) {
             internalServerErrorResponse(res, error.message);
         }
-
-        //TODO Integrate it
-        if (typeof result!.refId === 'object') {
-            try {
-                const wholeObject = await this._repository.getByIdAndRefId(result._id);
-                if (wholeObject) {
-                    successResponse(res, wholeObject);
-                } else {
-                    badRequestResponse(res, 'Could not get object by refId')
-                }
-            } catch (error) {
-                internalServerErrorResponse(res, error)
-            }
-        } else {
-            console.log('hab keine');
-        }
-
-
-        // Send Mail
-        // try {
-        //     const sentMail = await new MailService<ICustomer>().sendMailToClient(req.body);
-        //     if (sentMail) {
-        //         res.send(200, { 'Info': 'Mail was sent to Mailclient' });
-        //     }
-        // } catch (error) {
-        //     res.send(500, { "Message": "There is an Error in function sendMailToClient() " });
-        // }
     };
 };

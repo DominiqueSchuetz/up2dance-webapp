@@ -66,7 +66,7 @@ class EventSchema extends Schema {
                     }
                 }
             },
-            comment: {
+            commentEvent: {
                 type: String,
                 required: false,
                 trim: true,

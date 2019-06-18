@@ -1,78 +1,146 @@
 const nodemailer = require('nodemailer');
-const result = require('dotenv').config();
 import { Document } from "mongoose";
-require('dotenv').config()
-
+import { Repository } from "../repository/Repository";
+import { Helpers } from "../lib/helpers";
 
 export class MailService<T extends Document> {
 
-    public sendMailToClient(customerPayload: T) {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.MAIL_ADDRESS_GMAIL,
-                pass: process.env.MAIL_PASSWORD_GMAIL
-            }
-        });
+    protected _repository: Repository<T>;
+    private eventObject;
+    private firstName;
+    private lastName;
+    private companyName;
+    private phone;
+    private mail;
+    private commentCustomer;
 
-        const companyName = Object(customerPayload).companyName ? Object(customerPayload).companyName : 'keine Angabe';
-        const timeStart = Object(customerPayload).event.timeStart ? Object(customerPayload).event.timeStart : 'noch keine Angabe';
-        const timeEnd = Object(customerPayload).event.timeEnd ? Object(customerPayload).event.timeEnd : 'noch keine Angabe';
-        const comment = Object(customerPayload).event.comment ? Object(customerPayload).event.comment : 'noch keine Angabe';
-        const salary = Object(customerPayload).event.salary ? Object(customerPayload).event.salary : 'noch keine Angabe';
-        const paSystem = Object(customerPayload).event.paSystem == true ? 'Ja, ist vorhanden. ' : 'Nein, ist nicht vorhanden. ';
+    private eventName;
+    private eventType;
+    private paSystem;
+    private payment;
+    private address;
+    private commentEvent;
+    private eventDate;
+    private timeStart;
+    private timeEnd;
+    private mailOptions;
 
-        const mailOptions = {
-            from: process.env.MAIL_ADDRESS_GMAIL,
-            to: process.env.MAIL_RECIPIENT,
-            subject: 'Anfrage von ' + Object(customerPayload).firstName + ' ' + Object(customerPayload).lastName + '(' + companyName + ')' +
-                ' für ein Konzert in ' + Object(customerPayload).event.address.city + ' am: ' + Object(customerPayload).event.eventDate,
+    constructor(result: T, _repository: Repository<T>) {
+        this._repository = _repository;
+        this.sendMailToClient(result);
+    };
 
-            text: 'Hallo Freunde, wir haben eine Anfrage(' + Object(customerPayload).event.eventType + ') für die Veranstaltung ' + '"'
-                + Object(customerPayload).event.eventName + '"' + 'erhalten.' + '\n\n Der Gig wäre am ' +
-                Object(customerPayload).event.eventDate + ' von  ' + timeStart + ' bis '
-                + timeEnd
-                + '(' + (timeEnd - timeStart) +
-                ' Stunden' + ')' + ' im wunderschönen ' + Object(customerPayload).event.address.city + ' .' + '\n\n\n' +
-
-                
-                '******************************* \n' +
-                'Anmerkung vom Kunden:\n\t' + comment + '\n\n\n' +
-
-                '******************************* \n' +
-                'Gage gesamt beträgt:\n\t' + salary + '€' + '\n\n\n' +
-
-                '******************************* \n' +
-                'PA vorhanden ?:\n\t' + paSystem + '\n\n\n' +
-
-                '******************************* \n' +
-                'Anfahrt zum Gig: \n\t' +
-                Object(customerPayload).event.address.street + ' ' + Object(customerPayload).event.address.streetNumber + '\n\t' +
-                Object(customerPayload).event.address.city + ' ' + Object(customerPayload).event.address.zipcode + '\n\n\n' +
-
-                '******************************* \n' +
-                'Kontaktperson: \n\t' +
-                Object(customerPayload).firstName + ' ' + Object(customerPayload).lastName + '\n\t' +
-                companyName + '\n\t' +
-                Object(customerPayload).mail + '\n\t' +
-                Object(customerPayload).phone + '\n\n\n' +
-                'Mit freundlichen Grüßen\n\n' +
-                'Up2Dance.eu'
-
-
-        };
-
-        return new Promise((resolve, reject) => {
-            transporter.sendMail(mailOptions, (err, info) => {
-                if (!err) {
-                    console.log('Mail sent ' + info.response);
-                    resolve(true);
-                    //callback('Mail was sent');
-                } else {
-                    console.log('Upps, something went wrong ' + err);
-                    reject(err);
+    public sendMailToClient(result: T): Promise<{}> {
+        const { _id, refId } = Object(result);
+        return new Promise(async (resolve, reject) => {
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.MAIL_ADDRESS_GMAIL,
+                    pass: process.env.MAIL_PASSWORD_GMAIL
                 }
             });
+
+            try {
+                if (refId) {
+
+                    this.eventObject = await this._repository.getByIdAndRefId(_id);
+                    let { firstName, lastName, companyName, phone, mail, commentCustomer } = this.eventObject;
+
+                    this.firstName = firstName;
+                    this.lastName = lastName
+                    this.companyName = companyName
+                    this.phone = phone;
+                    this.mail = mail;
+                    this.commentCustomer = commentCustomer;
+
+                    let { eventName, eventType, paSystem, payment, address, commentEvent, eventDate, timeStart, timeEnd } = this.eventObject!.refId;
+                    this.eventName = eventName;
+                    this.eventType = eventType;
+                    this.paSystem = paSystem;
+                    this.payment = payment;
+                    this.address = address;
+                    this.commentEvent = commentEvent;
+                    this.eventDate = eventDate;
+                    this.timeStart = timeStart;
+                    this.timeEnd = timeEnd;
+
+                    // Customer-Object
+                    this.firstName = this.firstName ? this.firstName : 'noch keine Angabe';
+                    this.lastName = this.lastName ? this.lastName : 'noch keine Angabe';
+                    this.companyName = this.companyName ? this.companyName : 'noch keine Angabe';
+                    this.phone = this.phone ? this.phone : 'noch keine Angabe';
+                    this.mail = this.mail ? this.mail : 'noch keine Angabe';
+                    this.commentCustomer = this.commentCustomer ? this.commentCustomer : 'noch keine Angabe';
+
+                    // Event-Object
+                    this.eventName = this.eventName ? this.eventName : 'noch keine Angabe';
+                    this.eventType = this.eventType ? this.eventType : 'noch keine Angabe';
+                    this.paSystem = this.paSystem ? 'Ja' : 'noch keine Angabe';
+                    this.payment = this.payment ? this.payment : 'noch keine Angabe';
+                    this.address = this.address ? this.address : 'noch keine Angabe';
+                    this.commentEvent = this.commentEvent ? this.commentEvent : 'noch keine Angabe';
+                    this.eventDate = this.eventDate ? this.eventDate : 'noch keine Angabe';
+                    this.timeStart = this.timeStart ? this.timeStart : 'noch keine Angabe';
+                    this.timeEnd = this.timeEnd ? this.timeEnd : 'noch keine Angabe';
+
+                    this.mailOptions = Helpers.customerWithEvent(
+                        this.firstName,
+                        this.lastName,
+                        this.companyName,
+                        this.phone,
+                        this.mail,
+                        this.commentCustomer,
+                        this.eventName,
+                        this.eventType,
+                        this.paSystem,
+                        this.payment,
+                        this.address,
+                        this.commentEvent,
+                        this.eventDate,
+                        this.timeStart,
+                        this.timeEnd
+                    );
+
+                } else {
+                    this.eventObject = result;
+                    let { firstName, lastName, companyName, phone, mail, commentCustomer } = this.eventObject;
+                    this.firstName = firstName;
+                    this.lastName = lastName
+                    this.companyName = companyName
+                    this.phone = phone;
+                    this.mail = mail;
+                    this.commentCustomer = commentCustomer;
+
+                    // Customer-Object
+                    this.firstName = this.firstName ? this.firstName : 'noch keine Angabe';
+                    this.lastName = this.lastName ? this.lastName : 'noch keine Angabe';
+                    this.companyName = this.companyName ? this.companyName : 'noch keine Angabe';
+                    this.phone = this.phone ? this.phone : 'noch keine Angabe';
+                    this.mail = this.mail ? this.mail : 'noch keine Angabe';
+                    this.commentCustomer = this.commentCustomer ? this.commentCustomer : 'noch keine Angabe';
+
+                    this.mailOptions = Helpers.customerWithoutEvent(
+                        this.firstName,
+                        this.lastName,
+                        this.companyName,
+                        this.phone,
+                        this.mail,
+                        this.commentCustomer);
+                };
+
+                transporter.sendMail(this.mailOptions, (err, info) => {
+                    if (!err) {
+                        console.log('Mail sent ' + info.response);
+                        return resolve(true);
+                    } else {
+                        console.log('Upps, something went wrong ' + err);
+                        return reject(err);
+                    }
+                });
+            } catch (error) {
+                return error;
+            };
         });
     };
 };

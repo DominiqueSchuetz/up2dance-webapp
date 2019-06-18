@@ -1,7 +1,8 @@
-import { BaseController } from "./BaseController";
-import { Request, Response, Next, plugins } from "restify";
-import { IMedia } from "../models/interfaces/IMedia";
 import { readFile, unlinkSync } from "fs";
+import { BaseController } from "./BaseController";
+import { Request, Response, Next } from "restify";
+import { IMedia } from "../models/interfaces/IMedia";
+import { badRequestResponse, internalServerErrorResponse, successResponse } from "../responses/Responses";
 
 export class MediaController extends BaseController<IMedia> {
 
@@ -12,33 +13,33 @@ export class MediaController extends BaseController<IMedia> {
      * @param next 
      */
     public async create(req: Request, res: Response, next?: Next): Promise<void> {
-        
+
         try {
             if (!req.files) {
-                res.send(201, { "Info": "This is not a file, right?" });
+                badRequestResponse(res, 'This is not a file, right?');
             } else {
                 const fileUploaded = await this._helpers.uploadFileToFolder(req);
-                if (Object.keys(fileUploaded).length != 0 && fileUploaded.constructor === Object) {
+                if (Object.keys(fileUploaded).length != 0 && typeof fileUploaded.constructor === 'object') {
                     req.body.filePath = Object(fileUploaded).filePath;
                     req.body.fileName = Object(fileUploaded).fileName;
                     try {
                         const result: IMedia = await this._repository.create(req.body);
                         if (result && result._id) {
-                            res.send(201, result);
+                            successResponse(res, result);
                         } else {
-                            res.send(500, { "Message": Object(result).name });
+                            badRequestResponse(res, 'Cannot create item');
                         }
                     } catch (error) {
-                        res.send(500, error);
-                    }
+                        internalServerErrorResponse(res, error);
+                    };
                 }
             };
         } catch (error) {
-            res.send(401, error);
-        }
+            internalServerErrorResponse(res, error);
+        };
     };
 
-    
+
     /**
      * GET editors by id
      * @param req 
@@ -51,22 +52,21 @@ export class MediaController extends BaseController<IMedia> {
                 if (result.filePath) {
                     readFile(result.filePath, (err: NodeJS.ErrnoException, data: Buffer) => {
                         if (!err && data) {
-                            res.writeHead(201, { 'Content-Type': 'image/png' });
+                            res.writeHead(200, { 'Content-Type': 'image/png' });
                             res.end(data);
                         } else {
-                            res.send(501, err)
+                            badRequestResponse(res, 'Cannot show item by id');
                         };
                     });
                 } else {
-                    res.send(200, result.fileUrl);
+                    successResponse(res, result.fileUrl);
                 }
             } else {
-                res.send(500, { "Message": Object(result).name });
-                next();
+                badRequestResponse(res, 'Cannot get item by id');
             }
         } catch (error) {
             res.send(500, error);
-        }
+        };
     };
 
 
@@ -78,7 +78,7 @@ export class MediaController extends BaseController<IMedia> {
     protected async update(req: Request, res: Response): Promise<void> {
         try {
             const mediaObjectInDatabase = await this._repository.getById(req.params.id);
-            if (mediaObjectInDatabase.filePath) {
+            if (mediaObjectInDatabase!.filePath) {
                 try {
                     unlinkSync(mediaObjectInDatabase.filePath);
                 } catch (error) {
@@ -145,93 +145,3 @@ export class MediaController extends BaseController<IMedia> {
         }
     };
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // server.get(null, '/favicon.ico', function(req, res, next) {
-    //     fs.readFile('./docs/media/img/favicon.ico', function(err, file) {
-    //       if (err) {
-    //         res.send(500);
-    //         return next();
-    //       }
-
-    //       res.send({
-    //         code: 200,
-    //         noEnd: true
-    //       });
-    //       res.write(file);
-    //       res.end();
-    //       return next();
-    //     });
-    //   }, log.w3c);
-
-    //   server.get(null, /^\/media\/css\/*/, function(req, res, next) {
-    //     fs.readFile('./docs' + req.url, 'utf8', function(err, file) {
-    //       if (err) {
-    //         res.send(500);
-    //         return next();
-    //       }
-
-    //       res.send({
-    //         code: 200,
-    //         noEnd: true
-    //       });
-    //       res.write(file);
-    //       res.end();
-    //       return next();
-    //     });
-    //   }, log.w3c);
-
-    //   server.get(null, /^\/media\/img\/*/, function(req, res, next) {
-    //     fs.readFile('./docs' + req.url, function(err, file) {
-    //       if (err) {
-    //         res.send(500);
-    //         return next();
-    //       }
-
-    //       res.send({
-    //         code: 200,
-    //         noEnd: true
-    //       });
-    //       res.write(file);
-    //       res.end();
-    //       return next();
-    //     });
-    //   }, log.w3c);

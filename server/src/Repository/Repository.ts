@@ -1,7 +1,6 @@
-import { Model, Document } from "mongoose";
+import { Model, Document, Types } from "mongoose";
 import { IWrite } from './interfaces/IWrite';
 import { IRead } from './interfaces/IRead';
-import * as mongoose from 'mongoose';
 
 export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
 
@@ -51,7 +50,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
-    public async getById(id: mongoose.Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
+    public async getById(id: Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
         try {
             const item: T = await this._model.findOne({ _id: id }).exec();
             if (item) {
@@ -67,7 +66,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
-    public async getByIdAndRefId(id: mongoose.Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
+    public async getByIdAndRefId(id: Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
         try {
             const item: T = await this._model.findOne({ _id: id }).populate('refId').exec();
             if (item) {
@@ -135,7 +134,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param item 
      * @param callback 
      */
-    public async update(id: mongoose.Types.ObjectId, item: T, callback?: (error: any, result: any) => void): Promise<T> {
+    public async update(id: Types.ObjectId, item: T, callback?: (error: any, result: any) => void): Promise<T> {
         try {
             const updatedItem: T = await this._model.findOneAndUpdate({ _id: id }, item, { new: true }).exec();
             if (updatedItem) {
@@ -151,7 +150,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
-    public async delete(id: mongoose.Types.ObjectId, callback?: (error: any, result: T) => void): Promise<{ ok?: number; n?: number }> {
+    public async delete(id: Types.ObjectId, callback?: (error: any, result: T) => void): Promise<{ ok?: number; n?: number }> {
         try {
             const deletedItem = await this._model.deleteOne({ _id: id }).exec();
             if (deletedItem) {

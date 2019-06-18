@@ -1,11 +1,9 @@
-import { Document } from "mongoose";
+import { Document, Types  } from "mongoose";
 import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
-import { request } from "http";
-import { renameSync, unlink, existsSync, mkdirSync } from "fs";
 import { environments } from "../../config";
+import { renameSync, unlink, existsSync, mkdirSync } from "fs";
 
-import * as  mongoose from 'mongoose';
 require('dotenv').config()
 
 export class Helpers<T extends Document> {
@@ -61,7 +59,7 @@ export class Helpers<T extends Document> {
             if (typeof verifiedObject === 'object' && Object(verifiedObject).result._id) {
                 resolve(verifiedObject);
             } else {
-                throw new Error('Info: Could not verify the jwt token');
+                reject(new Error('Info: Could not verify the jwt token'));
             }
         });
     };
@@ -71,76 +69,18 @@ export class Helpers<T extends Document> {
      * @param id 
      * @param jwtToken 
      */
-    public async authorizeItem(id: mongoose.Types.ObjectId, jwtToken: string): Promise<boolean> {
+    public async authorizeItem(id: Types.ObjectId, jwtToken: string): Promise<boolean> {
         try {
             const verifiedObject: string | object = await this.verfiyJwtToken(jwtToken);
-            if (typeof verifiedObject == 'object' && Object(verifiedObject).result._id === id) {
+            if (typeof verifiedObject === 'object' && Object(verifiedObject).result._id === id) {
                 return true;
             } else {
                 return false;
             }
         } catch (error) {
             return error;
-        }
+        };
     };
-
-    public sendPostRequestToNewRoute(path, payload, token): Promise<{}> {
-        return new Promise((resolve, reject) => {
-            let respondedEventObject = {};
-            let requestDetails = {
-                'protocol': 'http:',
-                'hostname': 'localhost',
-                'port': 8080,
-                'method': 'POST',
-                'path': path,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'authorization': token
-                },
-            }
-            // Send a request
-            let req = request(requestDetails, (res) => {
-
-                res.setEncoding('utf8');
-                res.on('data', (eventObject) => {
-                    respondedEventObject = JSON.parse(eventObject);
-                    resolve(respondedEventObject);
-                });
-                res.on('end', () => { });
-                //callback(res);
-            });
-            req.on('error', (e) => {
-                console.error(`problem with request: ${e.message}`);
-            });
-            // write data to request body
-            req.write(JSON.stringify(payload));
-            req.end();
-
-
-
-
-            // const req = request(requestDetails, (res) => {
-            //     console.log(`STATUS: ${res.statusCode}`);
-            //     console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-            //     res.setEncoding('utf8');
-            //     res.on('data', (chunk) => {
-            //         console.log(`BODY: ${chunk}`);
-            //     });
-            //     res.on('end', () => {
-            //         console.log('No more data in response.');
-            //     });
-            // });
-
-            // req.on('error', (e) => {
-            //     console.error(`problem with request: ${e.message}`);
-            // });
-
-            // // write data to request body
-            // req.write(JSON.stringify(payload));
-            // req.end();
-        });
-    }
-
 
     /**
      * 
@@ -185,5 +125,98 @@ export class Helpers<T extends Document> {
                 reject('No valid key value ==> need either a fileUrl or a filePath');
             }
         });
+    };
+
+    /**
+     * 
+     * @param firstName 
+     * @param lastName 
+     * @param companyName 
+     * @param phone 
+     * @param mail 
+     * @param commentCustomer 
+     */
+    public static customerWithoutEvent(firstName, lastName, companyName, phone, mail, commentCustomer) {
+        const mailOptions = {
+            from: process.env.MAIL_ADDRESS_GMAIL,
+            to: process.env.MAIL_RECIPIENT,
+            subject: 'Anfrage von ' + firstName + ' ' + lastName + '(' + companyName + ')',
+
+            text:
+                '******************************* \n' +
+                'Anmerkung vom Kunden:\n\t' + commentCustomer + '\n\n\n' +
+
+                '******************************* \n' +
+                'Kontaktperson: \n\t' +
+                firstName + ' ' + lastName + '\n\t' +
+                companyName + '\n\t' +
+                mail + '\n\t' +
+                phone + '\n\n\n' +
+                'Mit freundlichen Grüßen\n\n' +
+                'up2dance.eu'
+
+        };
+        return mailOptions;
+    };
+
+    /**
+     * 
+     * @param firstName 
+     * @param lastName 
+     * @param companyName 
+     * @param phone 
+     * @param mail 
+     * @param commentCustomer 
+     * @param eventName 
+     * @param eventType 
+     * @param paSystem 
+     * @param payment 
+     * @param address 
+     * @param commentEvent 
+     * @param eventDate 
+     * @param timeStart 
+     * @param timeEnd 
+     */
+    public static customerWithEvent(firstName, lastName, companyName, phone, mail, commentCustomer, eventName, eventType, paSystem, payment, address, commentEvent, eventDate, timeStart, timeEnd) {
+        const mailOptions = {
+            from: process.env.MAIL_ADDRESS_GMAIL,
+            to: process.env.MAIL_RECIPIENT,
+            subject: 'Anfrage von ' + firstName + ' ' + lastName + '(' + companyName + ')' +
+                ' für ein Konzert in ' + address.city + ' am: ' + eventDate,
+
+            text: 'Hallo Freunde, wir haben eine Anfrage (' + eventType + ') für die Veranstaltung ' + '"'
+                + eventName + '"' + 'erhalten.' + '\n\n Der Gig wäre am ' +
+                eventDate + ' von  ' + timeStart + ' bis '
+                + timeEnd
+                + '(' + (timeEnd - timeStart) +
+                ' Stunden' + ')' + ' im wunderschönen ' + address.city + ' .' + '\n\n\n' +
+
+                '******************************* \n' +
+                'Anmerkung vom Kunden:\n\t' + commentCustomer + '\n\n\n' +
+
+                '******************************* \n' +
+                'Gage gesamt beträgt:\n\t' + payment + '€' + '\n\n\n' +
+
+                '******************************* \n' +
+                'PA vorhanden ?:\n\t' + paSystem + '\n\n\n' +
+
+                '******************************* \n' +
+                'Anfahrt zum Gig: \n\t' +
+                address.street + ' ' + address.streetNumber + '\n\t' +
+                address.city + ' ' + address.zipcode + '\n\n\n' +
+
+                '******************************* \n' +
+                'Anmerkung zum Event:\n\t' + commentEvent + '\n\n\n' +
+
+                '******************************* \n' +
+                'Kontaktperson: \n\t' +
+                firstName + ' ' + lastName + '\n\t' +
+                companyName + '\n\t' +
+                mail + '\n\t' +
+                phone + '\n\n\n' +
+                'Mit freundlichen Grüßen\n\n' +
+                'up2dance.eu'
+        };
+        return mailOptions;
     };
 };

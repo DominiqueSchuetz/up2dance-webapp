@@ -40,7 +40,7 @@ class CustomerSchema extends Schema {
                 type: String,
                 trim: true,
             },
-            comment: {
+            commentCustomer: {
                 required: false,
                 type: String,
                 trim: true,
