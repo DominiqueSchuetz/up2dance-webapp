@@ -11,6 +11,8 @@ yarn-error.log*
 # Upload folder
 */**/uploads/
 
+*/**/static
+
 # dotenv environment variables file
 .env
 

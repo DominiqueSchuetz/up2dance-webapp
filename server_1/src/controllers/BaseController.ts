@@ -144,14 +144,13 @@ export abstract class BaseController<T extends Document> implements IController 
                         fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null
                     };
                     try {
-                        await this._repository.createWithCallback(newFileReqObject, MediaSchema, async (error, respondedMediaObject) => {
+                        return await this._repository.createWithCallback(newFileReqObject, MediaSchema, async (error, respondedMediaObject) => {
                             if (error) throw new Error(error);
                             req.body.refId = respondedMediaObject._id;
                             try {
                                 const finalResult = await this._repository.create(req.body);
                                 if (finalResult && finalResult._id) {
-                                    res.send(201, finalResult);
-
+                                    return finalResult;
                                 } else {
                                     res.send(500, { "Message": Object(finalResult).name });
                                 }

@@ -1,6 +1,7 @@
 import { Request, Response, Next } from "restify";
 import { BaseController } from "./BaseController";
 import { IUser } from "../models/interfaces/IUser";
+import { successResponse, badRequestResponse, internalServerErrorResponse } from "../responses/Responses";
 import * as  mongoose from 'mongoose';
 require('dotenv').config();
 
@@ -20,9 +21,9 @@ export class UserController extends BaseController<IUser> {
                 lastName: user.lastName,
                 email: user.email
             }));
-            mapToNames.length > 0 ? res.send(200, { "Info": mapToNames }) : res.send(200, { "Info": 'No Users in database' });
+            mapToNames.length > 0 ? successResponse(res, { "Info": mapToNames }) : badRequestResponse(res, 'No Users in database');
         } catch (error) {
-            res.send(401, error.message);
+            internalServerErrorResponse(res, error);
         };
     };
 
@@ -44,19 +45,28 @@ export class UserController extends BaseController<IUser> {
                 req.body.password = await this._helpers.encrypt(password);
                 if (!files) {
                     const createUser = await this._repository.create(req.body);
-                    if (createUser._id) {
-                        res.send(201, { Info: "Hey " + createUser.firstName + ", you are successfully registered" });
+                    if (createUser!._id) {
+                        successResponse(res, null, 'Hey ' + createUser.firstName + ' , you are successfully registered')
                     } else {
-                        res.send(403, Object(createUser).errmsg);
+                        badRequestResponse(res, 'Could not create item');
                     }
-                } else { 
-                    this.createByFileReference(req, res)
+                } else {
+                    try {
+                        const result = await this.createByFileReference(req, res);
+                        if (result!._id) {
+                            successResponse(res, result)
+                        } else {
+                            badRequestResponse(res, 'Could not create item with file');
+                        }
+                    } catch (error) {
+                        internalServerErrorResponse(res, error.message);
+                    };
                 }
             } catch (error) {
-                res.send(401, error.message);
+                internalServerErrorResponse(res, error.message);
             };
         } else {
-            res.send(403, 'No valid Customers');
+            badRequestResponse(res, 'No valid user');
         }
     };
 
@@ -73,24 +83,17 @@ export class UserController extends BaseController<IUser> {
             try {
                 const result = await this._repository.searchForItem(email);
                 const auth = await this._helpers.comparingPasswords(password, result.password);
-                console.log(auth);
-
                 if (auth) {
                     const jwtToken = await this._helpers.createJwtToken(result);
-                    if (jwtToken) {
-                        res.send('Hey ' + result.firstName + ', you are logged in successfully');
-                        console.log(jwtToken);
-                    } else {
-                        res.send(404, { "Info": "Could not create JWT-Token" });
-                    }
+                    typeof jwtToken === 'string' ? successResponse(res, { Info: 'Hey ' + result.firstName + ', you are logged in successfully', JWT_Token: jwtToken }) : badRequestResponse(res, 'Could not create jwt-token');
                 } else {
-                    res.send(404, { "Info": "Could not authenticate with given password" });
+                    badRequestResponse(res, 'Could not authenticate with given password');
                 }
             } catch (error) {
-                res.send(500, error.message);
+                internalServerErrorResponse(res, error);
             };
         } else {
-            res.send(200, 'No valid username or password.');
+            badRequestResponse(res, 'No valid username or password');
         }
     };
 
@@ -122,33 +125,28 @@ export class UserController extends BaseController<IUser> {
                                 if (result && result._id) {
                                     try {
                                         const jwtToken = await this._helpers.createJwtToken(result);
-                                        if (jwtToken) {
-                                            res.send(200, { "Info": result });
-                                            console.log(jwtToken);
-                                        } else {
-                                            res.send(404, { "Info": "Could not create JWT-Token" });
-                                        }
+                                        typeof jwtToken === 'string' ? successResponse(res, { Info: 'Hey ' + result.firstName + ', you are updated successfully', JWT_Token: jwtToken }) : badRequestResponse(res, 'Could not create jwt-token');
                                     } catch (error) {
-                                        res.send(404, { "Error": "Error in createJwtToken()" });
+                                        internalServerErrorResponse(res, error.message);
                                     }
                                 } else {
-                                    res.send(200, { "Info": "Could not found any item by given id" });
+                                    badRequestResponse(res, 'Could not update item with given id');
                                 }
                             } catch (error) {
-                                res.send(404, { "Error": "Error in update()" });
+                                internalServerErrorResponse(res, error.message);
                             }
                         }
                     } catch (error) {
-                        res.send(404, { "Error": "Error in encrypt()" });
+                        internalServerErrorResponse(res, error.message);
                     }
                 } else {
-                    res.send(200, { "Info": "Could not authorized by given parameters", "JWT-message": Object(authResult).message });
+                    badRequestResponse(res, 'Could not authorized by given parameters');
                 }
             } catch (error) {
-                res.send(404, { "Error": "Error in authorizeItem()" });
+                internalServerErrorResponse(res, error);
             }
         } else {
-            res.send(200, { "Info": "No valid id or token" });
+            badRequestResponse(res, 'No valid id or token');
         }
     };
 };

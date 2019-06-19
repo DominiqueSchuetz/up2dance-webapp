@@ -55,14 +55,14 @@ export class MediaController extends BaseController<IMedia> {
                             res.writeHead(200, { 'Content-Type': 'image/png' });
                             res.end(data);
                         } else {
-                            badRequestResponse(res, 'Cannot show item by id');
+                            badRequestResponse(res, 'Could not show item by id');
                         };
                     });
                 } else {
                     successResponse(res, result.fileUrl);
                 }
             } else {
-                badRequestResponse(res, 'Cannot get item by id');
+                badRequestResponse(res, 'Could not get item by id');
             }
         } catch (error) {
             res.send(500, error);
@@ -82,7 +82,7 @@ export class MediaController extends BaseController<IMedia> {
                 try {
                     unlinkSync(mediaObjectInDatabase.filePath);
                 } catch (error) {
-                    res.send(500, error);
+                    internalServerErrorResponse(res, error.message);
                 }
                 const fileUploaded = await this._helpers.uploadFileToFolder(req);
                 if (fileUploaded) {
@@ -90,28 +90,28 @@ export class MediaController extends BaseController<IMedia> {
                         typeof fileUploaded === 'boolean' ? req.body : req.body.filePath = fileUploaded;
                         const result: IMedia = await this._repository.update(req.params.id, req.body);
                         if (result && result._id) {
-                            res.send(201, result);
+                            successResponse(res, result);
                         } else {
-                            res.send(500, { "Message": Object(result).name });
+                            badRequestResponse(res, 'Could not update item by id');
                         }
                     } catch (error) {
-                        res.send(500, error);
+                        internalServerErrorResponse(res, error.message);
                     }
                 }
             } else {
                 try {
                     const result = await this._repository.update(req.params.id, req.body);
                     if (result && result._id) {
-                        res.send(201, result)
+                        successResponse(res, result);
                     } else {
-                        res.send(500, { "Message": Object(result).name });
+                        badRequestResponse(res, 'Could not update item by id');
                     }
                 } catch (error) {
-                    res.send(500, { 'Error': 'Upps, error in Item create function' });
+                    internalServerErrorResponse(res, error.message);
                 }
             }
         } catch (error) {
-            res.send(500, { 'Error': 'Upps, error in Item create function' });
+            internalServerErrorResponse(res, error.message);
         }
     };
 
@@ -122,7 +122,6 @@ export class MediaController extends BaseController<IMedia> {
      * @param res 
      */
     protected async remove(req: Request, res: Response): Promise<void> {
-
         try {
             const file = await this._repository.getById(req.params.id)
             const result = await this._repository.delete(req.params.id);
@@ -134,14 +133,14 @@ export class MediaController extends BaseController<IMedia> {
                 try {
                     unlinkSync(filePath);
                 } catch (error) {
-                    res.send(500, error);
-                }
-                res.send(201, { "Info": "Delete item successfully" });
+                    internalServerErrorResponse(res, error.message);
+                };
+                successResponse(res, null, 'Item successfully deleted');
             } else {
-                res.send(500, { "Info": "Could not found any item by given id" });
+                badRequestResponse(res, 'Could not get item by id');
             }
         } catch (error) {
-            res.send(500, { "Error": "Error in delete()" });
-        }
+            internalServerErrorResponse(res, error.message);
+        };
     };
 };

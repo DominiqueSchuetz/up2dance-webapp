@@ -1,6 +1,7 @@
 import { IHttpServer } from "./IHttpServer";
 import { RequestHandler, Server } from "restify";
 import { CONTROLLERS } from '../controllers';
+import * as socketIo from "socket.io";
 import { cpus, hostname } from "os";
 import { readFileSync } from "fs";
 
@@ -11,6 +12,9 @@ export class ApiServer implements IHttpServer {
 
     private _restifyServer: Server;
     private _restifyHttpsServer: Server;
+    private io: SocketIO.Server;
+
+
 
     /**
      * 
@@ -80,7 +84,6 @@ export class ApiServer implements IHttpServer {
      * @param port 
      */
     public start(port?: number): void {
-
         const certificate = readFileSync(config.default.root + '/src/routes/sslcert/cert.pem');
         const key = readFileSync(config.default.root + '/src/routes/sslcert/key.pem')
 
@@ -94,6 +97,14 @@ export class ApiServer implements IHttpServer {
             key,
             requestCert: true,
             rejectUnauthorized: true
+        });
+
+        // Implement Socket-IO as realtime server
+        this.io = socketIo(this._restifyServer);
+        this.io.on('connection', function (socket) {
+            socket.on('chat message', function (msg) {
+                this._io.emit('chat message', msg);
+            });
         });
 
         this._restifyServer.use(restify.plugins.acceptParser(this._restifyServer.acceptable));
