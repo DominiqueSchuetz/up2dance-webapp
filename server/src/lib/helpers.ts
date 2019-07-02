@@ -24,7 +24,6 @@ export class Helpers<T extends Document> {
         return new Promise((resolve, reject) => {
             const token: string = sign({ result }, 'process.env.JWT_KEY', { expiresIn: '1h' });
             if (token) {
-                console.log(token);
                 return resolve(token)
             } else {
                 reject(null);

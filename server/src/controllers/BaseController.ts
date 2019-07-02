@@ -5,8 +5,8 @@ import { Request, Response, Next } from "restify";
 import { checkAuth } from "../lib/auth-service";
 import { IHttpServer } from "../routes/IHttpServer";
 import { IController } from "./interfaces/IController";
-import { Repository } from "../repository/Repository";
-import { badRequestResponse, internalServerErrorResponse, successResponse } from "../Responses/Responses";
+import { Repository } from "../repository/repository";
+import { badRequestResponse, internalServerErrorResponse, successResponse } from "../responses/Responses";
 require('dotenv').config();
 
 export abstract class BaseController<T extends Document> implements IController {
@@ -34,15 +34,15 @@ export abstract class BaseController<T extends Document> implements IController 
 
         httpServer.get('/api/' + this._routes + '/all', this.list.bind(this));
         httpServer.get('/api/' + this._routes + '/:id', this.getById.bind(this));
-        httpServer.post('/api/' + this._routes + '/create', this.create.bind(this));
-        httpServer.put('/api/' + this._routes + '/:id', this.update.bind(this));
+        httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
+        httpServer.put('/api/' + this._routes + '/:id', checkAuth, this.update.bind(this));
         httpServer.del('/api/' + this._routes + '/:id', checkAuth, this.remove.bind(this));
 
         /**
          * save a media reference to model
          */
         if (this._routes !== 'media') {
-            httpServer.post('/api/' + this._routes + '/createByFileReference', this.createByFileReference.bind(this));
+            httpServer.post('/api/' + this._routes + '/createByFileReference', checkAuth, this.createByFileReference.bind(this));
         }
 
         /**
@@ -89,7 +89,7 @@ export abstract class BaseController<T extends Document> implements IController 
      * @param req 
      * @param res 
      */
-    public async create(req: Request, res: Response): Promise<void | string> {
+    protected async create(req: Request, res: Response): Promise<void | string> {
         try {
             const result: T = await this._repository.create(req.body);
             result && result._id ? successResponse(res, result) : badRequestResponse(res, 'Could not create item');
@@ -134,7 +134,7 @@ export abstract class BaseController<T extends Document> implements IController 
      * @param next 
      */
     protected async createByFileReference(req: Request, res: Response): Promise<any> {
-        if (typeof req.files === 'object') {
+        if (typeof req.files === 'object' || typeof req.body.fileUrl === 'string') {
             try {
                 const result = await this._helpers.uploadFileToFolder(req);
                 if (Object.keys(result)!.length != 0 && result!.constructor === Object) {
@@ -152,18 +152,18 @@ export abstract class BaseController<T extends Document> implements IController 
                                 if (finalResult && finalResult._id) {
                                     return finalResult;
                                 } else {
-                                    res.send(500, { "Message": Object(finalResult).name });
+                                    return new Error(Object(finalResult).message);
                                 }
                             } catch (error) {
-                                internalServerErrorResponse(res, error.message);
+                                return error;
                             }
                         });
                     } catch (error) {
-                        internalServerErrorResponse(res, error.message);
+                        return error;
                     }
                 }
             } catch (error) {
-                internalServerErrorResponse(res, error)
+                return error;
             };
         }
         else {

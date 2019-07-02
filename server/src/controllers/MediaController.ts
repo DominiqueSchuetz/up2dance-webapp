@@ -13,15 +13,18 @@ export class MediaController extends BaseController<IMedia> {
      * @param next 
      */
     public async create(req: Request, res: Response, next?: Next): Promise<void> {
-
         try {
             if (!req.files) {
                 badRequestResponse(res, 'This is not a file, right?');
             } else {
-                const fileUploaded = await this._helpers.uploadFileToFolder(req);
-                if (Object.keys(fileUploaded).length != 0 && typeof fileUploaded.constructor === 'object') {
-                    req.body.filePath = Object(fileUploaded).filePath;
-                    req.body.fileName = Object(fileUploaded).fileName;
+                const result = await this._helpers.uploadFileToFolder(req);
+                if (result) {
+                    if (Object(result).filePath) {
+                        req.body.filePath = Object(result).filePath;
+                    } else {
+                        req.body.fileUrl = Object(result).fileUrl;
+                    };
+                    req.body.fileName = Object(result).fileName;
                     try {
                         const result: IMedia = await this._repository.create(req.body);
                         if (result && result._id) {
@@ -30,20 +33,23 @@ export class MediaController extends BaseController<IMedia> {
                             badRequestResponse(res, 'Cannot create item');
                         }
                     } catch (error) {
-                        internalServerErrorResponse(res, error);
+                        internalServerErrorResponse(res, error.message);
                     };
+                } else {
+                    badRequestResponse(res, 'Could not upoad file');
                 }
             };
         } catch (error) {
-            internalServerErrorResponse(res, error);
+            internalServerErrorResponse(res, error.message);
         };
     };
 
 
     /**
-     * GET editors by id
+     * 
      * @param req 
      * @param res 
+     * @param next 
      */
     protected async getById(req: Request, res: Response, next?: Next): Promise<void> {
         try {
@@ -65,10 +71,9 @@ export class MediaController extends BaseController<IMedia> {
                 badRequestResponse(res, 'Could not get item by id');
             }
         } catch (error) {
-            res.send(500, error);
+            internalServerErrorResponse(res, error.message);
         };
     };
-
 
     /**
      * 
@@ -78,43 +83,35 @@ export class MediaController extends BaseController<IMedia> {
     protected async update(req: Request, res: Response): Promise<void> {
         try {
             const mediaObjectInDatabase = await this._repository.getById(req.params.id);
-            if (mediaObjectInDatabase!.filePath) {
-                try {
-                    unlinkSync(mediaObjectInDatabase.filePath);
-                } catch (error) {
-                    internalServerErrorResponse(res, error.message);
-                }
-                const fileUploaded = await this._helpers.uploadFileToFolder(req);
-                if (fileUploaded) {
+            if (mediaObjectInDatabase._id) {
+                const result = await this._helpers.uploadFileToFolder(req);
+                if (result) {
+                    if (Object(result).filePath) {
+                        req.body.filePath = Object(result).filePath;
+                    } else {
+                        req.body.fileUrl = Object(result).fileUrl;
+                    };
+                    req.body.fileName = Object(result).fileName;
                     try {
-                        typeof fileUploaded === 'boolean' ? req.body : req.body.filePath = fileUploaded;
                         const result: IMedia = await this._repository.update(req.params.id, req.body);
                         if (result && result._id) {
                             successResponse(res, result);
                         } else {
-                            badRequestResponse(res, 'Could not update item by id');
+                            badRequestResponse(res, 'Cannot create item');
                         }
                     } catch (error) {
                         internalServerErrorResponse(res, error.message);
-                    }
+                    };
+                } else {
+                    badRequestResponse(res, 'Could not upoad file');
                 }
             } else {
-                try {
-                    const result = await this._repository.update(req.params.id, req.body);
-                    if (result && result._id) {
-                        successResponse(res, result);
-                    } else {
-                        badRequestResponse(res, 'Could not update item by id');
-                    }
-                } catch (error) {
-                    internalServerErrorResponse(res, error.message);
-                }
+                badRequestResponse(res, 'Could not get item by given id');
             }
         } catch (error) {
             internalServerErrorResponse(res, error.message);
         }
     };
-
 
     /**
      * 

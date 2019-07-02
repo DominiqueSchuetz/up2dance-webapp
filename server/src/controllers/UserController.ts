@@ -1,8 +1,8 @@
 import { Request, Response, Next } from "restify";
 import { BaseController } from "./BaseController";
 import { IUser } from "../models/interfaces/IUser";
-import { successResponse, badRequestResponse, internalServerErrorResponse } from "../responses/Responses";
-import * as  mongoose from 'mongoose';
+import { successResponse, badRequestResponse, internalServerErrorResponse } from "../responses/responses";
+import { Types } from "mongoose";
 require('dotenv').config();
 
 export class UserController extends BaseController<IUser> {
@@ -23,7 +23,7 @@ export class UserController extends BaseController<IUser> {
             }));
             mapToNames.length > 0 ? successResponse(res, { "Info": mapToNames }) : badRequestResponse(res, 'No Users in database');
         } catch (error) {
-            internalServerErrorResponse(res, error);
+            internalServerErrorResponse(res, error.message);
         };
     };
 
@@ -39,16 +39,21 @@ export class UserController extends BaseController<IUser> {
         const password = typeof req.body.password == 'string' && req.body.password.trim().length > 5 ? req.body.password.trim() : false;
         const secretKey = typeof req.body.secretKey == 'string' && req.body.secretKey.trim().length === 18 && req.body.secretKey.trim() === process.env.SECRET_KEY ? true : false;
         const files = Object.keys(req.files).length ? true : false;
+        const fileUrl = typeof req.body.fileUrl == 'string' ? true : false
 
-        if (firstName && lastName && email && password && secretKey) {
-            try {
+        try {
+            if (firstName && lastName && email && password && secretKey) {
                 req.body.password = await this._helpers.encrypt(password);
-                if (!files) {
-                    const createUser = await this._repository.create(req.body);
-                    if (createUser!._id) {
-                        successResponse(res, null, 'Hey ' + createUser.firstName + ' , you are successfully registered')
-                    } else {
-                        badRequestResponse(res, 'Could not create item');
+                if (!files && !fileUrl) {
+                    try {
+                        const createUser = await this._repository.create(req.body);
+                        if (createUser!._id) {
+                            successResponse(res, null, 'Hey ' + createUser.firstName + ' , you are successfully registered')
+                        } else {
+                            badRequestResponse(res, 'Could not create item', 3, Object(createUser).message);
+                        }
+                    } catch (error) {
+                        internalServerErrorResponse(res, error.message);
                     }
                 } else {
                     try {
@@ -56,18 +61,18 @@ export class UserController extends BaseController<IUser> {
                         if (result!._id) {
                             successResponse(res, result)
                         } else {
-                            badRequestResponse(res, 'Could not create item with file');
+                            badRequestResponse(res, 'Could not create item with file', 3, result);
                         }
                     } catch (error) {
                         internalServerErrorResponse(res, error.message);
                     };
                 }
-            } catch (error) {
-                internalServerErrorResponse(res, error.message);
-            };
-        } else {
-            badRequestResponse(res, 'No valid user');
-        }
+            } else {
+                badRequestResponse(res, 'No valid user');
+            }
+        } catch (error) {
+            internalServerErrorResponse(res, error.message);
+        };
     };
 
     /**
@@ -90,7 +95,7 @@ export class UserController extends BaseController<IUser> {
                     badRequestResponse(res, 'Could not authenticate with given password');
                 }
             } catch (error) {
-                internalServerErrorResponse(res, error);
+                internalServerErrorResponse(res, error.message);
             };
         } else {
             badRequestResponse(res, 'No valid username or password');
@@ -104,7 +109,7 @@ export class UserController extends BaseController<IUser> {
      * @param res 
      */
     protected async update(req: Request, res: Response): Promise<void> {
-        const id: mongoose.Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
+        const id: Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
         const jwtToken: string | boolean = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
         const firstName = typeof req.body.firstName == 'string' && req.body.firstName.trim().length > 1 ? req.body.firstName.trim() : false;
         const lastName = typeof req.body.lastName == 'string' && req.body.lastName.trim().length > 1 ? req.body.lastName.trim() : false;
@@ -130,7 +135,7 @@ export class UserController extends BaseController<IUser> {
                                         internalServerErrorResponse(res, error.message);
                                     }
                                 } else {
-                                    badRequestResponse(res, 'Could not update item with given id');
+                                    badRequestResponse(res, 'Could not update item with given id', 3, Object(result).message);
                                 }
                             } catch (error) {
                                 internalServerErrorResponse(res, error.message);
@@ -144,6 +149,40 @@ export class UserController extends BaseController<IUser> {
                 }
             } catch (error) {
                 internalServerErrorResponse(res, error);
+            }
+        } else {
+            badRequestResponse(res, 'No valid id or token');
+        }
+    };
+
+    /**
+     * 
+     * @param req 
+     * @param res 
+     */
+    protected async remove(req: Request, res: Response): Promise<void> {
+        const id: Types.ObjectId = typeof req.params.id == 'string' && req.params.id != null ? req.params.id : false;
+        const jwtToken: string | boolean = typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
+
+        if (id && jwtToken) {
+            try {
+                const authResult = await this._helpers.authorizeItem(id, jwtToken);
+                if (typeof authResult === 'boolean' && authResult === true) {
+                    try {
+                        const result = await this._repository.delete(id);
+                        if (result && Object(result).n == 1 && Object(result).ok == 1) {
+                            successResponse(res, null, 'Delete item successfully');
+                        } else {
+                            badRequestResponse(res, 'Could not found any item by given id', 3, Object(result).message);
+                        }
+                    } catch (error) {
+                        internalServerErrorResponse(res, error.message);
+                    }
+                } else {
+                    badRequestResponse(res, 'Could not authorized by given parameters', 3, Object(authResult).message);
+                }
+            } catch (error) {
+                internalServerErrorResponse(res, error.message);
             }
         } else {
             badRequestResponse(res, 'No valid id or token');

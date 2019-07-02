@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 import { Document } from "mongoose";
-import { Repository } from "../repository/Repository";
+import { Repository } from "../repository/repository";
 import { Helpers } from "../lib/helpers";
 
 export class MailService<T extends Document> {
