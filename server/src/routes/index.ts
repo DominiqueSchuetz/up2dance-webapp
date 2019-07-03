@@ -3,7 +3,7 @@ import { RequestHandler, Server } from "restify";
 import { CONTROLLERS } from '../controllers';
 import * as socketIo from "socket.io";
 import { cpus, hostname } from "os";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 
 import * as restify from 'restify';
 import * as config from '../../config';
@@ -13,8 +13,6 @@ export class ApiServer implements IHttpServer {
     private _restifyServer: Server;
     private _restifyHttpsServer: Server;
     private io: SocketIO.Server;
-
-
 
     /**
      * 
@@ -84,8 +82,16 @@ export class ApiServer implements IHttpServer {
      * @param port 
      */
     public start(port?: number): void {
-        const certificate = readFileSync(config.default.root + '/src/routes/sslcert/cert.pem');
-        const key = readFileSync(config.default.root + '/src/routes/sslcert/key.pem')
+
+        let certificate = null;
+        let key = null;
+
+        if (!existsSync(config.default.root + '/src/routes/sslcert/cert.pem') && !existsSync(config.default.root + '/src/routes/sslcert/key.pem')) {
+            console.log('ssl file not found => /src/routes/sslcert/cert.pem');  
+        } else {
+             certificate = readFileSync(config.default.root + '/src/routes/sslcert/cert.pem');
+             key = readFileSync(config.default.root + '/src/routes/sslcert/key.pem')
+        }
 
         this._restifyServer = restify.createServer({
             name: config.default.name
