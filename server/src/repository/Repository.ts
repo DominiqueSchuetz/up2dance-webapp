@@ -82,9 +82,9 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param email 
      * @param callback 
      */
-    public async getByEmail(mail: string, callback?: (error: any, result: T) => void): Promise<T> {
+    public async getByEmail(email: string, callback?: (error: any, result: T) => void): Promise<T> {
         try {
-            const item: T = await this._model.findOne({ mail }).exec();
+            const item: T = await this._model.findOne({ email }).exec();
             if (item) {
                 return item;
             }
@@ -136,9 +136,26 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      */
     public async update(id: Types.ObjectId, item: T, callback?: (error: any, result: any) => void): Promise<T> {
         try {
-            const updatedItem: T = await this._model.findOneAndUpdate({ _id: id }, item, { new: true }).exec();
+            const updatedItem: T = await this._model.findOneAndUpdate({ _id: id }, { $set: item }, { new: true }).exec();
             if (updatedItem) {
                 return updatedItem;
+            }
+        } catch (error) {
+            return error;
+        }
+    };
+
+    /**
+     * 
+     * @param id 
+     * @param item 
+     * @param callback 
+     */
+    public async replace(id: Types.ObjectId, item: T, callback?: (error: any, result: any) => void): Promise<T> {
+        try {
+            const replaceedItem: T = await this._model.replaceOne({ _id: id }, item).exec();
+            if (replaceedItem) {
+                return replaceedItem;
             }
         } catch (error) {
             return error;

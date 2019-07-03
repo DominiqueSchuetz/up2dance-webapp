@@ -7,21 +7,54 @@ import { badRequestResponse, internalServerErrorResponse, successResponse } from
 
 export class CustomerController extends BaseController<ICustomer> {
 
+
     /**
-     * @override
+     * 
      * @param req 
      * @param res 
-     * @param next 
+     */
+    protected async list(req: Request, res: Response): Promise<void> {
+        try {
+            const result = await this._helpers.verfiyJwtToken(req.headers.authorization);
+            if (result) {
+                try {
+                    const allItems = await this._repository.list();
+                    if (allItems) {
+                        let mapToNames = allItems.map((customer) => ({
+                            firstName: customer.firstName,
+                            lastName: customer.lastName,
+                            email: customer.email
+                        }));
+                        mapToNames.length > 0 ? successResponse(res, { "Info": mapToNames }) : badRequestResponse(res, 'No Users in database');
+                    } else {
+                        badRequestResponse(res, 'Could not list items');
+                    }
+                } catch (error) {
+                    internalServerErrorResponse(res, error.message);
+                };
+            } else {
+                badRequestResponse(res, 'Could not authorize by given jwt token');
+            }
+        } catch (error) {
+            internalServerErrorResponse(res, error.message);
+        };
+    };
+
+    
+    /**
+     * 
+     * @param req 
+     * @param res 
      */
     public async create(req: Request, res: Response): Promise<void> {
 
         let foundCustomerObject: ICustomer;
         let result;
         const hasEvent = typeof req.body.event === 'object' ? true : false;
-        const { firstName, lastName, companyName, phone, mail, commentCustomer } = req.body;
+        const { firstName, lastName, companyName, phone, email, commentCustomer } = req.body;
 
         try {
-            foundCustomerObject = await this._repository.getByEmail(mail);
+            foundCustomerObject = await this._repository.getByEmail(email);
             if (!foundCustomerObject) {
                 if (!hasEvent) {
                     let newCustomerObject = <ICustomer>{
@@ -29,7 +62,7 @@ export class CustomerController extends BaseController<ICustomer> {
                         lastName,
                         companyName,
                         phone,
-                        mail,
+                        email,
                         commentCustomer
                     };
                     try {
@@ -57,7 +90,7 @@ export class CustomerController extends BaseController<ICustomer> {
                         lastName,
                         companyName,
                         phone,
-                        mail,
+                        email,
                         commentCustomer,
                     };
                     try {

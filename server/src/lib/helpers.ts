@@ -1,9 +1,9 @@
-import { Document, Types  } from "mongoose";
+import { Document, Types } from "mongoose";
 import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 import { environments } from "../../config";
+import { IMedia } from "../models/interfaces/IMedia";
 import { renameSync, unlink, existsSync, mkdirSync } from "fs";
-
 require('dotenv').config()
 
 export class Helpers<T extends Document> {
@@ -15,6 +15,7 @@ export class Helpers<T extends Document> {
     public encrypt(password: string): Promise<string> {
         return hash(password, 8);
     };
+
 
     /**
      * 
@@ -30,6 +31,7 @@ export class Helpers<T extends Document> {
             }
         });
     };
+
 
     /**
      * 
@@ -47,21 +49,27 @@ export class Helpers<T extends Document> {
         }
     };
 
+
     /**
      * 
      * @param jwttoken which was sent by the client
      */
     public verfiyJwtToken(jwttoken: string): Promise<string | object> {
         return new Promise((resolve, reject) => {
-            const splitedToken: string = jwttoken.split(" ")[1];
-            const verifiedObject: string | object = verify(splitedToken, 'process.env.JWT_KEY')
-            if (typeof verifiedObject === 'object' && Object(verifiedObject).result._id) {
-                resolve(verifiedObject);
+            if (jwttoken) {
+                const splitedToken: string = jwttoken!.split(" ")[1];
+                const verifiedObject: string | object = verify(splitedToken, 'process.env.JWT_KEY')
+                if (typeof verifiedObject === 'object' && Object(verifiedObject).result._id) {
+                    resolve(verifiedObject);
+                } else {
+                    reject(new Error('Info: Could not verify the jwt token'));
+                }
             } else {
-                reject(new Error('Info: Could not verify the jwt token'));
+                reject(new Error('Info: No JWT-Token was sent'));
             }
         });
     };
+
 
     /**
      * 
@@ -81,12 +89,13 @@ export class Helpers<T extends Document> {
         };
     };
 
+
     /**
      * 
      * @param req 
      */
-    public uploadFileToFolder(req: any): Promise<object> {
-        let newFileObject: { fileName: string; filePath?: string; fileUrl?: string } = null;
+    public uploadFileToFolder(req: any): Promise<IMedia> {
+        let newFileObject;
         return new Promise((resolve, reject) => {
             if (req.files.hasOwnProperty('filePath')) {
                 for (var key in req.files) {
@@ -106,7 +115,8 @@ export class Helpers<T extends Document> {
                             });
                             newFileObject = {
                                 fileName: req.body.fileName,
-                                filePath: pathToDisk
+                                filePath: pathToDisk,
+                                fileUrl: null
                             };
                             resolve(newFileObject);
                         }
@@ -117,7 +127,8 @@ export class Helpers<T extends Document> {
             } else if (req.body.hasOwnProperty('fileUrl')) {
                 newFileObject = {
                     fileName: req.body.fileName,
-                    fileUrl: req.body.fileUrl
+                    fileUrl: req.body.fileUrl,
+                    filePath: null,
                 };
                 resolve(newFileObject);
             } else {
@@ -125,6 +136,7 @@ export class Helpers<T extends Document> {
             }
         });
     };
+
 
     /**
      * 
@@ -157,6 +169,7 @@ export class Helpers<T extends Document> {
         };
         return mailOptions;
     };
+
 
     /**
      * 

@@ -32,9 +32,14 @@ export abstract class BaseController<T extends Document> implements IController 
      */
     initialize(httpServer: IHttpServer): void {
 
+        if (this._routes === 'customer') {
+            httpServer.post('/api/' + this._routes + '/create', this.create.bind(this));
+        } else {
+            httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
+        }
+
         httpServer.get('/api/' + this._routes + '/all', this.list.bind(this));
         httpServer.get('/api/' + this._routes + '/:id', this.getById.bind(this));
-        httpServer.post('/api/' + this._routes + '/create', checkAuth, this.create.bind(this));
         httpServer.put('/api/' + this._routes + '/:id', checkAuth, this.update.bind(this));
         httpServer.del('/api/' + this._routes + '/:id', checkAuth, this.remove.bind(this));
 
@@ -55,6 +60,7 @@ export abstract class BaseController<T extends Document> implements IController 
         }
     };
 
+
     /**
      * GET all items
      * @param req 
@@ -70,6 +76,7 @@ export abstract class BaseController<T extends Document> implements IController 
         };
     };
 
+
     /**
      * GET item by id
      * @param req 
@@ -83,6 +90,7 @@ export abstract class BaseController<T extends Document> implements IController 
             internalServerErrorResponse(res, error.message);
         }
     };
+
 
     /**
      * CREATE item
@@ -98,6 +106,7 @@ export abstract class BaseController<T extends Document> implements IController 
         }
     };
 
+
     /**
      * UPDATE item by id
      * @param req 
@@ -111,6 +120,7 @@ export abstract class BaseController<T extends Document> implements IController 
             internalServerErrorResponse(res, error.message);
         }
     };
+
 
     /**
      * DELETE item by id
@@ -126,6 +136,7 @@ export abstract class BaseController<T extends Document> implements IController 
             internalServerErrorResponse(res, error.message);
         }
     };
+
 
     /**
      * 
@@ -171,6 +182,7 @@ export abstract class BaseController<T extends Document> implements IController 
         }
     };
 
+
     /**
     * 
     * @param req 
@@ -178,6 +190,7 @@ export abstract class BaseController<T extends Document> implements IController 
     * @param next 
     */
     protected async register(req: Request, res: Response, next?: Next): Promise<void> { };
+
 
     /**
      * 
@@ -187,6 +200,7 @@ export abstract class BaseController<T extends Document> implements IController 
      */
     protected async signIn(req: Request, res: Response, next?: Next): Promise<void> { };
 
+
     /**
      * 
      * @param req 
@@ -195,35 +209,6 @@ export abstract class BaseController<T extends Document> implements IController 
      */
     protected async signOut(req: Request, res: Response, next?: Next): Promise<void> { };
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // /**

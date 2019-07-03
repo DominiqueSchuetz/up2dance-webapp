@@ -6,6 +6,7 @@ import { badRequestResponse, internalServerErrorResponse, successResponse } from
 
 export class MediaController extends BaseController<IMedia> {
 
+
     /**
      * 
      * @param req 
@@ -75,6 +76,7 @@ export class MediaController extends BaseController<IMedia> {
         };
     };
 
+
     /**
      * 
      * @param req 
@@ -84,16 +86,10 @@ export class MediaController extends BaseController<IMedia> {
         try {
             const mediaObjectInDatabase = await this._repository.getById(req.params.id);
             if (mediaObjectInDatabase._id) {
-                const result = await this._helpers.uploadFileToFolder(req);
-                if (result) {
-                    if (Object(result).filePath) {
-                        req.body.filePath = Object(result).filePath;
-                    } else {
-                        req.body.fileUrl = Object(result).fileUrl;
-                    };
-                    req.body.fileName = Object(result).fileName;
+                const fileuploadResult: IMedia = await this._helpers.uploadFileToFolder(req);
+                if (fileuploadResult) {
                     try {
-                        const result: IMedia = await this._repository.update(req.params.id, req.body);
+                        const result: IMedia = await this._repository.update(req.params.id, fileuploadResult);
                         if (result && result._id) {
                             successResponse(res, result);
                         } else {
@@ -113,6 +109,7 @@ export class MediaController extends BaseController<IMedia> {
         }
     };
 
+    
     /**
      * 
      * @param req 

@@ -26,6 +26,7 @@ const mediaController: BaseController<IMedia> = new MediaController('media', Med
 const eventController: BaseController<IEvent> = new EventController('event', EventSchema);
 const newsController: BaseController<INews> = new NewsController('news', NewsSchema);
 
+
 export const CONTROLLERS = [
     userController,
     customerController,

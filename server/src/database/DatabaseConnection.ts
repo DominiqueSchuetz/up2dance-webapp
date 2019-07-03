@@ -7,9 +7,11 @@ export class DatabaseConnection {
     static mongooseInstance: Connection | any;
     static mongooseConnection: Connection;
 
+    
     constructor() {
         DatabaseConnection.connectToMongoDB();
     };
+
 
     public static async connectToMongoDB(): Promise<Connection> {
         mongoose.Promise = Promise;

@@ -34,7 +34,7 @@ class CustomerSchema extends Schema {
                 type: String,
                 trim: true,
             },
-            mail: {
+            email: {
                 required: true,
                 unique: true,
                 type: String,
@@ -49,14 +49,14 @@ class CustomerSchema extends Schema {
                 type: Schema.Types.ObjectId,
                 ref: EventSchema,
                 required: false,
-            },
+            }
         },
             { minimize: false },
         );
 
         schema.plugin(mongooseStringQuery);
         // ISO-8601
-        schema.plugin(timestamps);
+        //schema.plugin(timestamps);
         return schema;
     };
 };
