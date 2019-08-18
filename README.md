@@ -26,7 +26,7 @@ $: npm i
 ### Run MongoDB with Docker
 
 ```
-$: docker run --name mongodb bitnami/mongodb:latest
+$: docker run -p 27017:27017 --name mongodb bitnami/mongodb:latest
 ```
 check => localhost:27017 for mongoDB connection
 

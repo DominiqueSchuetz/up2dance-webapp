@@ -1,0 +1,2 @@
+export const GET_CURRENT_EVENT = "GET_CURRENT_EVENT";
+export type GET_CURRENT_EVENT = typeof GET_CURRENT_EVENT;
