@@ -1,4 +1,4 @@
-# REST-Api
+# Full Stack Webapp
 
 This REST-Api is developed with basicly three code bases.
 
