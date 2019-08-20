@@ -1,14 +1,22 @@
-import { GET_CURRENT_EVENT } from "../constants";
-import { IEvent } from "../types";
+import { Dispatch } from "redux";
+import { GET_ALL_EVENTS_API } from "../api";
+import { GET_ALL_EVENTS, GET_CURRENT_EVENT } from "../constants";
+import { IResponseObject } from "../models";
+import { IGetAllEvents, IGetCurrentEvent } from "../types";
 
-interface IGetCurrentEvent {
-    type: GET_CURRENT_EVENT;
-    actualEvent: IEvent;
-}
+// Get all events
+export const getAllEvents = () => async (dispatch: Dispatch<IGetAllEvents>): Promise<IGetAllEvents> => {
+    const fetchGetAllEventsFromApi: Response = await fetch(GET_ALL_EVENTS_API);
+    const responseToJson: IResponseObject = await fetchGetAllEventsFromApi.json();
 
-export type ItemAction = IGetCurrentEvent;
+    return dispatch({
+        allEvents: responseToJson.data,
+        type: GET_ALL_EVENTS,
+    });
+};
 
-export const getCurrentEvent = (): ItemAction => ({
+// Get current events
+export const getCurrentEvent = (): IGetCurrentEvent => ({
     actualEvent: {},
     type: GET_CURRENT_EVENT,
 });

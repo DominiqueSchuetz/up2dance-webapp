@@ -1,13 +1,31 @@
-import React, { Fragment } from "react";
-import { IEvent } from "../../types";
+import React, { Fragment, useEffect } from "react";
+import { IEvent } from "../../models";
+import { IGetAllEvents } from "../../types";
 
-interface IEventListProps {
+interface IStateProps {
     events: IEvent[];
 }
 
-const EventList: React.FC<IEventListProps> = (props) => {
+interface IDispatchProps {
+    onGetAllEvents(): Promise<IGetAllEvents>;
+}
 
-    const { events } = props;
+const EventList: React.FC<IStateProps & IDispatchProps> = (props) => {
+
+    const { events, onGetAllEvents } = props;
+
+    useEffect(() => {
+        onGetAllEvents();
+    }, []);
+
+    const renderAllEvents = events.map((event: IEvent) =>
+        (<tr key={event._id}>
+            <td>{event.eventName}</td>
+            <td>{event.eventType}</td>
+            <td>{event.eventDate}</td>
+            <td>{event.timeStart}</td>
+            <td><a style={{ color: "white" }} href="#">{event.commentEvent}</a></td>
+        </tr>));
 
     return (
         <Fragment>
@@ -17,6 +35,23 @@ const EventList: React.FC<IEventListProps> = (props) => {
                     <div className="header-wrapper row valign-wrapper">
                         <div className="col s12 m8 offset-m2">
                             <h1>ALL EVENTS</h1>
+                            <Fragment>
+                                <table className="striped centered responsive-table">
+                                    <thead>
+                                        <tr style={{ color: "white" }}>
+                                            <th>KONZERT</th>
+                                            <th>ANLASS</th>
+                                            <th>DATUM</th>
+                                            <th>BEGINN</th>
+                                            <th>WEITERE INFOS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {renderAllEvents}
+                                    </tbody>
+                                </table>
+                            </Fragment>
+
                             <div id="news-section" className="content-top-margin" />
                             <span className="tagline">Show off your business in a whole new way.</span>
                             <button className="read-more"><i className="icon-caret-down" /></button>

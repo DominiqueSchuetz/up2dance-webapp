@@ -1,11 +1,12 @@
-import { ItemAction } from "../actions/Event.Action";
-import { GET_CURRENT_EVENT } from "../constants";
-import { IEvent } from "../types";
+import { GET_ALL_EVENTS } from "../constants";
+import { IEvent } from "../models";
+import { IGetAllEvents } from "../types";
 
-export const EventReducer = (state: IEvent | IEvent[], action: ItemAction) => {
+export const EventReducer =
+(state: IEvent[] = [], action: IGetAllEvents): IEvent[] => {
     switch (action.type) {
-        case GET_CURRENT_EVENT:
-            return state;
+        case GET_ALL_EVENTS:
+            return action.allEvents;
         default:
             return state;
     }

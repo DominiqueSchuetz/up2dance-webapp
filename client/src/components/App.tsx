@@ -1,17 +1,26 @@
 import React, { Fragment } from "react";
-import "./App.css";
-import { Counter } from "./Counter";
-import { EventList } from "./Event";
+import { Provider } from "react-redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import thunk from "redux-thunk";
+import { CounterContainer, EventContainer } from "../container";
+import { EventReducer } from "../reducers";
 import { Header } from "./Header";
-import logo from "./logo.svg";
+
+const reduxStore = createStore(combineReducers({ EventReducer }), {}, applyMiddleware(thunk));
+
+reduxStore.subscribe(() => console.log("i'm your redux store", reduxStore.getState()));
 
 const App: React.FC = () => {
   return (
-    <Fragment>
-      <Header />
-      <Counter />
-      <EventList events={[]} />
-    </Fragment>
+    <Provider store={reduxStore}>
+      <Fragment>
+        <Header />
+        <main>
+          <CounterContainer />
+          <EventContainer />
+        </main>
+      </Fragment>
+    </Provider>
   );
 };
 

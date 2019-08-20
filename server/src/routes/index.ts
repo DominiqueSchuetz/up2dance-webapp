@@ -4,6 +4,8 @@ import { CONTROLLERS } from '../controllers';
 import * as socketIo from "socket.io";
 import { cpus, hostname } from "os";
 import { readFileSync, existsSync } from "fs";
+import { Options } from "restify-cors-middleware";
+import * as corsMiddleware from "restify-cors-middleware";  
 
 import * as restify from 'restify';
 import * as config from '../../config';
@@ -87,10 +89,10 @@ export class ApiServer implements IHttpServer {
         let key = null;
 
         if (!existsSync(config.default.root + '/src/routes/sslcert/cert.pem') && !existsSync(config.default.root + '/src/routes/sslcert/key.pem')) {
-            console.log('ssl file not found => /src/routes/sslcert/cert.pem');  
+            console.log('ssl file not found => /src/routes/sslcert/cert.pem');
         } else {
-             certificate = readFileSync(config.default.root + '/src/routes/sslcert/cert.pem');
-             key = readFileSync(config.default.root + '/src/routes/sslcert/key.pem')
+            certificate = readFileSync(config.default.root + '/src/routes/sslcert/cert.pem');
+            key = readFileSync(config.default.root + '/src/routes/sslcert/key.pem')
         }
 
         this._restifyServer = restify.createServer({
@@ -113,6 +115,13 @@ export class ApiServer implements IHttpServer {
             });
         });
 
+        // Cors middleware
+        const options: Options = {origins: ["http://localhost:3000"], allowHeaders: [], exposeHeaders:[]}
+        const cors = corsMiddleware(options);
+
+        this._restifyServer.pre(cors.preflight);
+        this._restifyServer.use(cors.actual);
+        
         this._restifyServer.use(restify.plugins.acceptParser(this._restifyServer.acceptable));
         this._restifyServer.use(restify.plugins.queryParser({ mapParams: true }));
         this._restifyServer.use(restify.plugins.bodyParser({

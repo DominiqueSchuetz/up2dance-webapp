@@ -1,19 +1,39 @@
 import React, { Fragment } from "react";
+import { IEvent } from "../../models";
+import { IGetCurrentEvent } from "../../types";
 
-const Counter: React.FC = () => {
+interface IStateProps {
+    events: IEvent;
+}
+
+interface IDispatchProps {
+    onGetAllEvents(): any;
+    onGetCurrentEvent(): IGetCurrentEvent;
+}
+
+const Counter: React.FC<IStateProps & IDispatchProps> = (props) => {
+
+    const { events, onGetCurrentEvent, onGetAllEvents } = props;
+
+    const handleClick = () => {
+        console.log(events);
+        // onGetCurrentEvent();
+        onGetAllEvents();
+    };
 
     return (
         <Fragment>
             <article>
                 <div className="circle-reveal-wrapper header light">
-                    <div className="circle-background white"/>
+                    <div className="circle-background white" />
                     <div className="header-wrapper row valign-wrapper">
                         <div className="col s12 m8 offset-m2">
                             <h1>NEXT EVENT</h1>
                             <h3>IN</h3>
                             <h2>12d : 2h : 30sec</h2>
+                            <button className="" onClick={handleClick}>Click me</button>
                             <span className="tagline">Show off your business in a whole new way.</span>
-                            <button className="read-more"><i className="icon-caret-down"/></button>
+                            <button className="read-more"><i className="icon-caret-down" /></button>
                         </div>
                     </div>
                 </div>
