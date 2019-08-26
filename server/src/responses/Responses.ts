@@ -6,14 +6,19 @@ import { Response } from "restify";
  * @param message 
  * @param data 
  */
-export const successResponse = (res: Response, data: unknown = null, message: string = 'success', error_code: number = 0) => {
-    res.status(200);
-    res.json({
-        success: true,
-        error_code,
-        message,
-        data
-    });
+export const successResponse = (
+	res: Response,
+	data: unknown = null,
+	message: string = "success",
+	error_code: number = 0
+) => {
+	res.status(200);
+	res.json({
+		success: true,
+		error_code,
+		message,
+		data
+	});
 };
 
 /**
@@ -23,13 +28,13 @@ export const successResponse = (res: Response, data: unknown = null, message: st
  * @param data 
  */
 export const badRequestResponse = (res: Response, message: string, error_code: number = 3, data: unknown = null) => {
-    res.status(400);
-    res.json({
-        success: false,
-        message,
-        error_code,
-        data
-    });
+	res.status(400);
+	res.json({
+		success: false,
+		message,
+		error_code,
+		data
+	});
 };
 
 /**
@@ -38,12 +43,17 @@ export const badRequestResponse = (res: Response, message: string, error_code: n
  * @param message 
  * @param data 
  */
-export const internalServerErrorResponse = (res: Response, message: string, error_code: number = 5, data: unknown = null) => {
-    res.status(500);
-    res.json({
-        success: false,
-        message,
-        error_code,
-        data
-    });
+export const internalServerErrorResponse = (
+	res: Response,
+	message: string,
+	error_code: number = 5,
+	data: unknown = null
+) => {
+	res.status(500);
+	res.json({
+		success: false,
+		message,
+		error_code,
+		data
+	});
 };

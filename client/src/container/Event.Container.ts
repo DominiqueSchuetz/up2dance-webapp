@@ -4,17 +4,17 @@ import { EventList } from "../components/Event";
 import { IEvent } from "../models";
 
 interface IState {
-    EventReducer: IEvent[];
+	EventReducer: IEvent[];
 }
 
 export const mapStateToProps = (state: IState) => {
-    return {
-        events: state.EventReducer,
-    };
+	return {
+		events: state.EventReducer
+	};
 };
 
 export const mapDispatchToProps = {
-    onGetAllEvents: getAllEvents,
+	onGetAllEvents: getAllEvents
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventList);
