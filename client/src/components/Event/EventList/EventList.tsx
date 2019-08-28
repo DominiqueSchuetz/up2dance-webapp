@@ -3,8 +3,6 @@ import { Button, Modal } from "react-materialize";
 import { IEvent } from "../../../models";
 import { IGetAllEvents } from "../../../types";
 import EventForm from "../EventForm/EventForm";
-import { Datepicker } from "materialize-css";
-import * as M from "materialize-css";
 
 interface IStateProps {
 	events: IEvent[];
@@ -61,7 +59,7 @@ const EventList: React.FC<IStateProps & IDispatchProps> = (props) => {
 						id="modal9"
 						header={headerName.toUpperCase()}
 						bottomSheet={true}
-						fixedFooter={true}
+						// fixedFooter={true}
 						actions={modalActions}
 					>
 						{eventForm}

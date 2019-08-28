@@ -12,3 +12,9 @@
     color: black !important;
     border-color: black !important;
 }
+
+.select-field {
+    padding-bottom: 0 !important;
+    margin-top: -15px !important;
+    font-weight: 400 !important;
+}

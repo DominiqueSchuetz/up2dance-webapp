@@ -1,14 +1,44 @@
 import React, { Fragment } from "react";
+import { Button, SideNav, SideNavItem } from "react-materialize";
 
 const Header: React.FC = () => {
+	const css = `
+    #root > div > div {
+        z-index: 99999 !important;
+    }
+`;
+
 	return (
 		<Fragment>
 			<header>
 				<nav className="navbar dark">
 					<div className="nav-wrapper">
-						<a href="horizontal-half.html" className="brand-logo">
-							<i className="icon-diamond" />
-						</a>
+						<style>{css}</style>
+						<div>
+							<SideNav
+								trigger={<i className="icon-diamond" />}
+								options={{ closeOnClick: true, inDuration: 5000 }}
+							>
+								<SideNavItem
+									userView
+									// tslint:disable-next-line: jsx-no-multiline-js
+									user={{
+										background: "https://placeimg.com/640/480/tech",
+										image: "https://img.icons8.com/bubbles/50/000000/check-male.png",
+										name: "John Doe"
+									}}
+								/>
+								<SideNavItem href="#!icon" icon="cloud">
+									First Link With Icon
+								</SideNavItem>
+								<SideNavItem href="#!second">Second Link</SideNavItem>
+								<SideNavItem divider />
+								<SideNavItem subheader>Subheader</SideNavItem>
+								<SideNavItem waves href="#!third">
+									Third Link With Waves
+								</SideNavItem>
+							</SideNav>
+						</div>
 						<ul id="nav-mobile" className="right hide-on-med-and-down">
 							<li className="active">
 								<a className="dropdown-trigger" href="#!" data-target="pages">

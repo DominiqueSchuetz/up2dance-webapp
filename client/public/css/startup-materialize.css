@@ -7351,7 +7351,12 @@ select {
 
 .select-wrapper {
   position: relative;
+  margin-top: -15px;
 }
+
+/* .select-wrapper {
+  position: relative;
+} */
 
 .select-wrapper.valid+label,
 .select-wrapper.invalid+label {
@@ -12635,11 +12640,19 @@ input[type=tel]:not(.browser-default),
 input[type=number]:not(.browser-default),
 input[type=search]:not(.browser-default),
 textarea.materialize-textarea {
+  font-weight: 400;
+  font-size: 15px;
+  color: #000;
+  border-color: rgba(0, 0, 0);
+  border-width: 2px;
+}
+
+/* textarea.materialize-textarea {
   font-weight: 300;
   color: #fff;
   border-color: rgba(255, 255, 255, 0.5);
   border-width: 2px;
-}
+} */
 
 input[type=text]:not(.browser-default):focus,
 input[type=text]:not(.browser-default):focus:not([readonly]),
