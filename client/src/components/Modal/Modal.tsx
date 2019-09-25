@@ -1,54 +1,47 @@
-import M from "materialize-css";
-import React, { Fragment, useEffect } from "react";
+import { Button, Checkbox, Grid, Header, Icon, Image, Menu, Segment, Sidebar, SidebarProps } from "semantic-ui-react";
+import { ApplicationState, ISignInUserData } from "../../models";
+import { ILoadAuthenticationSuccess } from "../../store/types";
+import React, { useState, useEffect, Fragment } from "react";
 
-// interface IStateProps {
-// }
-
-// interface IDispatchProps {
-// }
-
-interface IModalProps {
-    id: string;
-    modalHeaderName?: string;
+interface IStateProps {
+	sidebarAnimation: SidebarProps;
+	sidebarDirection: SidebarProps;
+	sidebarVisible: SidebarProps;
 }
 
-const Modal: React.FC<IModalProps> = (props) => {
+interface IDispatchProps {}
 
-    const { id, modalHeaderName, children } = props;
-
-    console.log(modalHeaderName);
-
-    const elems = document.querySelectorAll(".modal");
-    const instances = M.Modal.init(elems, { inDuration: 500, outDuration: 500, dismissible: false, opacity: 0.755 });
-
-    useEffect(() => {
-        document.addEventListener("DOMContentLoaded", () => {
-            instances[0].open();
-        });
-    }, []);
-
-    const handleCloseEvent = () => {
-        document.addEventListener("DOMContentLoaded", () => {
-            instances[0].close();
-            instances[0].destroy();
-        });
-    };
-
-    return (
-        <Fragment>
-            <div id={id} className="modal bottom-sheet">
-                <div className="modal-content">
-                    <h4>{modalHeaderName}</h4>
-                    {children}
-                </div>
-                <a href="#!" className="modal-close btn-floating btn-large green"><i className="material-icons">done</i></a>
-                {/* <a href="#!" className="modal-close btn-floating btn-medium red"><i className="material-icons">delete_forever</i></a> */}
-                <div className="modal-footer">
-                    <span><button className="btn modal-close">CANCEL</button></span>
-                </div>
-            </div>
-        </Fragment>
-    );
+const Modal: React.FC<IStateProps & IDispatchProps> = (props) => {
+	const { sidebarAnimation, sidebarDirection, sidebarVisible } = props;
+	return (
+		<Fragment>
+			<Sidebar
+				as={Segment}
+				animation={sidebarAnimation.animation}
+				direction={sidebarDirection.direction}
+				visible={sidebarVisible.visible}
+			>
+				<Grid textAlign="center">
+					<Grid.Row columns={1}>
+						<Grid.Column>
+							<Header as="h3">New Content Awaits</Header>
+						</Grid.Column>
+					</Grid.Row>
+					<Grid columns={3} divided>
+						<Grid.Column>
+							<Image src="https://react.semantic-ui.com/images/wireframe/media-paragraph.png" />
+						</Grid.Column>
+						<Grid.Column>
+							<Image src="https://react.semantic-ui.com/images/wireframe/media-paragraph.png" />
+						</Grid.Column>
+						<Grid.Column>
+							<Image src="https://react.semantic-ui.com/images/wireframe/media-paragraph.png" />
+						</Grid.Column>
+					</Grid>
+				</Grid>
+			</Sidebar>
+		</Fragment>
+	);
 };
 
 export default Modal;

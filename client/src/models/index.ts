@@ -1,22 +1,40 @@
-export interface IEvent {
-	_id?: string;
-	createdAt?: string;
-	updatedAt?: string;
-	eventName?: string;
-	eventType?: string;
-	paSystem?: boolean;
-	address?: object;
-	commentEvent?: string;
-	eventDate?: string;
-	timeStart?: string;
-	timeEnd?: string;
-	payment?: string;
-	hidden?: boolean;
-}
-
-export interface IResponseObject {
-	data: [];
+export interface IResponsePayload {
+	success: boolean;
 	error_code: number;
 	message: string;
-	success: boolean;
+	data: [];
+}
+
+export interface IEvent {
+	_id: string;
+	address: object;
+	eventName: string;
+	eventType: string;
+	eventDate: string;
+	timeStart: string;
+	commentEvent: string;
+}
+
+export interface IUser {
+	_id: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	password: string;
+	instrument: string;
+	comment: string;
+}
+
+export interface ISignInUserData {
+	email: string;
+	password: string;
+}
+
+export interface ILoadingState {
+	isPayloadLoading: boolean;
+}
+
+export interface ApplicationState {
+	loading: ILoadingState;
+	payload: IResponsePayload;
 }

@@ -1,8 +1,14 @@
 import { Request, Response, Next } from "restify";
 import { BaseController } from "./BaseController";
 import { IUser } from "../models/interfaces/IUser";
-import { successResponse, badRequestResponse, internalServerErrorResponse } from "../responses/responses";
+import {
+	successResponse,
+	badRequestResponse,
+	internalServerErrorResponse,
+	unauthorizedResponse
+} from "../responses/responses";
 import { Types } from "mongoose";
+import { pick, isEmpty, isString } from "lodash";
 require("dotenv").config();
 
 export class UserController extends BaseController<IUser> {
@@ -13,27 +19,20 @@ export class UserController extends BaseController<IUser> {
      */
 	protected async list(req: Request, res: Response): Promise<void> {
 		try {
-			const result = await this._helpers.verfiyJwtToken(req.headers.authorization);
-			if (result) {
-				try {
-					const allItems = await this._repository.list();
-					if (allItems) {
-						let mapToNames = allItems.map((customer) => ({
-							firstName: customer.firstName,
-							lastName: customer.lastName,
-							email: customer.email
-						}));
-						mapToNames.length > 0
-							? successResponse(res, { Info: mapToNames })
-							: badRequestResponse(res, "No Users in database");
-					} else {
-						badRequestResponse(res, "Could not list items");
-					}
-				} catch (error) {
-					internalServerErrorResponse(res, error.message);
-				}
+			const allItems = await this._repository.list();
+			if (allItems) {
+				let mapToNames = allItems.map((customer) => ({
+					firstName: customer.firstName,
+					lastName: customer.lastName,
+					email: customer.email,
+					instrument: customer.instrument,
+					comment: customer.comment
+				}));
+				mapToNames.length > 0
+					? successResponse(res, { Info: mapToNames })
+					: badRequestResponse(res, "No Users in database");
 			} else {
-				badRequestResponse(res, "Could not authorize by given jwt token");
+				badRequestResponse(res, "Could not list items");
 			}
 		} catch (error) {
 			internalServerErrorResponse(res, error.message);
@@ -113,33 +112,40 @@ export class UserController extends BaseController<IUser> {
      * @param res 
      */
 	protected async signIn(req: Request, res: Response): Promise<void> {
-		const email =
-			typeof req.body.email == "string" && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
-		const password =
-			typeof req.body.password == "string" && req.body.password.trim().length > 5
-				? req.body.password.trim()
-				: false;
-
+		const { email, password } = req.body;
 		if (email && password) {
 			try {
 				const result = await this._repository.searchForItem(email);
 				const auth = await this._helpers.comparingPasswords(password, result.password);
-				if (auth) {
-					const jwtToken = await this._helpers.createJwtToken(result);
-					typeof jwtToken === "string"
-						? successResponse(res, {
-								Info: "Hey " + result.firstName + ", you are logged in successfully",
-								JWT_Token: jwtToken
-							})
+				if (auth && result) {
+					const jwtToken: string = await this._helpers.createJwtToken(mapToUserObject(result));
+					!isEmpty(jwtToken) && isString(jwtToken)
+						? successResponse(
+								res,
+								{
+									jwt_token: jwtToken,
+									isLoggedIn: true
+								},
+								`Hey ${result.firstName}, you're logged in successfully`
+							)
 						: badRequestResponse(res, "Could not create jwt-token");
 				} else {
-					badRequestResponse(res, "Could not authenticate with given password");
+					unauthorizedResponse(res, `No valid username or password`, 3, {
+						JWT_Token: null,
+						isLoggedIn: false
+					});
 				}
 			} catch (error) {
-				internalServerErrorResponse(res, error.message);
+				unauthorizedResponse(res, `No valid username or password`, 3, {
+					JWT_Token: null,
+					isLoggedIn: false
+				});
 			}
 		} else {
-			badRequestResponse(res, "No valid username or password");
+			unauthorizedResponse(res, `No valid username or password`, 3, {
+				JWT_Token: null,
+				isLoggedIn: false
+			});
 		}
 	}
 
@@ -255,3 +261,6 @@ export class UserController extends BaseController<IUser> {
 		}
 	}
 }
+const mapToUserObject = (result: IUser) => {
+	return pick(result, [ "_id", "firstName", "lastName", "email", "instrument", "comment", "createdAt", "updatedAt" ]);
+};

@@ -77,16 +77,16 @@ class EventSchema extends Schema {
 					trim: true
 				},
 				eventDate: {
-					type: Date,
+					type: Date || String,
 					required: true
 				},
 				timeStart: {
-					type: Date,
+					type: Date || String,
 					required: false,
 					trim: true
 				},
 				timeEnd: {
-					type: Date,
+					type: Date || String,
 					required: false,
 					trim: true
 				},

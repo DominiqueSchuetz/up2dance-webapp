@@ -1,25 +1,37 @@
+import { CounterContainer, EventContainer, LoginContainer } from "../container";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { applyMiddleware, createStore, combineReducers } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { eventReducer, authorizedUserReducer } from "../store/reducer";
+import thunk, { ThunkMiddleware } from "redux-thunk";
+import { Header } from "../components/Header";
+import "semantic-ui-css/semantic.min.css";
 import React, { Fragment } from "react";
 import { Provider } from "react-redux";
-import { applyMiddleware, combineReducers, createStore } from "redux";
-import thunk, { ThunkMiddleware } from "redux-thunk";
-import { CounterContainer, EventContainer } from "../container";
-import { EventReducer } from "../reducers";
-import { Header } from "./Header";
 
-const reduxStore = createStore(combineReducers({ EventReducer }), {}, applyMiddleware(thunk as ThunkMiddleware));
-
-reduxStore.subscribe(() => console.log("i'm your redux store", reduxStore.getState()));
+const composeEnhancer = composeWithDevTools({});
+const reduxStore = createStore(
+	combineReducers({ eventReducer, authorizedUserReducer }),
+	{},
+	composeEnhancer(applyMiddleware(thunk as ThunkMiddleware))
+);
+reduxStore.subscribe(() => console.log("redux store", reduxStore.getState()));
 
 const App: React.FC = () => {
 	return (
 		<Provider store={reduxStore}>
-			<Fragment>
-				<Header />
-				<main>
-					<CounterContainer />
-					<EventContainer />
-				</main>
-			</Fragment>
+			<Router>
+				<Fragment>
+					<div>
+						<Header />
+						<main>
+							<Route path="/login" exact strict component={LoginContainer} />
+							<Route path="/" exact component={CounterContainer} />
+							<Route path="/" exact strict component={EventContainer} />
+						</main>
+					</div>
+				</Fragment>
+			</Router>
 		</Provider>
 	);
 };

@@ -1,111 +1,76 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Button, Modal } from "react-materialize";
-import { IEvent } from "../../../models";
-import { IGetAllEvents } from "../../../types";
+import { Table, Label, Container, Menu, Icon } from "semantic-ui-react";
+import { ApplicationEventsAction } from "../../../store/types";
+import { ApplicationState, IEvent } from "../../../models";
+import React, { useEffect, useState } from "react";
 import EventForm from "../EventForm/EventForm";
+import moment from "moment";
+import "moment/locale/de";
 
 interface IStateProps {
-	events: IEvent[];
+	payload: ApplicationState;
 }
 
 interface IDispatchProps {
-	onGetAllEvents(): Promise<IGetAllEvents>;
+	onGetAllEvents(): Promise<ApplicationEventsAction>;
 }
 
 const EventList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { events, onGetAllEvents } = props;
-	const [ headerName, setHeaderName ] = useState<string>("");
+	let events: IEvent[] = [];
+	const { payload, onGetAllEvents } = props;
 
-	useEffect(
-		() => {
-			onGetAllEvents();
-		},
-		[ onGetAllEvents ]
-	);
-
-	const handleClick = (e: any) => {
-		const target = e.target || e.srcElement;
-		setHeaderName(target.name + ` ${"EVENT"}`);
-	};
-
-	const modalActions = [
-		<Button key="123" modal="close" flat={true}>
-			Abbrechen
-		</Button>
-	];
+	useEffect(() => {
+		onGetAllEvents();
+	}, []);
 
 	const eventForm = <EventForm />;
 
-	const renderAllEvents = events.map((event: IEvent) => (
-		<Fragment key={event._id}>
-			<tr key={event._id}>
-				<td>{event.eventName}</td>
-				<td>{event.eventType}</td>
-				<td>{event.eventDate}</td>
-				<td>{event.timeStart}</td>
-				<td>
-					<a href="#">{event.commentEvent}</a>
-				</td>
-				<td>
-					<Button name="edit" href="#modal9" className="modal-trigger" onClick={handleClick}>
-						EDIT EVENT
-					</Button>
-					<Button name="edit" href="#modal9" className="modal-trigger" onClick={handleClick}>
-						DELETE EVENT
-					</Button>
-					<Modal
-						className="event-form"
-						options={{ inDuration: 700, outDuration: 2100, opacity: 0.75 }}
-						id="modal9"
-						header={headerName.toUpperCase()}
-						bottomSheet={true}
-						// fixedFooter={true}
-						actions={modalActions}
-					>
-						{eventForm}
-					</Modal>
-				</td>
-			</tr>
-		</Fragment>
-	));
-
-	const renderTableWrapper = (
-		<table className="striped centered responsive-table content-top-margin">
-			<thead>
-				<tr>
-					<th>KONZERT</th>
-					<th>ANLASS</th>
-					<th>DATUM</th>
-					<th>BEGINN</th>
-					<th>WEITERE INFOS</th>
-				</tr>
-			</thead>
-			<tbody>{renderAllEvents}</tbody>
-		</table>
-	);
+	if (payload) {
+		events = payload.payload.data;
+		console.log(moment("2019-01-21T18:51:15.724Z").locale("de").format("LL"));
+		console.log(moment("2019-01-21T18:51:15.724Z").locale("de").format("LT"));
+	}
 
 	return (
-		<Fragment>
-			<article>
-				<div className="circle-reveal-wrapper header event-section-color">
-					<div className="circle-background pink" />
-					<div className="header-wrapper row valign-wrapper">
-						<div className="col s12 m8 offset-m2">
-							<h1>ALL EVENTS</h1>
-							{renderTableWrapper}
-							<Button name="add" href="#modal9" className="modal-trigger" onClick={handleClick}>
-								ADD NEW EVENT
-							</Button>
-							<span className="tagline">Show off your business in a whole new way.</span>
-							<button className="read-more">
-								<i className="icon-caret-down" />
-							</button>
-						</div>
-					</div>
-				</div>
-			</article>
-		</Fragment>
+		<section>
+			<Container>
+				<Table celled striped selectable>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell>Veranstaltung</Table.HeaderCell>
+							<Table.HeaderCell>Wo</Table.HeaderCell>
+							<Table.HeaderCell>Datum</Table.HeaderCell>
+							<Table.HeaderCell>Beginn</Table.HeaderCell>
+							<Table.HeaderCell>Art der Veranstaltung</Table.HeaderCell>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>{renderTableBody(events)}</Table.Body>
+					<Table.Footer>
+						<Table.Row>
+							<Table.HeaderCell textAlign="right" colSpan="5">
+								{events.length} Konzerte
+							</Table.HeaderCell>
+						</Table.Row>
+					</Table.Footer>
+				</Table>
+			</Container>
+		</section>
 	);
 };
 
 export default EventList;
+
+const renderTableBody = (events: IEvent[]) => {
+	return events.map((event: IEvent) => (
+		<Table.Row key={event._id}>
+			{event.eventType === "Hochzeit" ? (
+				<Label ribbon>Private Veranstaltung</Label>
+			) : (
+				<Table.Cell>{event.eventName}</Table.Cell>
+			)}
+			<Table.Cell>Halle (Saale)</Table.Cell>
+			<Table.Cell>{event.eventDate}</Table.Cell>
+			<Table.Cell>{event.timeStart}</Table.Cell>
+			<Table.Cell>{event.eventType}</Table.Cell>
+		</Table.Row>
+	));
+};

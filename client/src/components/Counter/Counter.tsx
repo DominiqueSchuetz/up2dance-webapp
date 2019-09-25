@@ -1,38 +1,20 @@
 import React, { Fragment } from "react";
-import { IEvent } from "../../models";
-import { IGetCurrentEvent } from "../../types";
+import { Button, Container, Header, Icon, Image } from "semantic-ui-react";
 
-interface IStateProps {
-	events: IEvent;
-}
-
-interface IDispatchProps {
-	onGetAllEvents(): any;
-	onGetCurrentEvent(): IGetCurrentEvent;
-}
-
-const Counter: React.FC<IStateProps & IDispatchProps> = (props) => {
-	// const { events, onGetCurrentEvent, onGetAllEvents } = props;
-
+const Counter: React.FC = (props) => {
 	return (
-		<Fragment>
-			<article>
-				<div className="circle-reveal-wrapper header light">
-					<div className="circle-background white" />
-					<div className="header-wrapper row valign-wrapper">
-						<div className="col s12 m8 offset-m2">
-							<h1>NEXT EVENT</h1>
-							<h3>IN</h3>
-							<h2>12d : 2h : 30sec</h2>
-							<span className="tagline">Show off your business in a whole new way.</span>
-							<button className="read-more">
-								<i className="icon-caret-down" />
-							</button>
-						</div>
-					</div>
+		<section>
+			<Container>
+				<div>
+					<Header textAlign="center" size="huge">
+						Next Event
+					</Header>
+					<Header textAlign="center" size="huge">
+						<Header.Content>24h : 56min : 36 sek</Header.Content>
+					</Header>
 				</div>
-			</article>
-		</Fragment>
+			</Container>
+		</section>
 	);
 };
 

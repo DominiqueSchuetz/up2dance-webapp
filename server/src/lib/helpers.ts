@@ -19,7 +19,7 @@ export class Helpers<T extends Document> {
      * 
      * @param result 
      */
-	public async createJwtToken(result: T): Promise<{}> {
+	public async createJwtToken(result: T | {}): Promise<string> {
 		return new Promise((resolve, reject) => {
 			const token: string = sign({ result }, "process.env.JWT_KEY", { expiresIn: "1h" });
 			if (token) {

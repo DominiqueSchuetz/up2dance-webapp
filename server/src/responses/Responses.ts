@@ -43,6 +43,22 @@ export const badRequestResponse = (res: Response, message: string, error_code: n
  * @param message 
  * @param data 
  */
+export const unauthorizedResponse = (res: Response, message: string, error_code: number = 3, data: unknown = null) => {
+	res.status(401);
+	res.json({
+		success: false,
+		message,
+		error_code,
+		data
+	});
+};
+
+/**
+ * 
+ * @param res 
+ * @param message 
+ * @param data 
+ */
 export const internalServerErrorResponse = (
 	res: Response,
 	message: string,

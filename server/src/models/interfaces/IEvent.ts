@@ -6,9 +6,9 @@ export interface IEvent extends Document {
 	paSystem: boolean;
 	address: object;
 	commentEvent: string;
-	eventDate: Date;
-	timeStart: Date;
-	timeEnd: Date;
+	eventDate: Date | string;
+	timeStart: Date | string;
+	timeEnd: Date | string;
 	payment: string;
 	hidden: boolean;
 }
