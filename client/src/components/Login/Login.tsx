@@ -1,6 +1,7 @@
 import { ApplicationState, ISignInUserData } from "../../models";
 import { ILoadAuthenticationSuccess } from "../../store/types";
 import React, { useState, useEffect } from "react";
+import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
 
 interface IStateProps {
 	payload: ApplicationState;
@@ -29,7 +30,25 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<div className="App">
-			<h1>Hello from login</h1>
+			<Grid textAlign="center" style={{}} verticalAlign="middle">
+				<Grid.Column style={{ maxWidth: 450 }}>
+					<Header as="h2" color="teal" textAlign="center">
+						<Image src="images/avatar/large/matthew.png" /> Log-in to your account
+					</Header>
+					<Form size="large">
+						<Segment stacked>
+							<Form.Input fluid icon="user" iconPosition="left" placeholder="E-mail address" />
+							<Form.Input fluid icon="lock" iconPosition="left" placeholder="Password" type="password" />
+							<Button color="teal" fluid size="large">
+								Login
+							</Button>
+						</Segment>
+					</Form>
+					<Message>
+						New to us? <a href="#">Sign Up</a>
+					</Message>
+				</Grid.Column>
+			</Grid>
 		</div>
 	);
 };

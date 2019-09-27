@@ -1,7 +1,7 @@
-import { Table, Label, Container, Menu, Icon } from "semantic-ui-react";
+import { Label, Icon, Button, List, Segment, Header, Image, Card, Modal } from "semantic-ui-react";
 import { ApplicationEventsAction } from "../../../store/types";
 import { ApplicationState, IEvent } from "../../../models";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import EventForm from "../EventForm/EventForm";
 import moment from "moment";
 import "moment/locale/de";
@@ -17,12 +17,17 @@ interface IDispatchProps {
 const EventList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	let events: IEvent[] = [];
 	const { payload, onGetAllEvents } = props;
+	const [ visible, setVisibility ] = useState(false);
 
 	useEffect(() => {
 		onGetAllEvents();
 	}, []);
 
 	const eventForm = <EventForm />;
+
+	const handleOnClick = () => {
+		setVisibility(!visible);
+	};
 
 	if (payload) {
 		events = payload.payload.data;
@@ -32,45 +37,113 @@ const EventList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<section>
-			<Container>
-				<Table celled striped selectable>
-					<Table.Header>
-						<Table.Row>
-							<Table.HeaderCell>Veranstaltung</Table.HeaderCell>
-							<Table.HeaderCell>Wo</Table.HeaderCell>
-							<Table.HeaderCell>Datum</Table.HeaderCell>
-							<Table.HeaderCell>Beginn</Table.HeaderCell>
-							<Table.HeaderCell>Art der Veranstaltung</Table.HeaderCell>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>{renderTableBody(events)}</Table.Body>
-					<Table.Footer>
-						<Table.Row>
-							<Table.HeaderCell textAlign="right" colSpan="5">
-								{events.length} Konzerte
-							</Table.HeaderCell>
-						</Table.Row>
-					</Table.Footer>
-				</Table>
-			</Container>
+			<Card.Group itemsPerRow="4" centered stackable>
+				{renderEventCards(events)}
+			</Card.Group>
 		</section>
 	);
 };
 
 export default EventList;
 
-const renderTableBody = (events: IEvent[]) => {
+const renderEventCards = (events: IEvent[]) => {
+	const openModal = () => {
+		return { open: false };
+	};
+
 	return events.map((event: IEvent) => (
-		<Table.Row key={event._id}>
-			{event.eventType === "Hochzeit" ? (
-				<Label ribbon>Private Veranstaltung</Label>
-			) : (
-				<Table.Cell>{event.eventName}</Table.Cell>
-			)}
-			<Table.Cell>Halle (Saale)</Table.Cell>
-			<Table.Cell>{event.eventDate}</Table.Cell>
-			<Table.Cell>{event.timeStart}</Table.Cell>
-			<Table.Cell>{event.eventType}</Table.Cell>
-		</Table.Row>
+		<Fragment>
+			<Segment key={event._id} raised style={{ marginTop: 0, marginBottom: 0 }}>
+				<Card key={event._id}>
+					<Modal
+						closeIcon
+						trigger={
+							<Button.Group>
+								<Button>Edit</Button>
+								<Button.Or />
+								<Button color="grey">Delete</Button>
+							</Button.Group>
+						}
+					>
+						<Modal.Header>Select a Photo</Modal.Header>
+						<Modal.Content image>
+							<Image wrapped size="medium" src="/images/avatar/large/rachel.png" />
+							<Modal.Description>
+								<Header>Default Profile Image</Header>
+								<p>We've found the following gravatar image associated with your e-mail address.</p>
+								<p>Is it okay to use this photo?</p>
+							</Modal.Description>
+						</Modal.Content>
+						<Modal.Actions>
+							<Button color="black" onClick={openModal}>
+								Nope
+							</Button>
+							<Button
+								positive
+								icon="checkmark"
+								labelPosition="right"
+								content="Yep, that's me"
+								onClick={openModal}
+							/>
+						</Modal.Actions>
+					</Modal>
+					<Image
+						src="/images/avatar/large/matthew.png"
+						size="large"
+						wrapped
+						ui={false}
+						label={{
+							as: "a",
+							color: "teal",
+							content: `${event.eventType}`,
+							icon: "bullhorn",
+							ribbon: true
+						}}
+					/>
+					<Card.Content>
+						<Card.Header textAlign="center">{event.eventName}</Card.Header>
+						<Card.Meta textAlign="center">
+							<span className="date">Am {moment(event.eventDate).locale("de").format("LL")}</span>
+						</Card.Meta>
+						<Card.Meta textAlign="center">
+							<span className="date">Um {moment(event.timeStart).locale("de").format("LT")} Uhr</span>
+						</Card.Meta>
+						<Card.Description textAlign="center">
+							<Label.Group tag>
+								<Label size="small" as="a">
+									14 €
+								</Label>
+							</Label.Group>
+						</Card.Description>
+					</Card.Content>
+					<Card.Content>
+						<List>
+							<List.Item>
+								<List.Header>New York City</List.Header>
+								A lovely city
+							</List.Item>
+							<List.Item>
+								<List.Header>Maps</List.Header>
+								<a href="">
+									<Icon color="teal" size="big" name="map" />
+								</a>
+							</List.Item>
+						</List>
+					</Card.Content>
+					<Card.Content textAlign="center" extra>
+						<Button circular size="mini" inverted color="blue" icon="facebook" />
+						<Button
+							style={{ marginLeft: 10, marginRight: 10 }}
+							circular
+							size="mini"
+							inverted
+							color="orange"
+							icon="instagram"
+						/>
+						<Button circular size="mini" inverted color="red" icon="youtube" />
+					</Card.Content>
+				</Card>
+			</Segment>
+		</Fragment>
 	));
 };

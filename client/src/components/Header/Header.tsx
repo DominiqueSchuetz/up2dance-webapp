@@ -7,7 +7,7 @@ const Header: React.FC = () => {
 		<Fragment>
 			<header>
 				<nav>
-					<Menu size="small">
+					<Menu size="large" inverted>
 						<Menu.Item as={NavLink} to="/" name="home" />
 						<Menu.Item as={NavLink} to="#" name="events" />
 						<Menu.Item as={NavLink} to="#" name="band members" />

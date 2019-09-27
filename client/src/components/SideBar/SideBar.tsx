@@ -1,26 +1,29 @@
-import { Button, Checkbox, Grid, Header, Icon, Image, Menu, Segment, Sidebar, SidebarProps } from "semantic-ui-react";
+import {
+	Button,
+	Checkbox,
+	Grid,
+	Header,
+	Icon,
+	Image,
+	Menu,
+	Segment,
+	Sidebar,
+	SidebarProps,
+	StrictSidebarProps
+} from "semantic-ui-react";
 import { ApplicationState, ISignInUserData } from "../../models";
 import { ILoadAuthenticationSuccess } from "../../store/types";
 import React, { useState, useEffect, Fragment } from "react";
 
-interface IStateProps {
-	sidebarAnimation: SidebarProps;
-	sidebarDirection: SidebarProps;
-	sidebarVisible: SidebarProps;
-}
+interface IStateProps extends StrictSidebarProps {}
 
 interface IDispatchProps {}
 
-const Modal: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { sidebarAnimation, sidebarDirection, sidebarVisible } = props;
+const SideBar: React.FC<IStateProps & IDispatchProps> = (props) => {
+	const { animation, direction, visible } = props;
 	return (
 		<Fragment>
-			<Sidebar
-				as={Segment}
-				animation={sidebarAnimation.animation}
-				direction={sidebarDirection.direction}
-				visible={sidebarVisible.visible}
-			>
+			<Sidebar as={Segment} animation={animation} direction={direction} visible={visible}>
 				<Grid textAlign="center">
 					<Grid.Row columns={1}>
 						<Grid.Column>
@@ -44,4 +47,4 @@ const Modal: React.FC<IStateProps & IDispatchProps> = (props) => {
 	);
 };
 
-export default Modal;
+export default SideBar;
