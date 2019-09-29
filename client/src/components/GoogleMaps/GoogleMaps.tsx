@@ -1,5 +1,5 @@
-import React, { useState, Fragment, useEffect } from "react";
 import { GoogleMap, useLoadScript, StandaloneSearchBox, Marker } from "@react-google-maps/api";
+import React, { useState, Fragment } from "react";
 import { Input } from "semantic-ui-react";
 
 const GoogleMaps: React.FC = () => {

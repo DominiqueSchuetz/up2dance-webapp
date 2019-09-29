@@ -1,19 +1,5 @@
-import {
-	Button,
-	Checkbox,
-	Grid,
-	Header,
-	Icon,
-	Image,
-	Menu,
-	Segment,
-	Sidebar,
-	SidebarProps,
-	StrictSidebarProps
-} from "semantic-ui-react";
-import { ApplicationState, ISignInUserData } from "../../models";
-import { ILoadAuthenticationSuccess } from "../../store/types";
-import React, { useState, useEffect, Fragment } from "react";
+import { Grid, Header, Image, Segment, Sidebar, StrictSidebarProps } from "semantic-ui-react";
+import React, { Fragment } from "react";
 
 interface IStateProps extends StrictSidebarProps {}
 

@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
-import { Button, Container, Header, Icon, Image, Grid } from "semantic-ui-react";
+import React from "react";
+import { Grid } from "semantic-ui-react";
 
-const Counter: React.FC = (props) => {
+const Counter: React.FC = () => {
 	return (
 		<section>
 			<Grid celled="internally" columns={1} textAlign="center" relaxed divided stretched stackable container>

@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Grid, Image, List, Header, Segment, Container, Divider, Icon } from "semantic-ui-react";
+import { Image, List, Header, Segment, Container, Icon } from "semantic-ui-react";
 
 const Footer: React.FC = () => {
 	return (
