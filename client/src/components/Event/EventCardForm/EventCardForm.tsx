@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const EventForm: React.FC = (props) => {
+const EventCardForm: React.FC = (props) => {
 	return (
 		<div>
 			<h1>Hello From Event Form</h1>
@@ -8,4 +8,4 @@ const EventForm: React.FC = (props) => {
 	);
 };
 
-export default EventForm;
+export default EventCardForm;

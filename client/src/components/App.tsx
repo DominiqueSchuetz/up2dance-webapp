@@ -6,11 +6,9 @@ import { eventReducer, authorizedUserReducer } from "../store/reducer";
 import thunk, { ThunkMiddleware } from "redux-thunk";
 import { Header } from "../components/Header";
 import { Footer } from "./Footer";
-import { Button, Sidebar, Segment, Container } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Provider } from "react-redux";
-import { SideBar } from "./SideBar";
 
 const composeEnhancer = composeWithDevTools({});
 const reduxStore = createStore(
@@ -22,6 +20,7 @@ reduxStore.subscribe(() => console.log("redux store", reduxStore.getState()));
 
 const App: React.FC = () => {
 	const [ visible, setVisibility ] = useState(false);
+
 	const handleOnClick = () => {
 		setVisibility(!visible);
 	};

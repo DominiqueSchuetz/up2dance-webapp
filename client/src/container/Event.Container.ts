@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 //import { getAllEvents } from "../actions/Event.Action";
 import { loadEvents } from "../store/effects";
-import { EventList } from "../components/Event";
+import { EventCardList } from "../components/Event";
 import { IEvent } from "../models";
 
 interface IState {
@@ -16,4 +16,4 @@ export const mapDispatchToProps = {
 	onGetAllEvents: loadEvents
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventList);
+export default connect(mapStateToProps, mapDispatchToProps)(EventCardList);

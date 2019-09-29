@@ -22,11 +22,12 @@ const Footer: React.FC = () => {
 						</List.Item>
 					</List>
 					<Header size="small" style={{ color: "white" }}>
-						Created with love
+						<div>
+							Created with <Icon color="red" name="heart" />
+						</div>
 					</Header>
-					<Icon color="red" name="heart" />
-					<Icon loading color="blue" name="react" />
-					<Icon color="yellow" name="js" />
+					<Icon loading size="large" color="blue" name="react" />
+					<Icon color="yellow" size="large" name="js" />
 				</Container>
 			</Segment>
 		</Fragment>
