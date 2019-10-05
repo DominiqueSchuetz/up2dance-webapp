@@ -1,7 +1,8 @@
 import { ApplicationState, ISignInUserData } from "../../models";
+import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
 import { ILoadAuthenticationSuccess } from "../../store/types";
 import React, { useState, useEffect } from "react";
-import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
+import { NavLink } from "react-router-dom";
 
 interface IStateProps {
 	payload: ApplicationState;
@@ -25,7 +26,7 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const handleLogin = async () => {
-		const response: ILoadAuthenticationSuccess = await onSignInUser({ email, password });
+		await onSignInUser({ email, password });
 	};
 
 	return (
@@ -37,15 +38,33 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
 					</Header>
 					<Form size="large">
 						<Segment stacked>
-							<Form.Input fluid icon="user" iconPosition="left" placeholder="E-mail address" />
-							<Form.Input fluid icon="lock" iconPosition="left" placeholder="Password" type="password" />
-							<Button color="teal" fluid size="large">
+							<Form.Input
+								type="text"
+								name="email"
+								defaultValue={email}
+								fluid
+								icon="user"
+								iconPosition="left"
+								placeholder="E-mail address"
+								onChange={handleOnChange}
+							/>
+							<Form.Input
+								type="password"
+								name="password"
+								defaultValue={password}
+								fluid
+								icon="lock"
+								iconPosition="left"
+								placeholder="Password"
+								onChange={handleOnChange}
+							/>
+							<Button as={NavLink} to="/" primary color="teal" fluid size="large" onClick={handleLogin}>
 								Login
 							</Button>
 						</Segment>
 					</Form>
 					<Message>
-						New to us? <a href="#">Sign Up</a>
+						New to us? <a href="/">Sign Up</a>
 					</Message>
 				</Grid.Column>
 			</Grid>

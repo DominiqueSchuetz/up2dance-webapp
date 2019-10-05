@@ -26,6 +26,21 @@ export const eventReducer = (state = initialState, action: ApplicationEventsActi
 				draft.loading.isPayloadLoading = false;
 				draft.payload = action.payload;
 			});
+		case "loadCreateEventsRequest":
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = true;
+			});
+		case "loadCreateEventSuccess":
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload = action.payload;
+			});
+
+		case "loadCreateEventsError":
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload = action.payload;
+			});
 		default:
 			return state;
 	}

@@ -16,9 +16,12 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	let events: IEvent[] = [];
 	const { payload, onGetAllEvents } = props;
 
-	useEffect(() => {
-		onGetAllEvents();
-	}, []);
+	useEffect(
+		() => {
+			onGetAllEvents();
+		},
+		[ onGetAllEvents ]
+	);
 
 	if (payload) {
 		events = payload.payload.data;
@@ -37,8 +40,8 @@ export default EventCardList;
 
 const renderEventCards = (events: IEvent[]) => {
 	return events.map((event: IEvent) => (
-		<Fragment>
-			<Segment key={event._id} raised style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
+		<Fragment key={event._id}>
+			<Segment raised style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
 				<EventCard event={event} />
 			</Segment>
 		</Fragment>

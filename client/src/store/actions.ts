@@ -5,7 +5,10 @@ import {
 	ILoadEventsError,
 	ILoadAuthenticationRequest,
 	ILoadAuthenticationSuccess,
-	ILoadAuthenticationError
+	ILoadAuthenticationError,
+	ILoadCreateEventsRequest,
+	ILoadCreatEventSuccess,
+	ILoadCreateEventsError
 } from "./types";
 
 // Event actions
@@ -20,6 +23,20 @@ export const loadEventsSuccess = (payload: IResponsePayload): ILoadEventsSuccess
 
 export const loadEventsError = (payload: IResponsePayload): ILoadEventsError => ({
 	type: "loadEventsError",
+	payload
+});
+
+export const loadCreateEventsRequest = (): ILoadCreateEventsRequest => ({
+	type: "loadCreateEventsRequest"
+});
+
+export const loadCreateEventSuccess = (payload: IResponsePayload | any): ILoadCreatEventSuccess => ({
+	type: "loadCreateEventSuccess",
+	payload
+});
+
+export const loadCreateEventsError = (payload: IResponsePayload): ILoadCreateEventsError => ({
+	type: "loadCreateEventsError",
 	payload
 });
 

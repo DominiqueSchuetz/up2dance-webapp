@@ -1,7 +1,9 @@
 import { Card, Image, List, Label, Button, Icon } from "semantic-ui-react";
+import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
 import { IEvent } from "../../../models";
-import React, { Fragment } from "react";
+import { EventDeleteDialog } from "../";
+import { EventCardForm } from "../";
 import moment from "moment";
 
 interface IStateProps {
@@ -10,10 +12,65 @@ interface IStateProps {
 
 const EventCard: React.FC<IStateProps> = (props) => {
 	const { event } = props;
+
+	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
+	const [ deleteDialog, setDeleteDialog ] = useState<boolean>(false);
+	// const [ specialEvent, setSpecialEvent ] = useState<boolean>(false);
+
+	const openModalDialogEditForm = () => {
+		setDeleteDialog(false);
+		setModalStaus({ modalOpen: true });
+	};
+
+	const openModalDialogDeleteForm = () => {
+		setDeleteDialog(true);
+		setModalStaus({ modalOpen: true });
+	};
+
+	const onCloseEvent = () => {
+		setModalStaus({ modalOpen: false });
+	};
+
+	const handleSpecialEvent = () => {
+		console.log("parent handler");
+	};
+
+	const renderModalComponent: JSX.Element = deleteDialog ? (
+		<EventDeleteDialog children={event} />
+	) : (
+		<EventCardForm children={event} />
+	);
+
+	const cardButtonGroup: JSX.Element = (
+		<Button.Group>
+			<Button name="edit" animated onClick={openModalDialogEditForm}>
+				<Button.Content visible>Editieren</Button.Content>
+				<Button.Content hidden>
+					<Icon name="pencil" />
+				</Button.Content>
+			</Button>
+			<Button.Or />
+			<Button name="delete" animated color="grey" onClick={openModalDialogDeleteForm}>
+				<Button.Content visible>Löschen</Button.Content>
+				<Button.Content hidden>
+					<Icon name="trash alternate outline" />
+				</Button.Content>
+			</Button>
+		</Button.Group>
+	);
+
 	return (
 		<Fragment>
 			<Card>
-				<ModalDialog />
+				<ModalDialog
+					trigger={cardButtonGroup}
+					modalStatus={modalStatus.modalOpen}
+					headerContent={deleteDialog ? "LÖSCHEN" : "EDITIEREN"}
+					onClose={onCloseEvent}
+					specialEvent={handleSpecialEvent}
+				>
+					{renderModalComponent}
+				</ModalDialog>
 				<Image
 					src="/images/avatar/large/matthew.png"
 					size="medium"
@@ -51,7 +108,7 @@ const EventCard: React.FC<IStateProps> = (props) => {
 						</List.Item>
 						<List.Item>
 							<List.Header>Maps</List.Header>
-							<a href="">
+							<a href="/">
 								<Icon color="grey" size="big" name="map" />
 							</a>
 						</List.Item>

@@ -32,18 +32,3 @@ const Counter: React.FC = () => {
 };
 
 export default Counter;
-{
-	/* <Grid celled="internally" columns={3} textAlign="center" relaxed divided stretched stackable container>
-	<Grid.Row stretched>
-		<Grid.Column width={3}>
-			<h3>new column 1</h3>
-		</Grid.Column>
-		<Grid.Column width={10}>
-			<h3>new column 2</h3>
-		</Grid.Column>
-		<Grid.Column width={3}>
-			<h3>new column 3</h3>
-		</Grid.Column>
-	</Grid.Row>
-</Grid> */
-}

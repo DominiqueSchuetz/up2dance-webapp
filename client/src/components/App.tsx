@@ -7,7 +7,7 @@ import thunk, { ThunkMiddleware } from "redux-thunk";
 import { Header } from "../components/Header";
 import { Footer } from "./Footer";
 import "semantic-ui-css/semantic.min.css";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment } from "react";
 import { Provider } from "react-redux";
 
 const composeEnhancer = composeWithDevTools({});
@@ -19,11 +19,6 @@ const reduxStore = createStore(
 reduxStore.subscribe(() => console.log("redux store", reduxStore.getState()));
 
 const App: React.FC = () => {
-	const [ visible, setVisibility ] = useState(false);
-
-	const handleOnClick = () => {
-		setVisibility(!visible);
-	};
 	return (
 		<Provider store={reduxStore}>
 			<Router>

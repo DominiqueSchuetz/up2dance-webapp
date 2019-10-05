@@ -1,12 +1,15 @@
 import { ApplicationEventsAction, ApplicationAuthenticationAction } from "./types";
-import { ApplicationState, ISignInUserData, IResponsePayload } from "../models";
-import { loadEventsService, signInUserService } from "../services";
+import { ApplicationState, ISignInUserData, IResponsePayload, IEvent } from "../models";
+import { loadEventsService, signInUserService, creatEventService } from "../services";
 import { ThunkAction } from "redux-thunk";
 import { decode } from "jsonwebtoken";
 import {
 	loadEventsRequest,
 	loadEventsSuccess,
 	loadEventsError,
+	loadCreateEventsRequest,
+	loadCreateEventSuccess,
+	loadCreateEventsError,
 	loadAuthenticationRequest,
 	loadAuthenticationSuccess,
 	loadAuthenticationError
@@ -14,9 +17,7 @@ import {
 
 type Effect = ThunkAction<any, ApplicationState, any, ApplicationEventsAction | ApplicationAuthenticationAction>;
 
-// ###################################################
 // #################  Get all events
-// ###################################################
 export const loadEvents = (): Effect => async (dispatch, getState) => {
 	dispatch(loadEventsRequest());
 	try {
@@ -27,9 +28,26 @@ export const loadEvents = (): Effect => async (dispatch, getState) => {
 	}
 };
 
-// ###################################################
+// #################  Create new events
+export const createEvent = (event: IEvent): Effect => async (dispatch, getState) => {
+	dispatch(loadCreateEventsRequest());
+	try {
+		const response: IResponsePayload = await creatEventService(event);
+		if (!!response.success) {
+			return dispatch(loadCreateEventSuccess(response));
+		} else {
+			localStorage.removeItem("token");
+			localStorage.clear();
+			return dispatch(loadCreateEventsError(response));
+		}
+	} catch (e) {
+		localStorage.removeItem("token");
+		localStorage.clear();
+		return dispatch(loadCreateEventsError(e));
+	}
+};
+
 // #################  SigIn user
-// ###################################################
 export const loginUser = (userData: ISignInUserData): Effect => async (dispatch, getState) => {
 	dispatch(loadAuthenticationRequest());
 	try {

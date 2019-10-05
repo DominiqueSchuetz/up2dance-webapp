@@ -16,7 +16,26 @@ export interface ILoadEventsError extends Action {
 	payload: IResponsePayload;
 }
 
-export type ApplicationEventsAction = ILoadEventsRequest | ILoadEventsSuccess | ILoadEventsError;
+export interface ILoadCreateEventsRequest extends Action {
+	type: "loadCreateEventsRequest";
+}
+export interface ILoadCreatEventSuccess extends Action {
+	type: "loadCreateEventSuccess";
+	payload: IResponsePayload;
+}
+
+export interface ILoadCreateEventsError extends Action {
+	type: "loadCreateEventsError";
+	payload: IResponsePayload;
+}
+
+export type ApplicationEventsAction =
+	| ILoadEventsRequest
+	| ILoadEventsSuccess
+	| ILoadEventsError
+	| ILoadCreateEventsRequest
+	| ILoadCreatEventSuccess
+	| ILoadCreateEventsError;
 
 // IAuthentication
 export interface ILoadAuthenticationRequest extends Action {
