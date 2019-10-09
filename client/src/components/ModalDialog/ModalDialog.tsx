@@ -10,22 +10,12 @@ interface IStateProps {
 }
 
 const ModalDialog: React.FC<IStateProps> = (props) => {
-	const { headerContent, modalStatus, onClose, trigger, children, specialEvent } = props;
+	const { headerContent, modalStatus, onClose, trigger, children } = props;
 
 	return (
 		<Fragment>
-			<Modal closeIcon trigger={trigger} open={modalStatus} onClose={onClose}>
-				<Modal.Header content={headerContent} />
-				<Modal.Content image>
-					<Modal.Description content={children} />
-				</Modal.Content>
-				<Modal.Actions
-					content={
-						<Button color="black" onClick={specialEvent}>
-							Abbrechen
-						</Button>
-					}
-				/>
+			<Modal closeOnDimmerClick={false} closeIcon trigger={trigger} open={modalStatus} onClose={onClose}>
+				{children}
 			</Modal>
 		</Fragment>
 	);

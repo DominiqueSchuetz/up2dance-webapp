@@ -5,10 +5,11 @@ export interface IEvent extends Document {
 	eventType: string;
 	paSystem: boolean;
 	address: object;
-	commentEvent: string;
+	comment: string;
 	eventDate: Date | string;
 	timeStart: Date | string;
 	timeEnd: Date | string;
+	admissionCharge: string;
 	payment: string;
 	hidden: boolean;
 }

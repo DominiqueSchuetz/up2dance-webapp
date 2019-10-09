@@ -5,9 +5,18 @@ export interface IResponsePayload {
 	data: [];
 }
 
+export interface IAddress {
+	streetName?: string;
+	streetNumber?: string;
+	zipCode?: string;
+	city: string;
+	state: string;
+	location: any;
+}
+
 export interface IEvent {
 	_id: string;
-	address: object;
+	address: IAddress;
 	eventName: string;
 	eventType: string;
 	eventDate: string;

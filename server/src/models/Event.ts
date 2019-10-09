@@ -19,27 +19,25 @@ class EventSchema extends Schema {
 				eventType: {
 					type: String,
 					required: true,
-					enum: [
-						"Stadtfest",
-						"private Versanstaltung",
-						"Hochzeit",
-						"öffentliche Veranstaltung",
-						"sonstiges"
-					],
-					default: "sonstiges"
+					enum: [ "Öffentliche Versanstaltung", "Geschlossene Veranstaltung" ],
+					default: "Öffentliche Versanstaltung"
 				},
 				paSystem: {
 					required: false,
-					type: Boolean,
-					trim: true
+					type: Boolean
 				},
 				payment: {
 					required: false,
 					type: String,
 					trim: true
 				},
+				admissionCharge: {
+					required: false,
+					type: String,
+					trim: true
+				},
 				address: {
-					street: {
+					streetName: {
 						type: String,
 						required: false,
 						trim: true
@@ -71,7 +69,7 @@ class EventSchema extends Schema {
 						}
 					}
 				},
-				commentEvent: {
+				comment: {
 					type: String,
 					required: false,
 					trim: true

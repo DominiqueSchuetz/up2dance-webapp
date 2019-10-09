@@ -33,12 +33,13 @@ const EventCard: React.FC<IStateProps> = (props) => {
 
 	const handleSpecialEvent = () => {
 		console.log("parent handler");
+		onCloseEvent();
 	};
 
 	const renderModalComponent: JSX.Element = deleteDialog ? (
-		<EventDeleteDialog children={event} />
+		<EventDeleteDialog children={event} handleCancelEvent={handleSpecialEvent} />
 	) : (
-		<EventCardForm children={event} />
+		<EventCardForm children={event} handleCancelEvent={handleSpecialEvent} />
 	);
 
 	const cardButtonGroup: JSX.Element = (
