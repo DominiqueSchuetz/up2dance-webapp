@@ -1,19 +1,14 @@
 import { connect } from "react-redux";
-//import { getAllEvents } from "../actions/Event.Action";
-import { loadEvents } from "../store/effects";
+import { loadEvents, createEvent } from "../store/effects";
 import { EventCardList } from "../components/Event";
-import { IEvent } from "../models";
-
-interface IState {
-	EventReducer: IEvent[];
-}
 
 export const mapStateToProps = (state: any) => ({
-	payload: state.eventReducer
+	payload: state.eventReducer.payload.data
 });
 
 export const mapDispatchToProps = {
-	onGetAllEvents: loadEvents
+	onGetAllEvents: loadEvents,
+	onCreateEvent: createEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventCardList);

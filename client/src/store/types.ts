@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { IResponsePayload } from "../models";
+import { IResponsePayload, ICreateEvent } from "../models";
 
 // IEvents
 export interface ILoadEventsRequest extends Action {
@@ -21,12 +21,12 @@ export interface ILoadCreateEventsRequest extends Action {
 }
 export interface ILoadCreatEventSuccess extends Action {
 	type: "loadCreateEventSuccess";
-	payload: IResponsePayload;
+	payload: ICreateEvent;
 }
 
 export interface ILoadCreateEventsError extends Action {
 	type: "loadCreateEventsError";
-	payload: IResponsePayload;
+	payload: ICreateEvent;
 }
 
 export type ApplicationEventsAction =

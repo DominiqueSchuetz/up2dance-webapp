@@ -21,6 +21,7 @@ interface IStateProps {
 }
 
 const mapStyles = [ { backgroundColor: "red" } ];
+const GOOGLE_MAPS_LIBARIES = [ "places" ];
 
 const GoogleMaps: React.FC<IStateProps> = (props) => {
 	const { getAddress } = props;
@@ -31,7 +32,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		language: "de",
 		preventGoogleFontsLoading: true,
 		region: "de",
-		libraries: [ "places" ]
+		libraries: GOOGLE_MAPS_LIBARIES
 	});
 
 	const [ searchBox, setStandaloneSearchBox ] = useState();
@@ -159,7 +160,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 							type="text"
 							iconPosition="left"
 							icon="map"
-							placeholder="Adresse? Einfach tippen ..."
+							placeholder="Adresse"
 							onChange={handleOnChangeSearchbox}
 						/>
 					</StandaloneSearchBox>

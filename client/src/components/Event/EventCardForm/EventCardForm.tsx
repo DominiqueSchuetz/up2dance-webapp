@@ -1,7 +1,7 @@
 import { DateInput, TimeInput } from "semantic-ui-calendar-react";
 import { GoogleMaps } from "../../GoogleMaps";
-import { IAddress } from "../../../models";
-import React, { Fragment, useState, useEffect } from "react";
+import { IAddress, IEvent } from "../../../models";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import moment from "moment";
 import "moment/locale/de";
 import {
@@ -17,9 +17,13 @@ import {
 	DropdownProps,
 	InputOnChangeData
 } from "semantic-ui-react";
+import { ApplicationEventsAction } from "../../../store/types";
 
 interface IStateProps {
 	handleCancelEvent?: any;
+}
+interface IDispatchProps {
+	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
 }
 
 const eventTypeObject: any = [
@@ -34,18 +38,37 @@ const eventTypeObject: any = [
 		value: "Geschlossene Veranstaltung"
 	}
 ];
+const admissionChargeObject: any = [
+	{
+		key: "1234",
+		text: "nicht bekannt",
+		value: "nicht bekannt"
+	},
+	{
+		key: "2345",
+		text: "kostenfrei",
+		value: "kostenfrei"
+	},
+	{
+		key: "3456",
+		text: "Eintritt",
+		value: "Eintritt"
+	}
+];
 
 const DURATION = 200;
 
-const EventCardForm: React.FC<IStateProps> = (props) => {
-	const { handleCancelEvent } = props;
+const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
+	const { handleCancelEvent, onCreateEvent } = props;
 	const [ eventName, setEventName ] = useState<string>("");
-	const [ eventType, setEventType ] = useState<string | number | boolean | (string | number | boolean)[] | undefined>(
-		""
-	);
-	const [ eventDate, setEventDate ] = useState<any>("");
-	const [ timeStart, setTimeStart ] = useState<any>("");
-	const [ timeEnd, setTimeEnd ] = useState<any>("");
+	const [ eventType, setEventType ] = useState<string | undefined>(undefined);
+	const [ eventDate, setEventDate ] = useState<string>("");
+	const [ timeStart, setTimeStart ] = useState<string>("");
+	const [ timeEnd, setTimeEnd ] = useState<string>("");
+	const [ hidden, setHiddenFlag ] = useState(false);
+	const [ money, setMoney ] = useState<string>("");
+
+	const [ admissionCharge, setAdmissionCharge ] = useState<string | undefined>("nicht bekannt");
 
 	const [ actualDate, setActualDate ] = useState<string>("");
 	const [ switchState, setSwitchState ] = useState<boolean>(false);
@@ -57,8 +80,17 @@ const EventCardForm: React.FC<IStateProps> = (props) => {
 		setActualDate(date);
 	}, []);
 
-	const handleSwitch = (event: React.FormEvent<HTMLInputElement>, data: CheckboxProps | undefined) => {
-		data!.checked ? setSwitchState(true) : setSwitchState(false);
+	const handleOnChangeAdmissionCharge = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+		if (!!switchState && +event.target.value <= 200) {
+			setMoney(event.target.value);
+			setAdmissionCharge(event.target.value);
+		} else {
+			setMoney("");
+		}
+	};
+
+	const handleOnChangeHidden = (event: React.FormEvent<HTMLInputElement>, data: CheckboxProps | undefined) => {
+		data!.checked ? setHiddenFlag(true) : setHiddenFlag(false);
 	};
 
 	const onGetAddress = (address: IAddress) => {
@@ -67,31 +99,47 @@ const EventCardForm: React.FC<IStateProps> = (props) => {
 
 	const handleOnSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log(eventName);
-		console.log(eventType);
-		console.log(eventDate);
-		console.log(timeStart);
-		console.log(timeEnd);
-		console.log(address);
+
+		const newEvent: IEvent = {
+			eventName,
+			eventType,
+			eventDate,
+			address,
+			timeStart,
+			timeEnd,
+			admissionCharge,
+			hidden
+		};
+
+		onCreateEvent(newEvent);
+
+		console.log(newEvent);
 
 		setEventName("");
 		setEventType("");
 		setEventDate("");
 		setTimeStart("");
 		setTimeEnd("");
+		setMoney("");
+		handleCancelEvent();
 	};
 
 	const handleOnKeyDown = (event: React.KeyboardEvent) => {
 		event.preventDefault();
 		return false;
 	};
+	const handleOnKeyDownAdmissionCharge = (event: React.KeyboardEvent) => {
+		const regExpr = new RegExp("^[0-9]+$");
+		if (!regExpr.test(event.key)) {
+			event.preventDefault();
+			return false;
+		}
+	};
 
 	const handleOnDateTime = (e: React.SyntheticEvent<HTMLElement, Event>, data: any) => {
 		switch (data.name) {
 			case "eventDate":
 				setEventDate(data.value);
-				console.log("war bhier");
-
 				break;
 			case "timeStart":
 				setTimeStart(data.value);
@@ -114,6 +162,16 @@ const EventCardForm: React.FC<IStateProps> = (props) => {
 				break;
 			case "eventType":
 				setEventType(data.value);
+				break;
+			case "admission-charge":
+				if (data.value === "Eintritt") {
+					setSwitchState(true);
+					setAdmissionCharge(data.value);
+				} else {
+					setSwitchState(false);
+					setMoney("");
+					setAdmissionCharge(data.value);
+				}
 				break;
 			default:
 				break;
@@ -217,15 +275,25 @@ const EventCardForm: React.FC<IStateProps> = (props) => {
 						<Form.Group widths="equal" />
 						<Segment.Group horizontal>
 							<Segment padded>
-								<Form.Field>
-									<Radio onChange={handleSwitch} name="price" type="radio" slider label="Eintritt" />
-								</Form.Field>
+								<Dropdown
+									name="admission-charge"
+									value={admissionCharge}
+									onChange={handleOnChange}
+									required
+									tabIndex={0}
+									fluid
+									selection
+									options={admissionChargeObject}
+								/>
 							</Segment>
 							<Segment>
 								<Form.Field>
-									<Input
+									<Form.Input
+										error={money.length != 0 ? false : true}
+										onChange={handleOnChangeAdmissionCharge}
+										onKeyDown={handleOnKeyDownAdmissionCharge}
 										disabled={!switchState}
-										type="number"
+										value={money.replace(/^0+/, "")}
 										label={{ tag: true, icon: "euro sign", color: "black" }}
 										labelPosition="right"
 									/>
@@ -239,7 +307,12 @@ const EventCardForm: React.FC<IStateProps> = (props) => {
 						</Segment.Group>
 						<Segment.Group>
 							<Segment>
-								<Radio type="radio" toggle label="Nicht auf der Website anzeigen" />
+								<Radio
+									type="radio"
+									onChange={handleOnChangeHidden}
+									toggle
+									label="Nicht auf der Website anzeigen"
+								/>
 							</Segment>
 						</Segment.Group>
 					</Form>
@@ -255,7 +328,7 @@ const EventCardForm: React.FC<IStateProps> = (props) => {
 					labelPosition="right"
 					content="Speichern"
 					onClick={handleOnSubmit}
-					disabled={!eventName || !eventDate || !address}
+					disabled={!eventName || !eventDate || !address || (switchState && !money.length)}
 				/>
 			</Modal.Actions>
 		</Fragment>

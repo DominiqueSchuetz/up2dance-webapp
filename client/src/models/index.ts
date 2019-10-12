@@ -2,7 +2,14 @@ export interface IResponsePayload {
 	success: boolean;
 	error_code: number;
 	message: string;
-	data: [];
+	data: IEvent[];
+}
+
+export interface ICreateEvent {
+	success: boolean;
+	error_code: number;
+	message: string;
+	data: IEvent;
 }
 
 export interface IAddress {
@@ -15,13 +22,16 @@ export interface IAddress {
 }
 
 export interface IEvent {
-	_id: string;
-	address: IAddress;
+	_id?: string | undefined;
+	address: IAddress | undefined;
 	eventName: string;
-	eventType: string;
+	eventType?: string | undefined;
 	eventDate: string;
-	timeStart: string;
-	commentEvent: string;
+	timeStart?: string | undefined;
+	timeEnd?: string | undefined;
+	comment?: string | undefined;
+	admissionCharge?: string | undefined;
+	hidden?: boolean | undefined;
 }
 
 export interface IUser {

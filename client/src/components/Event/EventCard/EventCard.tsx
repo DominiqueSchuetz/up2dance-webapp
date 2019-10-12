@@ -1,37 +1,41 @@
-import { Card, Image, List, Label, Button, Icon } from "semantic-ui-react";
+import { Card, Image, List, Label, Button, Icon, ButtonProps } from "semantic-ui-react";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
-import { IEvent } from "../../../models";
+import { IEvent, IAddress } from "../../../models";
 import { EventDeleteDialog } from "../";
 import { EventCardForm } from "../";
-import moment from "moment";
+import { ApplicationEventsAction } from "../../../store/types";
 
 interface IStateProps {
 	event: IEvent;
 }
 
-const EventCard: React.FC<IStateProps> = (props) => {
-	const { event } = props;
+interface IDispatchProps {
+	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
+}
+
+const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
+	const { event, onCreateEvent } = props;
+	const address: IAddress | undefined = event.address;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 	const [ deleteDialog, setDeleteDialog ] = useState<boolean>(false);
-	// const [ specialEvent, setSpecialEvent ] = useState<boolean>(false);
 
-	const openModalDialogEditForm = () => {
+	const openModalDialogEditForm = (): void => {
 		setDeleteDialog(false);
 		setModalStaus({ modalOpen: true });
 	};
 
-	const openModalDialogDeleteForm = () => {
+	const openModalDialogDeleteForm = (): void => {
 		setDeleteDialog(true);
 		setModalStaus({ modalOpen: true });
 	};
 
-	const onCloseEvent = () => {
+	const onCloseEvent = (): void => {
 		setModalStaus({ modalOpen: false });
 	};
 
-	const handleSpecialEvent = () => {
+	const handleSpecialEvent = (): void => {
 		console.log("parent handler");
 		onCloseEvent();
 	};
@@ -39,7 +43,7 @@ const EventCard: React.FC<IStateProps> = (props) => {
 	const renderModalComponent: JSX.Element = deleteDialog ? (
 		<EventDeleteDialog children={event} handleCancelEvent={handleSpecialEvent} />
 	) : (
-		<EventCardForm children={event} handleCancelEvent={handleSpecialEvent} />
+		<EventCardForm onCreateEvent={onCreateEvent} children={event} handleCancelEvent={handleSpecialEvent} />
 	);
 
 	const cardButtonGroup: JSX.Element = (
@@ -88,10 +92,10 @@ const EventCard: React.FC<IStateProps> = (props) => {
 				<Card.Content>
 					<Card.Header textAlign="center">{event.eventName}</Card.Header>
 					<Card.Meta textAlign="center">
-						<span className="date">Am {moment(event.eventDate).locale("de").format("LL")}</span>
+						<span className="date">Am {event.eventDate}</span>
 					</Card.Meta>
 					<Card.Meta textAlign="center">
-						<span className="date">Um {moment(event.timeStart).locale("de").format("LT")} Uhr</span>
+						<span className="date">Um {event.timeStart} Uhr</span>
 					</Card.Meta>
 					<Card.Description textAlign="center">
 						<Label.Group tag>
@@ -104,8 +108,9 @@ const EventCard: React.FC<IStateProps> = (props) => {
 				<Card.Content>
 					<List>
 						<List.Item>
-							<List.Header>New York City</List.Header>
-							A lovely city
+							<List.Header>{address!.city}</List.Header>
+							<List.Content>{address!.state}</List.Content>
+							<List.Content>{address!.zipCode}</List.Content>
 						</List.Item>
 						<List.Item>
 							<List.Header>Maps</List.Header>

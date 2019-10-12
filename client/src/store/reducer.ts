@@ -1,12 +1,12 @@
 import produce from "immer";
-import { ApplicationState } from "../models";
+import { ApplicationState, IEvent } from "../models";
 import { ApplicationEventsAction, ApplicationAuthenticationAction } from "./types";
 
 export const initialState: ApplicationState = {
 	loading: {
 		isPayloadLoading: false
 	},
-	payload: { success: false, error_code: 0, message: "", data: [] || {} }
+	payload: { success: false, error_code: 0, message: "", data: [] }
 };
 
 export const eventReducer = (state = initialState, action: ApplicationEventsAction) => {
@@ -20,7 +20,6 @@ export const eventReducer = (state = initialState, action: ApplicationEventsActi
 				draft.loading.isPayloadLoading = false;
 				draft.payload = action.payload;
 			});
-
 		case "loadEventsError":
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;
@@ -33,13 +32,14 @@ export const eventReducer = (state = initialState, action: ApplicationEventsActi
 		case "loadCreateEventSuccess":
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;
-				draft.payload = action.payload;
-			});
 
+				// draft.payload = action.payload;
+				draft.payload.data.push(action.payload.data);
+			});
 		case "loadCreateEventsError":
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;
-				draft.payload = action.payload;
+				// draft.payload = action.payload;
 			});
 		default:
 			return state;
@@ -52,6 +52,7 @@ export const authorizedUserReducer = (state = initialState, action: ApplicationA
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = true;
 			});
+
 		case "loadAuthenticationSuccess":
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;

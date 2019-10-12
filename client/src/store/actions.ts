@@ -1,4 +1,4 @@
-import { IResponsePayload } from "../models";
+import { IResponsePayload, ICreateEvent } from "../models";
 import {
 	ILoadEventsRequest,
 	ILoadEventsSuccess,
@@ -30,12 +30,12 @@ export const loadCreateEventsRequest = (): ILoadCreateEventsRequest => ({
 	type: "loadCreateEventsRequest"
 });
 
-export const loadCreateEventSuccess = (payload: IResponsePayload | any): ILoadCreatEventSuccess => ({
+export const loadCreateEventSuccess = (payload: ICreateEvent): ILoadCreatEventSuccess => ({
 	type: "loadCreateEventSuccess",
 	payload
 });
 
-export const loadCreateEventsError = (payload: IResponsePayload): ILoadCreateEventsError => ({
+export const loadCreateEventsError = (payload: ICreateEvent): ILoadCreateEventsError => ({
 	type: "loadCreateEventsError",
 	payload
 });

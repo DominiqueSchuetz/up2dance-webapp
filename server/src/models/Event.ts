@@ -19,8 +19,8 @@ class EventSchema extends Schema {
 				eventType: {
 					type: String,
 					required: true,
-					enum: [ "Öffentliche Versanstaltung", "Geschlossene Veranstaltung" ],
-					default: "Öffentliche Versanstaltung"
+					enum: [ "Öffentliche Veranstaltung", "Geschlossene Veranstaltung" ],
+					default: "Öffentliche Veranstaltung"
 				},
 				paSystem: {
 					required: false,
@@ -52,7 +52,12 @@ class EventSchema extends Schema {
 						required: false,
 						trim: true
 					},
-					zipcode: {
+					state: {
+						type: String,
+						required: false,
+						trim: true
+					},
+					zipCode: {
 						type: String,
 						required: false,
 						trim: true
@@ -75,16 +80,16 @@ class EventSchema extends Schema {
 					trim: true
 				},
 				eventDate: {
-					type: Date || String,
+					type: String,
 					required: true
 				},
 				timeStart: {
-					type: Date || String,
+					type: String,
 					required: false,
 					trim: true
 				},
 				timeEnd: {
-					type: Date || String,
+					type: String,
 					required: false,
 					trim: true
 				},

@@ -1,4 +1,4 @@
-import { ISignInUserData, IResponsePayload, IEvent } from "../models";
+import { ISignInUserData, IResponsePayload, IEvent, ICreateEvent } from "../models";
 import { GET_ALL_EVENTS_API, GET_ALL_USERS_API, POST_USER_SIGN_IN_API, CREATE_EVENT_API } from "../api";
 
 // ###################################################
@@ -11,14 +11,14 @@ export const loadEventsService = async (): Promise<IResponsePayload> => {
 	return responsePayload;
 };
 
-export const creatEventService = async (event: IEvent): Promise<IResponsePayload> => {
+export const creatEventService = async (event: IEvent): Promise<ICreateEvent> => {
 	const POST_HEADER = {
 		method: "POST",
 		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
 		body: JSON.stringify(event)
 	};
 	const createNewEvent: Response = await fetch(CREATE_EVENT_API, POST_HEADER);
-	const responsePayload: Promise<IResponsePayload> = await createNewEvent.json();
+	const responsePayload: Promise<ICreateEvent> = await createNewEvent.json();
 
 	return responsePayload;
 };

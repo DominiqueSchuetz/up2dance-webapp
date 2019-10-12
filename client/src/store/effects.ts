@@ -1,5 +1,5 @@
 import { ApplicationEventsAction, ApplicationAuthenticationAction } from "./types";
-import { ApplicationState, ISignInUserData, IResponsePayload, IEvent } from "../models";
+import { ApplicationState, ISignInUserData, IResponsePayload, IEvent, ICreateEvent } from "../models";
 import { loadEventsService, signInUserService, creatEventService } from "../services";
 import { ThunkAction } from "redux-thunk";
 import { decode } from "jsonwebtoken";
@@ -32,7 +32,7 @@ export const loadEvents = (): Effect => async (dispatch, getState) => {
 export const createEvent = (event: IEvent): Effect => async (dispatch, getState) => {
 	dispatch(loadCreateEventsRequest());
 	try {
-		const response: IResponsePayload = await creatEventService(event);
+		const response: ICreateEvent = await creatEventService(event);
 		if (!!response.success) {
 			return dispatch(loadCreateEventSuccess(response));
 		} else {
