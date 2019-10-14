@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { IResponsePayload, ICreateEvent } from "../models";
+import { IResponsePayload, IRequestPayload, IEvent, IUser } from "../models";
 
 // IEvents
 export interface ILoadEventsRequest extends Action {
@@ -8,12 +8,12 @@ export interface ILoadEventsRequest extends Action {
 
 export interface ILoadEventsSuccess extends Action {
 	type: "loadEventsSuccess";
-	payload: IResponsePayload;
+	payload: IResponsePayload<IEvent>;
 }
 
 export interface ILoadEventsError extends Action {
 	type: "loadEventsError";
-	payload: IResponsePayload;
+	payload: IResponsePayload<IEvent>;
 }
 
 export interface ILoadCreateEventsRequest extends Action {
@@ -21,12 +21,12 @@ export interface ILoadCreateEventsRequest extends Action {
 }
 export interface ILoadCreatEventSuccess extends Action {
 	type: "loadCreateEventSuccess";
-	payload: ICreateEvent;
+	payload: IRequestPayload<IEvent>;
 }
 
 export interface ILoadCreateEventsError extends Action {
 	type: "loadCreateEventsError";
-	payload: ICreateEvent;
+	payload: IRequestPayload<IEvent>;
 }
 
 export type ApplicationEventsAction =
@@ -44,12 +44,12 @@ export interface ILoadAuthenticationRequest extends Action {
 
 export interface ILoadAuthenticationSuccess extends Action {
 	type: "loadAuthenticationSuccess";
-	payload: IResponsePayload;
+	payload: IResponsePayload<IUser>;
 }
 
 export interface ILoadAuthenticationError extends Action {
 	type: "loadAuthenticationError";
-	payload: IResponsePayload;
+	payload: IResponsePayload<IUser>;
 }
 
 export type ApplicationAuthenticationAction =

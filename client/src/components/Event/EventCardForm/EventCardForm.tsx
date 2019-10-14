@@ -1,14 +1,13 @@
+import React, { Fragment, useState, useEffect } from "react";
 import { DateInput, TimeInput } from "semantic-ui-calendar-react";
-import { GoogleMaps } from "../../GoogleMaps";
 import { IAddress, IEvent } from "../../../models";
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import { GoogleMaps } from "../../GoogleMaps";
 import moment from "moment";
 import "moment/locale/de";
 import {
 	Form,
 	CheckboxProps,
 	Segment,
-	Input,
 	Icon,
 	Radio,
 	Dropdown,
@@ -83,7 +82,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const handleOnChangeAdmissionCharge = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
 		if (!!switchState && +event.target.value <= 200) {
 			setMoney(event.target.value);
-			setAdmissionCharge(event.target.value);
+			//setAdmissionCharge(event.target.value);
 		} else {
 			setMoney("");
 		}
@@ -100,6 +99,8 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const handleOnSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		const entry = money.length > 0 && !switchState ? money : admissionCharge;
+
 		const newEvent: IEvent = {
 			eventName,
 			eventType,
@@ -107,13 +108,11 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 			address,
 			timeStart,
 			timeEnd,
-			admissionCharge,
+			entry,
 			hidden
 		};
 
 		onCreateEvent(newEvent);
-
-		console.log(newEvent);
 
 		setEventName("");
 		setEventType("");
@@ -272,7 +271,6 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 								/>
 							</Segment>
 						</Segment.Group>
-						<Form.Group widths="equal" />
 						<Segment.Group horizontal>
 							<Segment padded>
 								<Dropdown
@@ -289,13 +287,12 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 							<Segment>
 								<Form.Field>
 									<Form.Input
-										error={money.length != 0 ? false : true}
+										error={money.length !== 0 ? false : true}
 										onChange={handleOnChangeAdmissionCharge}
 										onKeyDown={handleOnKeyDownAdmissionCharge}
 										disabled={!switchState}
 										value={money.replace(/^0+/, "")}
-										label={{ tag: true, icon: "euro sign", color: "black" }}
-										labelPosition="right"
+										icon="eur"
 									/>
 								</Form.Field>
 							</Segment>

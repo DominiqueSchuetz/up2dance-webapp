@@ -1,4 +1,4 @@
-import { Card, Image, List, Label, Button, Icon, ButtonProps } from "semantic-ui-react";
+import { Card, Image, List, Label, Button, Icon } from "semantic-ui-react";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
 import { IEvent, IAddress } from "../../../models";

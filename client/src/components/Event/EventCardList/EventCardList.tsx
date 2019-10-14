@@ -17,9 +17,12 @@ interface IDispatchProps {
 const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { payload, onGetAllEvents, onCreateEvent } = props;
 
-	useEffect(() => {
-		onGetAllEvents();
-	}, []);
+	useEffect(
+		() => {
+			onGetAllEvents();
+		},
+		[ onGetAllEvents ]
+	);
 
 	const renderEventCards: (events: IEvent[]) => JSX.Element[] | undefined = (events: IEvent[]) => {
 		if (isArray(events)) {

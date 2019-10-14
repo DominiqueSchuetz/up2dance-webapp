@@ -1,15 +1,15 @@
-export interface IResponsePayload {
+export interface IResponsePayload<T> {
 	success: boolean;
 	error_code: number;
 	message: string;
-	data: IEvent[];
+	data: Array<T>;
 }
 
-export interface ICreateEvent {
+export interface IRequestPayload<T> {
 	success: boolean;
 	error_code: number;
 	message: string;
-	data: IEvent;
+	data: T;
 }
 
 export interface IAddress {
@@ -30,7 +30,7 @@ export interface IEvent {
 	timeStart?: string | undefined;
 	timeEnd?: string | undefined;
 	comment?: string | undefined;
-	admissionCharge?: string | undefined;
+	entry?: string | undefined;
 	hidden?: boolean | undefined;
 }
 
@@ -53,7 +53,7 @@ export interface ILoadingState {
 	isPayloadLoading: boolean;
 }
 
-export interface ApplicationState {
+export interface ApplicationState<T> {
 	loading: ILoadingState;
-	payload: IResponsePayload;
+	payload: IResponsePayload<T>;
 }

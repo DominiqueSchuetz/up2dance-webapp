@@ -31,7 +31,7 @@ class EventSchema extends Schema {
 					type: String,
 					trim: true
 				},
-				admissionCharge: {
+				entry: {
 					required: false,
 					type: String,
 					trim: true

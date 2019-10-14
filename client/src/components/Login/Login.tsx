@@ -1,11 +1,11 @@
-import { ApplicationState, ISignInUserData } from "../../models";
+import { ISignInUserData, IUser } from "../../models";
 import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
 import { ILoadAuthenticationSuccess } from "../../store/types";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 interface IStateProps {
-	payload: ApplicationState;
+	payload: IUser;
 }
 
 interface IDispatchProps {

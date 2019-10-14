@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Button, Header, Icon, ModalActions, Modal } from "semantic-ui-react";
+import { Button, Header, Icon, Modal } from "semantic-ui-react";
 
 interface IStateProps {
 	handleCancelEvent?: any;

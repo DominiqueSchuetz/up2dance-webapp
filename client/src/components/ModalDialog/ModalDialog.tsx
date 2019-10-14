@@ -1,4 +1,4 @@
-import { Modal, Button, ModalProps } from "semantic-ui-react";
+import { Modal, ModalProps } from "semantic-ui-react";
 import React, { Fragment } from "react";
 
 interface IStateProps {
@@ -10,7 +10,7 @@ interface IStateProps {
 }
 
 const ModalDialog: React.FC<IStateProps> = (props) => {
-	const { headerContent, modalStatus, onClose, trigger, children } = props;
+	const { modalStatus, onClose, trigger, children } = props;
 
 	return (
 		<Fragment>

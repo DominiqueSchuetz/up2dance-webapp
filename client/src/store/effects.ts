@@ -1,5 +1,5 @@
 import { ApplicationEventsAction, ApplicationAuthenticationAction } from "./types";
-import { ApplicationState, ISignInUserData, IResponsePayload, IEvent, ICreateEvent } from "../models";
+import { ApplicationState, ISignInUserData, IResponsePayload, IEvent, IRequestPayload, IUser } from "../models";
 import { loadEventsService, signInUserService, creatEventService } from "../services";
 import { ThunkAction } from "redux-thunk";
 import { decode } from "jsonwebtoken";
@@ -15,7 +15,12 @@ import {
 	loadAuthenticationError
 } from "./actions";
 
-type Effect = ThunkAction<any, ApplicationState, any, ApplicationEventsAction | ApplicationAuthenticationAction>;
+type Effect = ThunkAction<
+	any,
+	ApplicationState<IEvent & IUser>,
+	any,
+	ApplicationEventsAction | ApplicationAuthenticationAction
+>;
 
 // #################  Get all events
 export const loadEvents = (): Effect => async (dispatch, getState) => {
@@ -32,7 +37,7 @@ export const loadEvents = (): Effect => async (dispatch, getState) => {
 export const createEvent = (event: IEvent): Effect => async (dispatch, getState) => {
 	dispatch(loadCreateEventsRequest());
 	try {
-		const response: ICreateEvent = await creatEventService(event);
+		const response: IRequestPayload<IEvent> = await creatEventService(event);
 		if (!!response.success) {
 			return dispatch(loadCreateEventSuccess(response));
 		} else {
@@ -51,7 +56,7 @@ export const createEvent = (event: IEvent): Effect => async (dispatch, getState)
 export const loginUser = (userData: ISignInUserData): Effect => async (dispatch, getState) => {
 	dispatch(loadAuthenticationRequest());
 	try {
-		const response: IResponsePayload = await signInUserService(userData);
+		const response: IResponsePayload<IUser> = await signInUserService(userData);
 		if (!!response.success) {
 			const jwtToken = Object(response.data)!.jwt_token;
 			localStorage.setItem("token", jwtToken);

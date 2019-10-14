@@ -9,7 +9,7 @@ export interface IEvent extends Document {
 	eventDate: string;
 	timeStart: string;
 	timeEnd: string;
-	admissionCharge: string;
+	entry: string;
 	payment: string;
 	hidden: boolean;
 }
