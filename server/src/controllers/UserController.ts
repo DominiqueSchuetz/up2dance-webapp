@@ -1,12 +1,12 @@
-import { Request, Response, Next } from "restify";
-import { BaseController } from "./BaseController";
-import { IUser } from "../models/interfaces/IUser";
 import {
 	successResponse,
 	badRequestResponse,
 	internalServerErrorResponse,
 	unauthorizedResponse
 } from "../responses/responses";
+import { Request, Response, Next } from "restify";
+import { BaseController } from "./BaseController";
+import { IUser } from "../models/interfaces/IUser";
 import { Types } from "mongoose";
 import { pick, isEmpty, isString } from "lodash";
 require("dotenv").config();

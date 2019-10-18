@@ -1,21 +1,22 @@
-import { ApplicationEventsAction, ILoadEventsSuccess } from "../../../store/types";
-import React, { useEffect, Fragment } from "react";
-import { Segment, Card } from "semantic-ui-react";
+import { ApplicationEventsAction, IReduxGetEventsAction } from "../../../store/types/event.types";
+import React, { useEffect, Fragment, useState } from "react";
+import { Segment, Card, Button } from "semantic-ui-react";
 import { IEvent } from "../../../models";
 import { isArray } from "lodash";
 import { EventCard } from "../";
 
 interface IStateProps {
-	payload: IEvent[];
+	events: any;
 }
 
 interface IDispatchProps {
-	onGetAllEvents(): Promise<ILoadEventsSuccess>;
+	onGetAllEvents(): Promise<IReduxGetEventsAction>;
 	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
 }
 
 const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { payload, onGetAllEvents, onCreateEvent } = props;
+	const { events, onGetAllEvents, onCreateEvent } = props;
+	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(
 		() => {
@@ -24,12 +25,16 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		[ onGetAllEvents ]
 	);
 
+	const openModalDialogEditForm = (): void => {
+		setModalStatus({ modalOpen: true });
+	};
+
 	const renderEventCards: (events: IEvent[]) => JSX.Element[] | undefined = (events: IEvent[]) => {
 		if (isArray(events)) {
 			return events.map((event: IEvent) => (
 				<Fragment key={event._id}>
 					<Segment raised style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
-						<EventCard onCreateEvent={onCreateEvent} event={event} />
+						<EventCard onCreateEvent={onCreateEvent} event={event} children={modalStatus} />
 					</Segment>
 				</Fragment>
 			));
@@ -37,8 +42,11 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 	return (
 		<section>
+			<Segment textAlign="center">
+				<Button circular icon="add" onClick={openModalDialogEditForm} />
+			</Segment>
 			<Card.Group itemsPerRow="4" centered stackable>
-				{renderEventCards(payload)}
+				{renderEventCards(events)}
 			</Card.Group>
 		</section>
 	);

@@ -1,21 +1,19 @@
 import { CounterContainer, EventContainer, LoginContainer } from "../container";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { applyMiddleware, createStore, combineReducers } from "redux";
+import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { eventReducer, authorizedUserReducer } from "../store/reducer";
-import thunk, { ThunkMiddleware } from "redux-thunk";
+// import { authorizedUserReducer } from "../store/reducers";
+import thunk, { ThunkMiddleware, ThunkDispatch } from "redux-thunk";
 import { Header } from "../components/Header";
 import { Footer } from "./Footer";
+import { rootReducer } from "../store/reducers";
+
 import "semantic-ui-css/semantic.min.css";
 import React, { Fragment } from "react";
 import { Provider } from "react-redux";
 
 const composeEnhancer = composeWithDevTools({});
-const reduxStore = createStore(
-	combineReducers({ eventReducer, authorizedUserReducer }),
-	{},
-	composeEnhancer(applyMiddleware(thunk as ThunkMiddleware))
-);
+const reduxStore: any = createStore(rootReducer, {}, composeEnhancer(applyMiddleware(thunk as ThunkMiddleware)));
 reduxStore.subscribe(() => console.log("redux store", reduxStore.getState()));
 
 const App: React.FC = () => {

@@ -1,6 +1,6 @@
 import { ISignInUserData, IUser } from "../../models";
 import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
-import { ILoadAuthenticationSuccess } from "../../store/types";
+import { IReduxSignInUserAction } from "../../store/types/user.types";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -9,7 +9,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-	onSignInUser(userData: ISignInUserData): Promise<ILoadAuthenticationSuccess>;
+	onSignInUser(userData: ISignInUserData): Promise<IReduxSignInUserAction>;
 }
 
 const Login: React.FC<IStateProps & IDispatchProps> = (props) => {

@@ -16,7 +16,7 @@ import {
 	DropdownProps,
 	InputOnChangeData
 } from "semantic-ui-react";
-import { ApplicationEventsAction } from "../../../store/types";
+import { ApplicationEventsAction } from "../../../store/types/event.types";
 
 interface IStateProps {
 	handleCancelEvent?: any;

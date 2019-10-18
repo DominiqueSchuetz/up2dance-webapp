@@ -1,14 +1,13 @@
-import { connect } from "react-redux";
-import { loginUser } from "../store/effects";
+import { loginUser } from "../store/effects/user.effects";
+import { ApplicationReducerState } from "../store/reducers";
+import { AnyAction, bindActionCreators } from "redux";
 import { Login } from "../components/Login";
-import { IEvent } from "../models";
+import { connect } from "react-redux";
+import { Dispatch } from "react";
 
-interface IState {
-	EventReducer: IEvent[];
-}
-
-export const mapStateToProps = (state: any) => ({
-	payload: state.authorizedUserReducer
+const mapStateToProps = (state: ApplicationReducerState) => ({
+	users: state.userReducer.payload.items,
+	isLoaded: state.userReducer
 });
 
 export const mapDispatchToProps = {

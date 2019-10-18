@@ -27,13 +27,7 @@ const EventDeleteDialog: React.FC<IStateProps> = (props) => {
 				<Button color="black" onClick={handleCancelEvent}>
 					Abbrechen
 				</Button>
-				<Button
-					onClick={handleCancelEvent}
-					positive
-					labelPosition="right"
-					icon="checkmark"
-					content="Na klar !!!"
-				/>
+				<Button onClick={handleCancelEvent} positive labelPosition="right" icon="checkmark" content="Na klar" />
 			</Modal.Actions>
 		</Fragment>
 	);

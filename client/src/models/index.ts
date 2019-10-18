@@ -1,15 +1,30 @@
-export interface IResponsePayload<T> {
-	success: boolean;
-	error_code: number;
-	message: string;
-	data: Array<T>;
+import { ThunkAction } from "redux-thunk";
+import { ApplicationReducerState } from "../store/reducers";
+import { ApplicationEventsAction } from "../store/types/event.types";
+import { ApplicationUserAction } from "../store/types/user.types";
+
+export interface ILoadingState {
+	isPayloadLoading: boolean;
 }
 
-export interface IRequestPayload<T> {
+export interface ApplicationState<T> {
+	loading: ILoadingState;
+	payload: IReduxState<T>;
+}
+
+export interface IReduxState<T> {
 	success: boolean;
 	error_code: number;
 	message: string;
-	data: T;
+	items: T[];
+	item: T;
+}
+
+export interface IResponse<T> {
+	success: boolean;
+	error_code: number;
+	message: string;
+	data: T[] & T;
 }
 
 export interface IAddress {
@@ -35,13 +50,13 @@ export interface IEvent {
 }
 
 export interface IUser {
-	_id: string;
+	_id?: string | undefined;
 	firstName: string;
 	lastName: string;
 	email: string;
 	password: string;
-	instrument: string;
-	comment: string;
+	instrument?: string | undefined;
+	comment?: string | undefined;
 }
 
 export interface ISignInUserData {
@@ -49,11 +64,4 @@ export interface ISignInUserData {
 	password: string;
 }
 
-export interface ILoadingState {
-	isPayloadLoading: boolean;
-}
-
-export interface ApplicationState<T> {
-	loading: ILoadingState;
-	payload: IResponsePayload<T>;
-}
+export type Effect = ThunkAction<any, ApplicationReducerState, any, ApplicationEventsAction | ApplicationUserAction>;

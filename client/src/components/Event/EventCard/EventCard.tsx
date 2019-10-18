@@ -4,7 +4,7 @@ import { ModalDialog } from "../../ModalDialog";
 import { IEvent, IAddress } from "../../../models";
 import { EventDeleteDialog } from "../";
 import { EventCardForm } from "../";
-import { ApplicationEventsAction } from "../../../store/types";
+import { ApplicationEventsAction } from "../../../store/types/event.types";
 
 interface IStateProps {
 	event: IEvent;
