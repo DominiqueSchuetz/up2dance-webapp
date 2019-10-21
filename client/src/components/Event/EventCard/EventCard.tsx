@@ -11,11 +11,13 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
+	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
+	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
+	onGetEventById?(id: string): Promise<ApplicationEventsAction>;
 }
 
 const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { event, onCreateEvent } = props;
+	const { event, updateEventById } = props;
 	const address: IAddress | undefined = event.address;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -36,14 +38,18 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const handleSpecialEvent = (): void => {
-		console.log("parent handler");
 		onCloseEvent();
 	};
 
 	const renderModalComponent: JSX.Element = deleteDialog ? (
-		<EventDeleteDialog children={event} handleCancelEvent={handleSpecialEvent} />
+		<EventDeleteDialog children={event} handleCancelEvent={handleSpecialEvent} headerText="Event Löschen" />
 	) : (
-		<EventCardForm onCreateEvent={onCreateEvent} children={event} handleCancelEvent={handleSpecialEvent} />
+		<EventCardForm
+			updateEventById={updateEventById}
+			event={event}
+			handleCancelEvent={handleSpecialEvent}
+			headerText="Event Editieren"
+		/>
 	);
 
 	const cardButtonGroup: JSX.Element = (
@@ -67,13 +73,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 	return (
 		<Fragment>
 			<Card>
-				<ModalDialog
-					trigger={cardButtonGroup}
-					modalStatus={modalStatus.modalOpen}
-					headerContent={deleteDialog ? "LÖSCHEN" : "EDITIEREN"}
-					onClose={onCloseEvent}
-					specialEvent={handleSpecialEvent}
-				>
+				<ModalDialog trigger={cardButtonGroup} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
 					{renderModalComponent}
 				</ModalDialog>
 				<Image
@@ -83,7 +83,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 					ui={true}
 					label={{
 						as: "a",
-						color: "grey",
+						color: event.eventType !== "Öffentliche Veranstaltung" ? "orange" : "blue",
 						content: `${event.eventType}`,
 						icon: "bullhorn",
 						ribbon: true

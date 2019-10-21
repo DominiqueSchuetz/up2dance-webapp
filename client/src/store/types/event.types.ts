@@ -17,7 +17,7 @@ export interface IReduxErrorEventsAction extends IReduxBaseAction {
 
 export interface IReduxGetEventsAction extends IReduxBaseAction {
 	type: EReduxActionTypesEvent.GET_EVENTS;
-	payload: IResponse<IEvent>;
+	payload: IResponse<IEvent[]>;
 }
 export interface IReduxGetEventByIdAction extends IReduxBaseAction {
 	type: EReduxActionTypesEvent.GET_EVENT_BY_ID;

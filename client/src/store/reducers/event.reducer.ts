@@ -4,7 +4,7 @@ import { EReduxActionTypesEvent } from "../../enums";
 import produce from "immer";
 
 export const initialStateEvent: ApplicationState<IEvent> = {
-	loading: { isPayloadLoading: false },
+	loading: { isPayloadLoading: true },
 	payload: {
 		success: false,
 		message: "",
@@ -35,6 +35,44 @@ export const eventReducer = (state: ApplicationState<IEvent> = initialStateEvent
 				draft.payload.error_code = action.payload.error_code;
 				draft.payload.success = action.payload.success;
 				draft.payload.items.push(action.payload.data);
+			});
+		case EReduxActionTypesEvent.UPDATE_EVENT:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.message = action.payload.message;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.success = action.payload.success;
+				const updatedArray: IEvent[] = draft.payload.items.map((item) => {
+					const {
+						_id,
+						eventName,
+						eventDate,
+						eventType,
+						address,
+						comment,
+						entry,
+						hidden,
+						timeStart,
+						timeEnd
+					} = action.payload.data;
+					if (item._id === _id) {
+						return {
+							...item,
+							_id,
+							eventName,
+							eventDate,
+							eventType,
+							address,
+							comment,
+							entry,
+							hidden,
+							timeStart,
+							timeEnd
+						};
+					}
+					return item;
+				});
+				draft.payload.items = updatedArray;
 			});
 		case EReduxActionTypesEvent.ERROR_EVENTS:
 			return produce(state, (draft) => {

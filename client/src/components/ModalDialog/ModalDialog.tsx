@@ -3,10 +3,8 @@ import React, { Fragment } from "react";
 
 interface IStateProps {
 	trigger: React.ReactNode;
-	headerContent: string;
 	modalStatus: boolean;
-	onClose: ((event: React.MouseEvent<HTMLElement, MouseEvent>, data: ModalProps) => void) | undefined;
-	specialEvent?: any;
+	onClose?: ((event: React.MouseEvent<HTMLElement, MouseEvent>, data: ModalProps) => void) | undefined;
 }
 
 const ModalDialog: React.FC<IStateProps> = (props) => {

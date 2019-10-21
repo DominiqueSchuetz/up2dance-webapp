@@ -2,15 +2,16 @@ import React, { Fragment } from "react";
 import { Button, Header, Icon, Modal } from "semantic-ui-react";
 
 interface IStateProps {
+	headerText?: string;
 	handleCancelEvent?: any;
 }
 
 const EventDeleteDialog: React.FC<IStateProps> = (props) => {
-	const { handleCancelEvent, children } = props;
+	const { handleCancelEvent, children, headerText } = props;
 
 	return (
 		<Fragment>
-			<Modal.Header>Löschen</Modal.Header>
+			<Modal.Header>{headerText}</Modal.Header>
 			<Modal.Content image>
 				<Modal.Description>
 					<Header as="h2">

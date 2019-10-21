@@ -19,10 +19,13 @@ import {
 import { ApplicationEventsAction } from "../../../store/types/event.types";
 
 interface IStateProps {
+	headerText?: string;
 	handleCancelEvent?: any;
+	event?: IEvent;
 }
 interface IDispatchProps {
-	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
+	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
+	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
 }
 
 const eventTypeObject: any = [
@@ -37,6 +40,7 @@ const eventTypeObject: any = [
 		value: "Geschlossene Veranstaltung"
 	}
 ];
+
 const admissionChargeObject: any = [
 	{
 		key: "1234",
@@ -58,25 +62,36 @@ const admissionChargeObject: any = [
 const DURATION = 200;
 
 const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { handleCancelEvent, onCreateEvent } = props;
+	const { handleCancelEvent, onCreateEvent, updateEventById, headerText, event } = props;
 	const [ eventName, setEventName ] = useState<string>("");
 	const [ eventType, setEventType ] = useState<string | undefined>(undefined);
 	const [ eventDate, setEventDate ] = useState<string>("");
-	const [ timeStart, setTimeStart ] = useState<string>("");
-	const [ timeEnd, setTimeEnd ] = useState<string>("");
+	const [ timeStart, setTimeStart ] = useState<string | undefined>("");
+	const [ timeEnd, setTimeEnd ] = useState<string | undefined>("");
 	const [ hidden, setHiddenFlag ] = useState(false);
 	const [ money, setMoney ] = useState<string>("");
-
 	const [ admissionCharge, setAdmissionCharge ] = useState<string | undefined>("nicht bekannt");
-
 	const [ actualDate, setActualDate ] = useState<string>("");
 	const [ switchState, setSwitchState ] = useState<boolean>(false);
-
-	const [ address, setAddress ] = useState<IAddress | undefined>();
+	const [ updateForm, setUpdateForm ] = useState<boolean>(false);
+	const [ address, setAddress ] = useState<IAddress>();
 
 	useEffect(() => {
 		const date = moment(Date.now()).locale("de").format("LL");
 		setActualDate(date);
+
+		if (event && event!._id) {
+			setEventName(event!.eventName);
+			setEventType(event!.eventType);
+			setEventDate(event!.eventDate);
+			setTimeStart(event!.timeStart);
+			setTimeEnd(event!.timeEnd);
+			setAdmissionCharge(event.entry);
+			setUpdateForm(true);
+			console.log("addresse", event!.address);
+		} else {
+			setUpdateForm(false);
+		}
 	}, []);
 
 	const handleOnChangeAdmissionCharge = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
@@ -104,15 +119,15 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		const newEvent: IEvent = {
 			eventName,
 			eventType,
-			eventDate,
-			address,
+			eventDate: eventDate!,
 			timeStart,
 			timeEnd,
 			entry,
+			address,
 			hidden
 		};
-
-		onCreateEvent(newEvent);
+		//TODO Decide wich method
+		updateForm ? updateEventById!(event!._id!, newEvent) : onCreateEvent!(newEvent);
 
 		setEventName("");
 		setEventType("");
@@ -136,15 +151,15 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const handleOnDateTime = (e: React.SyntheticEvent<HTMLElement, Event>, data: any) => {
-		switch (data.name) {
+		switch (data!.name) {
 			case "eventDate":
-				setEventDate(data.value);
+				setEventDate(data!.value);
 				break;
 			case "timeStart":
-				setTimeStart(data.value);
+				setTimeStart(data!.value);
 				break;
 			case "timeEnd":
-				setTimeEnd(data.value);
+				setTimeEnd(data!.value);
 				break;
 			default:
 				break;
@@ -179,7 +194,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<Fragment>
-			<Modal.Header>EDITIEREN</Modal.Header>
+			<Modal.Header>{headerText}</Modal.Header>
 			<Modal.Content>
 				<Modal.Description>
 					<Form autoComplete="off" onSubmit={handleOnSubmit}>
@@ -214,7 +229,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<Segment.Group>
 							<Segment>
 								<DateInput
-									error={eventDate.length > 0 ? false : true}
+									error={eventDate!.length > 0 ? false : true}
 									preserveViewMode={true}
 									popupPosition="bottom left"
 									closable
@@ -227,7 +242,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 									name="eventDate"
 									placeholder="Datum"
 									minDate={actualDate}
-									value={eventDate}
+									value={eventDate!}
 									iconPosition="left"
 									onChange={handleOnDateTime}
 									onKeyDown={handleOnKeyDown}
@@ -246,7 +261,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 									clearIcon={<Icon name="remove" color="red" />}
 									name="timeStart"
 									placeholder="Beginn"
-									value={timeStart}
+									value={timeStart!}
 									iconPosition="left"
 									onChange={handleOnDateTime}
 									onKeyDown={handleOnKeyDown}
@@ -263,7 +278,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 									clearIcon={<Icon name="remove" color="red" />}
 									name="timeEnd"
 									placeholder="Ende"
-									value={timeEnd}
+									value={timeEnd!}
 									iconPosition="left"
 									onChange={handleOnDateTime}
 									onKeyDown={handleOnKeyDown}
