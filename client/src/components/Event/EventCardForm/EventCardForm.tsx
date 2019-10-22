@@ -88,7 +88,6 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 			setTimeEnd(event!.timeEnd);
 			setAdmissionCharge(event.entry);
 			setUpdateForm(true);
-			console.log("addresse", event!.address);
 		} else {
 			setUpdateForm(false);
 		}

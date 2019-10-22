@@ -132,9 +132,9 @@ export abstract class BaseController<T extends Document> implements IController 
      */
 	protected async remove(req: Request, res: Response): Promise<void> {
 		try {
-			const result = await this._repository.delete(req.params.id);
-			result && Object(result).n == 1 && Object(result).ok == 1
-				? successResponse(res, null, "Delete item successfully")
+			const result: T = await this._repository.delete(req.params.id);
+			result && result._id
+				? successResponse(res, result, "Delete item successfully", 0)
 				: badRequestResponse(res, "Could not delete item by id");
 		} catch (error) {
 			internalServerErrorResponse(res, error.message);

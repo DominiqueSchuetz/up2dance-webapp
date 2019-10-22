@@ -3,7 +3,8 @@ import {
 	IReduxCreateEventAction,
 	IReduxLoadEventsAction,
 	IReduxErrorEventsAction,
-	IReduxUpdateEventAction
+	IReduxUpdateEventAction,
+	IReduxDeleteEventAction
 } from "../types/event.types";
 import { EReduxActionTypesEvent } from "../../enums";
 import { IResponse } from "../../models";
@@ -24,6 +25,10 @@ export const creatEventsRequest = (payload: IResponse<IEvent>): IReduxCreateEven
 });
 export const updateEventByIdRequest = (payload: IResponse<IEvent>): IReduxUpdateEventAction => ({
 	type: EReduxActionTypesEvent.UPDATE_EVENT,
+	payload
+});
+export const deleteEventByIdRequest = (payload: IResponse<IEvent>): IReduxDeleteEventAction => ({
+	type: EReduxActionTypesEvent.DELETE_EVENT,
 	payload
 });
 

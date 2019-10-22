@@ -1,17 +1,22 @@
+import { ISignInUserData, IResponse, IEvent, IUser } from "../models";
 import {
 	GET_ALL_EVENTS_API,
 	GET_ALL_USERS_API,
 	POST_USER_SIGN_IN_API,
 	CREATE_EVENT_API,
-	UPDATE_EVENT_API
+	UPDATE_EVENT_API,
+	DELETE_EVENT_API
 } from "../api";
-import { ISignInUserData, IResponse, IEvent, IUser } from "../models";
 
 // ###################################################
 // #################  Events
 // ###################################################
 export const getAllEventsService = async (): Promise<IResponse<IEvent[]>> => {
-	const fetchedEvents: Response = await fetch(GET_ALL_EVENTS_API);
+	const HEADER = {
+		method: "GET",
+		headers: { "content-type": "application/json" }
+	};
+	const fetchedEvents: Response = await fetch(GET_ALL_EVENTS_API, HEADER);
 	const responsePayload: Promise<IResponse<IEvent[]>> = fetchedEvents.json();
 	return responsePayload;
 };
@@ -33,8 +38,18 @@ export const updateEventService = async (id: string, event: IEvent): Promise<IRe
 		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
 		body: JSON.stringify(event)
 	};
-	const updateNewEvent: Response = await fetch(UPDATE_EVENT_API + "/" + id, HEADER);
+	const updateNewEvent: Response = await fetch(UPDATE_EVENT_API + id, HEADER);
 	const responsePayload: Promise<IResponse<IEvent>> = await updateNewEvent.json();
+	return responsePayload;
+};
+
+export const deleteEventService = async (id: string): Promise<IResponse<IEvent>> => {
+	const HEADER = {
+		method: "DELETE",
+		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` }
+	};
+	const deleteEvent: Response = await fetch(DELETE_EVENT_API + id, HEADER);
+	const responsePayload: Promise<IResponse<IEvent>> = await deleteEvent.json();
 	return responsePayload;
 };
 

@@ -74,6 +74,17 @@ export const eventReducer = (state: ApplicationState<IEvent> = initialStateEvent
 				});
 				draft.payload.items = updatedArray;
 			});
+		case EReduxActionTypesEvent.DELETE_EVENT:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.message = action.payload.message;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.success = action.payload.success;
+				const filteredArray: IEvent[] = draft.payload.items.filter(
+					(item) => item._id !== action.payload.data._id
+				);
+				draft.payload.items = filteredArray;
+			});
 		case EReduxActionTypesEvent.ERROR_EVENTS:
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;

@@ -1,13 +1,25 @@
 import React, { Fragment } from "react";
 import { Button, Header, Icon, Modal } from "semantic-ui-react";
+import { ApplicationEventsAction } from "../../../store/types/event.types";
+import { IEvent } from "../../../models";
 
 interface IStateProps {
 	headerText?: string;
 	handleCancelEvent?: any;
+	event: IEvent;
 }
 
-const EventDeleteDialog: React.FC<IStateProps> = (props) => {
-	const { handleCancelEvent, children, headerText } = props;
+interface IDispatchProps {
+	onDeleteEventById?(id: string): Promise<ApplicationEventsAction>;
+}
+
+const EventDeleteDialog: React.FC<IStateProps & IDispatchProps> = (props) => {
+	const { event, handleCancelEvent, headerText, onDeleteEventById } = props;
+
+	const handleDeleteEvent = () => {
+		onDeleteEventById!(event!._id!);
+		handleCancelEvent();
+	};
 
 	return (
 		<Fragment>
@@ -17,7 +29,7 @@ const EventDeleteDialog: React.FC<IStateProps> = (props) => {
 					<Header as="h2">
 						<Header.Content>
 							Du möchtest wirklich <Icon color="pink" name="hand point right" />
-							<i style={{ color: "pink" }}>{Object(children).eventName}</i>{" "}
+							<i style={{ color: "pink" }}>{event!.eventName}</i>{" "}
 							<Icon color="pink" name="hand point left" />
 							löschen?
 						</Header.Content>
@@ -28,7 +40,7 @@ const EventDeleteDialog: React.FC<IStateProps> = (props) => {
 				<Button color="black" onClick={handleCancelEvent}>
 					Abbrechen
 				</Button>
-				<Button onClick={handleCancelEvent} positive labelPosition="right" icon="checkmark" content="Na klar" />
+				<Button onClick={handleDeleteEvent} positive labelPosition="right" icon="checkmark" content="Löschen" />
 			</Modal.Actions>
 		</Fragment>
 	);

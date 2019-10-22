@@ -12,12 +12,13 @@ interface IStateProps {
 
 interface IDispatchProps {
 	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
-	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
 	onGetEventById?(id: string): Promise<ApplicationEventsAction>;
+	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
+	onDeleteEventById?(id: string): Promise<ApplicationEventsAction>;
 }
 
 const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { event, updateEventById } = props;
+	const { event, updateEventById, onDeleteEventById } = props;
 	const address: IAddress | undefined = event.address;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -42,7 +43,12 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const renderModalComponent: JSX.Element = deleteDialog ? (
-		<EventDeleteDialog children={event} handleCancelEvent={handleSpecialEvent} headerText="Event Löschen" />
+		<EventDeleteDialog
+			onDeleteEventById={onDeleteEventById}
+			event={event}
+			handleCancelEvent={handleSpecialEvent}
+			headerText="Event Löschen"
+		/>
 	) : (
 		<EventCardForm
 			updateEventById={updateEventById}

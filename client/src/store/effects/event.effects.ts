@@ -1,11 +1,12 @@
-import { getAllEventsService, creatEventService, updateEventService } from "../../services";
+import { getAllEventsService, creatEventService, updateEventService, deleteEventService } from "../../services";
 import { Effect, IEvent, IResponse } from "../../models";
 import {
 	loadEventsRequest,
 	getEventsRequest,
 	loadEventsError,
 	creatEventsRequest,
-	updateEventByIdRequest
+	updateEventByIdRequest,
+	deleteEventByIdRequest
 } from "../actions/event.actions";
 
 // Get all events
@@ -45,6 +46,25 @@ export const updateEventById = (id: string, event: IEvent): Effect => async (dis
 		const payload: IResponse<IEvent> = await updateEventService(id, event);
 		if (!!payload.success) {
 			return dispatch(updateEventByIdRequest(payload));
+		} else {
+			localStorage.removeItem("token");
+			localStorage.clear();
+			return dispatch(loadEventsError(payload));
+		}
+	} catch (e) {
+		localStorage.removeItem("token");
+		localStorage.clear();
+		return dispatch(loadEventsError(e));
+	}
+};
+
+// Update event by id
+export const deleteEventById = (id: string): Effect => async (dispatch, getState) => {
+	dispatch(loadEventsRequest());
+	try {
+		const payload: IResponse<IEvent> = await deleteEventService(id);
+		if (!!payload.success) {
+			return dispatch(deleteEventByIdRequest(payload));
 		} else {
 			localStorage.removeItem("token");
 			localStorage.clear();

@@ -16,10 +16,11 @@ interface IDispatchProps {
 	onGetAllEvents(): Promise<IReduxGetEventsAction>;
 	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
 	onUpdateEventById(id: string, event: IEvent): Promise<ApplicationEventsAction>;
+	onDeleteEventById(id: string): Promise<ApplicationEventsAction>;
 }
 
 const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { events, event, isLoaded, onGetAllEvents, onCreateEvent, onUpdateEventById } = props;
+	const { events, event, isLoaded, onGetAllEvents, onCreateEvent, onUpdateEventById, onDeleteEventById } = props;
 	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(
@@ -60,7 +61,12 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 				return events.map((mapEvent: IEvent) => (
 					<Fragment key={mapEvent._id}>
 						<Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
-							<EventCard updateEventById={onUpdateEventById} event={mapEvent} children={modalStatus} />
+							<EventCard
+								onDeleteEventById={onDeleteEventById}
+								updateEventById={onUpdateEventById}
+								event={mapEvent}
+								children={modalStatus}
+							/>
 						</Segment>
 					</Fragment>
 				));

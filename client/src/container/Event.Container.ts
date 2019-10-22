@@ -1,4 +1,4 @@
-import { getAllEvents, createEvent, updateEventById } from "../store/effects/event.effects";
+import { getAllEvents, createEvent, updateEventById, deleteEventById } from "../store/effects/event.effects";
 import { ApplicationReducerState } from "../store/reducers";
 import { AnyAction, bindActionCreators } from "redux";
 import { EventCardList } from "../components/Event";
@@ -14,6 +14,7 @@ const mapStateToProps = (state: ApplicationReducerState) => ({
 export const mapDispatchToProps = {
 	onGetAllEvents: getAllEvents,
 	onUpdateEventById: updateEventById,
+	onDeleteEventById: deleteEventById,
 	onCreateEvent: createEvent
 };
 
