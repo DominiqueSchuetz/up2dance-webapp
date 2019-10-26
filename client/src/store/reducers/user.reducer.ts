@@ -26,7 +26,8 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 				draft.payload.message = action.payload.message;
 				draft.payload.error_code = action.payload.error_code;
 				draft.payload.success = action.payload.success;
-				draft.payload.items = action.payload.data;
+				draft.payload.item = action.payload.data;
+				console.log("action response ", action.payload);
 			});
 		case EReduxActionTypesUser.ERROR_USERS:
 			return produce(state, (draft) => {

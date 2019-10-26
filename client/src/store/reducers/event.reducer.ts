@@ -9,7 +9,12 @@ export const initialStateEvent: ApplicationState<IEvent> = {
 		success: false,
 		message: "",
 		error_code: 0,
-		item: { _id: "", address: undefined, eventName: "", eventDate: "" },
+		item: {
+			_id: "",
+			address: undefined,
+			eventName: "",
+			eventDate: ""
+		},
 		items: []
 	}
 };

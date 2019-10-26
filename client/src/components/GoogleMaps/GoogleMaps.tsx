@@ -1,3 +1,5 @@
+import { Segment, Form, Dimmer, Loader } from "semantic-ui-react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
 	GoogleMap,
 	useLoadScript,
@@ -5,9 +7,7 @@ import {
 	StandaloneSearchBoxProps,
 	Marker
 } from "@react-google-maps/api";
-import React, { useState, Fragment } from "react";
 import { IAddress } from "../../models";
-import { Segment, Form } from "semantic-ui-react";
 import { isNil, isEmpty } from "lodash";
 
 interface IAddressComponent {
@@ -18,13 +18,14 @@ interface IAddressComponent {
 
 interface IStateProps {
 	getAddress: any;
+	storedAddress: IAddress;
 }
 
 const mapStyles = [ { backgroundColor: "red" } ];
 const GOOGLE_MAPS_LIBARIES = [ "places" ];
 
 const GoogleMaps: React.FC<IStateProps> = (props) => {
-	const { getAddress } = props;
+	const { getAddress, storedAddress } = props;
 	const { isLoaded, loadError } = useLoadScript({
 		id: "script-loader",
 		version: "weekly",
@@ -35,6 +36,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		libraries: GOOGLE_MAPS_LIBARIES
 	});
 
+	const [ zoom, setZoom ] = useState(14);
 	const [ searchBox, setStandaloneSearchBox ] = useState();
 	const [ postion, setPosition ] = useState({ lat: 51.48217, lng: 11.9658 });
 	const [ address, setAddress ] = useState<IAddress>({
@@ -42,10 +44,20 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		streetNumber: "",
 		zipCode: "",
 		city: "",
-		state: "",
-		location: ""
+		state: "2",
+		location: { coordinates: [] }
 	});
-	const [ zoom, setZoom ] = useState(14);
+
+	useEffect(
+		() => {
+			if (storedAddress) {
+				setPosition({ lat: storedAddress.location.coordinates[1], lng: storedAddress.location.coordinates[0] });
+				setZoom(17);
+			}
+		},
+		[ address, storedAddress ]
+	);
+
 	const handleOnloadSearchBox = (ref: StandaloneSearchBoxProps) => {
 		setStandaloneSearchBox(ref);
 	};
@@ -58,7 +70,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 				zipCode: "",
 				city: "",
 				state: "",
-				location: ""
+				location: { coordinates: [] }
 			});
 			setPosition({ lat: 51.48217, lng: 11.9658 });
 			setZoom(14);
@@ -66,13 +78,16 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		}
 	};
 
-	const mapGetPlacesToAddress = (address_components: IAddressComponent[] | any, newPostion: any) => {
+	const mapGetPlacesToAddress = (
+		address_components: IAddressComponent[] | any,
+		newPostion: { lng: number; lat: number }
+	) => {
 		switch (+address_components.length) {
 			case 2:
 				setAddress({
 					city: address_components[0].long_name,
 					state: address_components[1].long_name,
-					location: newPostion
+					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
 				});
 				setZoom(14);
 				break;
@@ -82,7 +97,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					city: address_components[1].long_name,
 					state: address_components[2].long_name,
 					zipCode: address_components[3].long_name,
-					location: newPostion
+					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
 				});
 				setZoom(17);
 				break;
@@ -93,7 +108,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					city: address_components[2].long_name,
 					state: address_components[3].long_name,
 					zipCode: address_components[4].long_name,
-					location: newPostion
+					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
 				});
 				setZoom(18);
 				break;
@@ -105,11 +120,10 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	const handleOnPlaceChanged = () => {
 		if (!isEmpty(searchBox.getPlaces()[0]) && !isNil(searchBox.getPlaces()[0])) {
 			const addressComponents: [] = searchBox!.getPlaces()[0]!.address_components;
-			const lngLat = searchBox.getPlaces()[0]!.geometry.location;
-
-			const newPostion = {
-				lat: lngLat.lat(),
-				lng: lngLat.lng()
+			const lngLat = searchBox.getPlaces()[0].geometry.location;
+			const newPostion: { lng: number; lat: number } = {
+				lng: lngLat.lng(),
+				lat: lngLat.lat()
 			};
 			if (addressComponents) {
 				const types = [ "street_number", "route", "locality", "administrative_area_level_1", "postal_code" ];
@@ -120,8 +134,6 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					o.types.forEach((e: string) => {
 						if (types.includes(e)) {
 							filterByMapTypes.push(o);
-						} else {
-							return;
 						}
 					});
 				});
@@ -130,8 +142,6 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 			} else {
 				return;
 			}
-		} else {
-			return;
 		}
 	};
 
@@ -175,7 +185,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 				mapContainerClassName="google-maps-container"
 				options={{ styles: mapStyles }}
 			>
-				{address.city && <Marker position={postion} />}
+				{true && <Marker position={postion} />}
 			</GoogleMap>
 		</Fragment>
 	);
@@ -183,7 +193,13 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	if (loadError) {
 		return <div>Map cannot be loaded right now, sorry.</div>;
 	}
-	return isLoaded ? renderMap() : <h1>Loading...</h1>;
+	return isLoaded ? (
+		renderMap()
+	) : (
+		<Dimmer active inverted page>
+			<Loader inline />
+		</Dimmer>
+	);
 };
 
 export default GoogleMaps;

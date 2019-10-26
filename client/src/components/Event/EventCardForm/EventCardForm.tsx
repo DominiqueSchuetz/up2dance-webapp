@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { DateInput, TimeInput } from "semantic-ui-calendar-react";
 import { IAddress, IEvent } from "../../../models";
 import { GoogleMaps } from "../../GoogleMaps";
+import { isNil } from "lodash";
 import moment from "moment";
 import "moment/locale/de";
 import {
@@ -68,30 +69,33 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const [ eventDate, setEventDate ] = useState<string>("");
 	const [ timeStart, setTimeStart ] = useState<string | undefined>("");
 	const [ timeEnd, setTimeEnd ] = useState<string | undefined>("");
-	const [ hidden, setHiddenFlag ] = useState(false);
+	const [ hidden, setHiddenFlag ] = useState<boolean>(false);
 	const [ money, setMoney ] = useState<string>("");
 	const [ admissionCharge, setAdmissionCharge ] = useState<string | undefined>("nicht bekannt");
 	const [ actualDate, setActualDate ] = useState<string>("");
 	const [ switchState, setSwitchState ] = useState<boolean>(false);
 	const [ updateForm, setUpdateForm ] = useState<boolean>(false);
-	const [ address, setAddress ] = useState<IAddress>();
+	const [ address, setAddress ] = useState<IAddress | undefined>(undefined);
 
-	useEffect(() => {
-		const date = moment(Date.now()).locale("de").format("LL");
-		setActualDate(date);
-
-		if (event && event!._id) {
-			setEventName(event!.eventName);
-			setEventType(event!.eventType);
-			setEventDate(event!.eventDate);
-			setTimeStart(event!.timeStart);
-			setTimeEnd(event!.timeEnd);
-			setAdmissionCharge(event.entry);
-			setUpdateForm(true);
-		} else {
-			setUpdateForm(false);
-		}
-	}, []);
+	useEffect(
+		() => {
+			const date = moment(Date.now()).locale("de").format("LL");
+			setActualDate(date);
+			if (!isNil(event)) {
+				setEventName(event.eventName);
+				setEventType(event.eventType);
+				setEventDate(event.eventDate);
+				setTimeStart(event.timeStart);
+				setTimeEnd(event.timeEnd);
+				setAdmissionCharge(event.entry);
+				setAddress(event.address);
+				setUpdateForm(true);
+			} else {
+				setUpdateForm(false);
+			}
+		},
+		[ event ]
+	);
 
 	const handleOnChangeAdmissionCharge = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
 		if (!!switchState && +event.target.value <= 200) {
@@ -107,6 +111,8 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const onGetAddress = (address: IAddress) => {
+		console.log("onAddress ", address);
+
 		address.city.length > 3 ? setAddress(address) : setAddress(undefined);
 	};
 
@@ -252,7 +258,6 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 								<TimeInput
 									closable
 									popupPosition="bottom center"
-									required
 									timeFormat="24"
 									animation="fade"
 									duration={DURATION}
@@ -268,7 +273,6 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 								/>
 								<TimeInput
 									closable
-									required
 									popupPosition="bottom right"
 									timeFormat="24"
 									animation="fade"
@@ -313,7 +317,9 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 						</Segment.Group>
 						<Segment.Group>
 							<Form.Field>
-								<Segment>{<GoogleMaps getAddress={onGetAddress} />}</Segment>
+								<Segment>
+									<GoogleMaps storedAddress={address!} getAddress={onGetAddress} />
+								</Segment>
 							</Form.Field>
 						</Segment.Group>
 						<Segment.Group>

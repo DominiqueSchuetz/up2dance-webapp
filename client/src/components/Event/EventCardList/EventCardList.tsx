@@ -7,7 +7,6 @@ import { IEvent } from "../../../models";
 import { isArray } from "lodash";
 
 interface IStateProps {
-	event: IEvent;
 	events: IEvent[];
 	isLoaded: boolean;
 }
@@ -20,7 +19,7 @@ interface IDispatchProps {
 }
 
 const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { events, event, isLoaded, onGetAllEvents, onCreateEvent, onUpdateEventById, onDeleteEventById } = props;
+	const { events, isLoaded, onGetAllEvents, onCreateEvent, onUpdateEventById, onDeleteEventById } = props;
 	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(

@@ -33,7 +33,7 @@ export interface IAddress {
 	zipCode?: string;
 	city: string;
 	state: string;
-	location: any;
+	location: { coordinates: number[] };
 }
 
 export interface IEvent {
@@ -54,7 +54,7 @@ export interface IUser {
 	firstName: string;
 	lastName: string;
 	email: string;
-	password: string;
+	password?: string | undefined;
 	instrument?: string | undefined;
 	comment?: string | undefined;
 }

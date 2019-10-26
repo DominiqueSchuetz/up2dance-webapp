@@ -64,8 +64,9 @@ class EventSchema extends Schema {
 					},
 					location: {
 						type: {
-							type: String, // Don't do `{ location: { type: String } }`
-							enum: [ "Point" ], // 'location.type' must be 'Point'
+							type: String,
+							enum: [ "Point" ],
+							default: "Point",
 							required: false
 						},
 						coordinates: {
