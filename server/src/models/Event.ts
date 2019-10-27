@@ -62,6 +62,11 @@ class EventSchema extends Schema {
 						required: false,
 						trim: true
 					},
+					formatted_address: {
+						type: String,
+						required: false,
+						trim: true
+					},
 					location: {
 						type: {
 							type: String,

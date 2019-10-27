@@ -261,6 +261,6 @@ export class UserController extends BaseController<IUser> {
 		}
 	}
 }
-const mapToUserObject = (result: IUser) => {
-	return pick(result, [ "_id", "firstName", "lastName", "email", "instrument", "comment", "createdAt", "updatedAt" ]);
+const mapToUserObject = (data: IUser) => {
+	return pick(data, [ "_id", "firstName", "lastName", "email", "instrument", "comment" ]);
 };

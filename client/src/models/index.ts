@@ -33,6 +33,7 @@ export interface IAddress {
 	zipCode?: string;
 	city: string;
 	state: string;
+	formatted_address?: string | undefined;
 	location: { coordinates: number[] };
 }
 

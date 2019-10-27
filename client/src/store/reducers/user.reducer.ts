@@ -23,11 +23,10 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 		case EReduxActionTypesUser.SIGNIN_USER:
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;
-				draft.payload.message = action.payload.message;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.success = action.payload.success;
-				draft.payload.item = action.payload.data;
-				console.log("action response ", action.payload);
+				draft.payload.message = "You are logged in successfully";
+				draft.payload.error_code = 0;
+				draft.payload.success = true;
+				draft.payload.item = Object(action.payload).result;
 			});
 		case EReduxActionTypesUser.ERROR_USERS:
 			return produce(state, (draft) => {

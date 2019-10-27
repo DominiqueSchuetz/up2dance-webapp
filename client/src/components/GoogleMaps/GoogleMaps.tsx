@@ -39,12 +39,14 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	const [ zoom, setZoom ] = useState(14);
 	const [ searchBox, setStandaloneSearchBox ] = useState();
 	const [ postion, setPosition ] = useState({ lat: 51.48217, lng: 11.9658 });
+	const [ formatted_address, setFormatted_address ] = useState<string>("");
 	const [ address, setAddress ] = useState<IAddress>({
 		streetName: "",
 		streetNumber: "",
 		zipCode: "",
 		city: "",
 		state: "2",
+		formatted_address: "",
 		location: { coordinates: [] }
 	});
 
@@ -52,10 +54,12 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		() => {
 			if (storedAddress) {
 				setPosition({ lat: storedAddress.location.coordinates[1], lng: storedAddress.location.coordinates[0] });
+				setAddress(storedAddress);
+				setFormatted_address(storedAddress.formatted_address!);
 				setZoom(17);
 			}
 		},
-		[ address, storedAddress ]
+		[ storedAddress ]
 	);
 
 	const handleOnloadSearchBox = (ref: StandaloneSearchBoxProps) => {
@@ -63,7 +67,10 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	};
 
 	const handleOnChangeSearchbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+		console.log("handleSearchbox ", event.target.value.length);
+
 		if (event.target.value.length === 0) {
+			console.log("handleSearchbox if true ");
 			setAddress({
 				streetName: "",
 				streetNumber: "",
@@ -74,19 +81,24 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 			});
 			setPosition({ lat: 51.48217, lng: 11.9658 });
 			setZoom(14);
+			setFormatted_address("");
 			getAddress(address);
+		} else {
+			setFormatted_address(event.target.value);
 		}
 	};
 
 	const mapGetPlacesToAddress = (
 		address_components: IAddressComponent[] | any,
-		newPostion: { lng: number; lat: number }
+		newPostion: { lng: number; lat: number },
+		formatted_address: string
 	) => {
 		switch (+address_components.length) {
 			case 2:
 				setAddress({
 					city: address_components[0].long_name,
 					state: address_components[1].long_name,
+					formatted_address,
 					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
 				});
 				setZoom(14);
@@ -97,6 +109,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					city: address_components[1].long_name,
 					state: address_components[2].long_name,
 					zipCode: address_components[3].long_name,
+					formatted_address,
 					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
 				});
 				setZoom(17);
@@ -108,6 +121,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					city: address_components[2].long_name,
 					state: address_components[3].long_name,
 					zipCode: address_components[4].long_name,
+					formatted_address,
 					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
 				});
 				setZoom(18);
@@ -120,6 +134,8 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	const handleOnPlaceChanged = () => {
 		if (!isEmpty(searchBox.getPlaces()[0]) && !isNil(searchBox.getPlaces()[0])) {
 			const addressComponents: [] = searchBox!.getPlaces()[0]!.address_components;
+			const formatted_address = searchBox!.getPlaces()[0]!.formatted_address;
+
 			const lngLat = searchBox.getPlaces()[0].geometry.location;
 			const newPostion: { lng: number; lat: number } = {
 				lng: lngLat.lng(),
@@ -137,7 +153,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 						}
 					});
 				});
-				mapGetPlacesToAddress(filterByMapTypes, newPostion);
+				mapGetPlacesToAddress(filterByMapTypes, newPostion, formatted_address);
 				setPosition(newPostion);
 			} else {
 				return;
@@ -171,6 +187,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 							iconPosition="left"
 							icon="map"
 							placeholder="Adresse"
+							value={formatted_address}
 							onChange={handleOnChangeSearchbox}
 						/>
 					</StandaloneSearchBox>

@@ -4,7 +4,7 @@ import { signInUserService } from "../../services";
 import { decode } from "jsonwebtoken";
 
 // SignIn User
-export const loginUser = (userData: ISignInUserData): Effect => async (dispatch, getState) => {
+export const signInUser = (userData: ISignInUserData): Effect => async (dispatch, getState) => {
 	dispatch(loadUsersRequest());
 	try {
 		const response: IResponse<IUser> = await signInUserService(userData);

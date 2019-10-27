@@ -16,7 +16,10 @@ const Header: React.FC = () => {
 						<Menu.Menu position="right">
 							<Menu.Item>
 								<Button as={NavLink} to="/login" primary>
-									Sign in
+									Login
+								</Button>
+								<Button as={NavLink} to="/register">
+									Registrieren
 								</Button>
 							</Menu.Item>
 						</Menu.Menu>
