@@ -45,6 +45,8 @@ export class UserController extends BaseController<IUser> {
      * @param res 
      */
 	protected async register(req: Request, res: Response, next: Next): Promise<void> {
+		console.log("req => ", req);
+
 		const firstName =
 			typeof req.body.firstName == "string" && req.body.firstName.trim().length > 1
 				? req.body.firstName.trim()
@@ -262,5 +264,5 @@ export class UserController extends BaseController<IUser> {
 	}
 }
 const mapToUserObject = (data: IUser) => {
-	return pick(data, [ "_id", "firstName", "lastName", "email", "instrument", "comment" ]);
+	return pick(data, [ "_id", "firstName", "lastName", "email", "instrument", "refId", "comment" ]);
 };

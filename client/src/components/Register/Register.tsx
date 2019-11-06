@@ -1,15 +1,27 @@
-import { ISignInUserData, IUser } from "../../models";
-import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
-import { IReduxSignInUserAction } from "../../store/types/user.types";
-import React, { useState, useEffect } from "react";
+import { ISignInUserData, IUser, IRegisterUserData } from "../../models";
+import {
+	Grid,
+	Header,
+	Segment,
+	Button,
+	Image,
+	Form,
+	Message,
+	DropdownProps,
+	InputOnChangeData,
+	Icon
+} from "semantic-ui-react";
+import { IReduxRegisterUserAction } from "../../store/types/user.types";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { NavLink } from "react-router-dom";
+import { isEmpty } from "lodash";
 
 interface IStateProps {
 	// payload: IUser;
 }
 
 interface IDispatchProps {
-	// onSignInUser(userData: ISignInUserData): Promise<IReduxSignInUserAction>;
+	onRegisterUser(formData: FormData): Promise<IReduxRegisterUserAction>;
 }
 
 const instrumentOption: any = [
@@ -25,8 +37,8 @@ const instrumentOption: any = [
 	},
 	{
 		key: "3456",
-		text: "Keyboard/Synth",
-		value: "Keyboard/Synth"
+		text: "Keyboard/Synths",
+		value: "Keyboard/Synths"
 	},
 	{
 		key: "4567",
@@ -52,19 +64,108 @@ const instrumentOption: any = [
 
 const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 	//const { onSignInUser } = props;
+	const [ firstName, setFirstName ] = useState<string>("");
+	const [ lastName, setLastName ] = useState<string>("");
+	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
+	const [ fileName, setFileName ] = useState<string | undefined>("");
+	const [ file, setFile ] = useState<{ file: any }>({ file: "" });
 	const [ email, setEmail ] = useState<string>("");
 	const [ password, setPassword ] = useState<string>("");
+	const [ secretKey, setSecretKey ] = useState<string>("");
+	const [ comment, setComment ] = useState<string>("");
+	const inputRef: any = useRef();
+	//as React.MutableRefObject<HTMLInputElement>;
+	const { onRegisterUser } = props;
 
 	useEffect(() => {
 		console.log("loading login component...");
 	}, []);
 
-	const handleOnChange = (e: any) => {
-		e.target.name === "email" ? setEmail(e.target.value) : setPassword(e.target.value);
+	const handleOnChange = (
+		event: React.ChangeEvent<HTMLInputElement> | any,
+		data: DropdownProps | InputOnChangeData | any
+	) => {
+		switch (event.target.name || data.name) {
+			case "firstName":
+				setFirstName(event.target.value);
+				break;
+			case "lastName":
+				setLastName(event.target.value);
+				break;
+			case "fileName":
+				setFileName(event.target.value);
+				break;
+			// case "filePath":
+			// 	setFileupload(event.target.value);
+			// 	break;
+			case "email":
+				setEmail(event.target.value);
+				break;
+			case "password":
+				setPassword(event.target.value);
+				break;
+			case "secretKey":
+				setSecretKey(event.target.value);
+				break;
+			case "comment":
+				setComment(event.target.value);
+				break;
+			default:
+				break;
+		}
 	};
 
 	const handleRegister = async () => {
-		// await onSignInUser({ email, password });
+		let formData: FormData = new FormData();
+		formData.append("firstName", firstName);
+		formData.append("lastName", lastName);
+		formData.append("filePath", filePath);
+		formData.append("fileName", fileName!);
+		formData.append("email", email);
+		formData.append("password", password);
+		formData.append("secretKey", secretKey);
+		formData.append("comment", comment);
+
+		onRegisterUser(formData);
+	};
+
+	const isEmailValid = (): boolean => {
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+	};
+
+	const handleUploadAction = (event: any) => {
+		const naiveFileName: string = Object(event.target.files)[0].name;
+		const fileNameWithoutType = naiveFileName.substring(0, naiveFileName.lastIndexOf("."));
+		const file: File = event.target.files[0];
+		setFilePath(file);
+		setFileName(fileNameWithoutType);
+		setFile({ file: URL.createObjectURL(event.target.files[0]) });
+	};
+
+	const imageUploaded = <Image src={file.file} size="medium" centered circular />;
+	const uplaodImage = (
+		<Fragment>
+			<Header icon>
+				<Icon name="upload" />
+				<h4>Du hast bis jetzt noch kein Profilfoto hochgeladen.</h4>
+			</Header>
+			<Button primary onClick={() => inputRef.current.click()}>
+				Profilfoto hinzufügen
+			</Button>
+		</Fragment>
+	);
+
+	const resetFile = () => {
+		const file = document.querySelector("#file-upload");
+		Object(file).value = "";
+	};
+
+	const handleClick = () => {};
+
+	const handleRemove = () => {
+		setFile({ file: "" });
+		setFilePath(undefined);
+		resetFile();
 	};
 
 	return (
@@ -74,34 +175,44 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 					<Header as="h2" color="teal" textAlign="center">
 						<Image src="images/avatar/large/matthew.png" /> Register
 					</Header>
-					<Form size="large">
+					<Form autoComplete="off" size="large">
 						<Segment stacked>
 							<Form.Input
 								type="text"
 								name="firstName"
+								value={firstName}
 								fluid
 								placeholder="Vorname"
 								onChange={handleOnChange}
+								error={firstName!.length > 1 ? false : true}
 							/>
 							<Form.Input
 								type="text"
 								name="lastName"
+								value={lastName}
 								fluid
 								placeholder="Nachname"
 								onChange={handleOnChange}
+								error={lastName!.length > 1 ? false : true}
 							/>
-							<Form.Button
+							<Segment placeholder>{file.file ? imageUploaded : uplaodImage}</Segment>
+							<Form.Button fluid onClick={handleRemove}>
+								Bild löschen
+							</Form.Button>
+							<Form.Button fluid onClick={handleClick}>
+								test toast
+							</Form.Button>
+							<input
+								id="file-upload"
+								accept="image/png, image/jpeg, image/jpg"
+								ref={inputRef}
 								type="file"
-								name="lastName"
-								content="Benutzer-Foto?"
-								icon="upload"
-								fluid
-								placeholder="Nachname"
-								onChange={handleOnChange}
+								hidden
+								name="filePath"
+								onChange={handleUploadAction}
 							/>
 							<Form.Dropdown
 								name="instrument"
-								// value={eventType}
 								clearable
 								placeholder="Instrument"
 								fluid
@@ -112,37 +223,52 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 							<Form.Input
 								type="text"
 								name="email"
-								defaultValue={email}
+								value={email}
 								fluid
 								icon="user"
 								iconPosition="left"
-								placeholder="E-mail address"
+								placeholder="Email adresse"
 								onChange={handleOnChange}
+								error={email!.length > 1 && isEmailValid() ? false : true}
 							/>
 							<Form.Input
 								type="password"
 								name="password"
-								defaultValue={password}
+								value={password}
 								fluid
 								icon="lock"
 								iconPosition="left"
 								placeholder="Password"
 								onChange={handleOnChange}
+								error={email!.length > 4 ? false : true}
+							/>
+							<Form.Input
+								type="password"
+								name="secretKey"
+								value={secretKey}
+								fluid
+								icon="lock"
+								iconPosition="left"
+								placeholder="Secret-Key"
+								onChange={handleOnChange}
+								error={email!.length > 4 ? false : true}
 							/>
 							<Form.TextArea
 								style={{ minHeight: 200 }}
-								fluid
+								name="comment"
+								value={comment}
 								placeholder="Kommentar..."
 								onChange={handleOnChange}
 							/>
 							<Button
 								as={NavLink}
-								to="/"
+								to="#"
 								primary
 								color="teal"
 								fluid
 								size="large"
 								onClick={handleRegister}
+								disabled={!firstName || !lastName || !email || !password || !secretKey}
 							>
 								Registrieren
 							</Button>

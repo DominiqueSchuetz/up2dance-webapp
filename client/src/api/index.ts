@@ -5,4 +5,5 @@ export const CREATE_EVENT_API = HOST_AND_PORT + "/api/event/create";
 export const UPDATE_EVENT_API = HOST_AND_PORT + "/api/event/";
 export const DELETE_EVENT_API = HOST_AND_PORT + "/api/event/";
 export const GET_ALL_USERS_API = HOST_AND_PORT + "/api/user/all";
+export const REGISER_USERS_API = HOST_AND_PORT + "/api/user/register";
 export const POST_USER_SIGN_IN_API = HOST_AND_PORT + "/api/user/signin";

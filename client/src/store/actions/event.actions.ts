@@ -23,10 +23,12 @@ export const creatEventsRequest = (payload: IResponse<IEvent>): IReduxCreateEven
 	type: EReduxActionTypesEvent.CREATE_EVENT,
 	payload
 });
+
 export const updateEventByIdRequest = (payload: IResponse<IEvent>): IReduxUpdateEventAction => ({
 	type: EReduxActionTypesEvent.UPDATE_EVENT,
 	payload
 });
+
 export const deleteEventByIdRequest = (payload: IResponse<IEvent>): IReduxDeleteEventAction => ({
 	type: EReduxActionTypesEvent.DELETE_EVENT,
 	payload

@@ -54,15 +54,29 @@ export interface IUser {
 	_id?: string | undefined;
 	firstName: string;
 	lastName: string;
+	refId?: string | undefined;
+	instrument?: string | undefined;
 	email: string;
 	password?: string | undefined;
-	instrument?: string | undefined;
 	comment?: string | undefined;
 }
 
 export interface ISignInUserData {
 	email: string;
 	password: string;
+}
+
+export interface IRegisterUserData {
+	firstName: string;
+	lastName: string;
+	refId?: string | undefined;
+	filePath?: FileList | File | undefined;
+	fileName?: string | undefined;
+	instrument?: string | undefined;
+	email: string;
+	password: string;
+	secretKey: string;
+	comment?: string | undefined;
 }
 
 export type Effect = ThunkAction<any, ApplicationReducerState, any, ApplicationEventsAction | ApplicationUserAction>;

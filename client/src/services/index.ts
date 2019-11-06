@@ -1,11 +1,12 @@
-import { ISignInUserData, IResponse, IEvent, IUser } from "../models";
+import { ISignInUserData, IResponse, IEvent, IUser, IRegisterUserData } from "../models";
 import {
 	GET_ALL_EVENTS_API,
 	GET_ALL_USERS_API,
 	POST_USER_SIGN_IN_API,
 	CREATE_EVENT_API,
 	UPDATE_EVENT_API,
-	DELETE_EVENT_API
+	DELETE_EVENT_API,
+	REGISER_USERS_API
 } from "../api";
 
 // ###################################################
@@ -70,5 +71,16 @@ export const signInUserService = async (userData: ISignInUserData): Promise<IRes
 	};
 	const postSignInUser: Response = await fetch(POST_USER_SIGN_IN_API, HEADER);
 	const responsePayload: Promise<IResponse<IUser>> = await postSignInUser.json();
+	return responsePayload;
+};
+
+export const registerUserService = async (formData: FormData): Promise<IResponse<IUser>> => {
+	const HEADER = {
+		method: "POST",
+		body: formData
+	};
+
+	const postRegisterUser: Response = await fetch(REGISER_USERS_API, HEADER);
+	const responsePayload: Promise<IResponse<IUser>> = await postRegisterUser.json();
 	return responsePayload;
 };

@@ -41,8 +41,17 @@ class UserSchema extends Schema {
 				instrument: {
 					type: String,
 					required: true,
-					enum: [ "drums", "keys", "bass", "singer", "guitar", "musician" ],
-					default: "musician"
+					enum: [
+						"Gesang",
+						"Gesang/Gitarre",
+						"Keyboard/Synths",
+						"Gitarre(Lead)",
+						"Gitarre(Solo)",
+						"Bass",
+						"Schlagzeug",
+						"Musiker"
+					],
+					default: "Musiker"
 				},
 				comment: {
 					type: String,
