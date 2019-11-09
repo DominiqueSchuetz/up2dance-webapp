@@ -1,5 +1,3 @@
-import { getAllEventsService, creatEventService, updateEventService, deleteEventService } from "../../services";
-import { Effect, IEvent, IResponse } from "../../models";
 import {
 	loadEventsRequest,
 	getEventsRequest,
@@ -8,6 +6,9 @@ import {
 	updateEventByIdRequest,
 	deleteEventByIdRequest
 } from "../actions/event.actions";
+import { getAllEventsService, creatEventService, updateEventService, deleteEventService } from "../../services";
+import { Effect, IEvent, IResponse } from "../../models";
+import { toast } from "react-toastify";
 
 // Get all events
 export const getAllEvents = (): Effect => async (dispatch, getState) => {
@@ -26,15 +27,18 @@ export const createEvent = (event: IEvent): Effect => async (dispatch, getState)
 	try {
 		const payload: IResponse<IEvent> = await creatEventService(event);
 		if (!!payload.success) {
+			toast.success(` 😻 ${payload.message}`);
 			return dispatch(creatEventsRequest(payload));
 		} else {
 			localStorage.removeItem("token");
 			localStorage.clear();
+			toast.info(` 😾 ${payload.message}`);
 			return dispatch(loadEventsError(payload));
 		}
 	} catch (e) {
 		localStorage.removeItem("token");
 		localStorage.clear();
+		toast.error(` 🙀 ${e}`);
 		return dispatch(loadEventsError(e));
 	}
 };
@@ -45,15 +49,18 @@ export const updateEventById = (id: string, event: IEvent): Effect => async (dis
 	try {
 		const payload: IResponse<IEvent> = await updateEventService(id, event);
 		if (!!payload.success) {
+			toast.success(` 😻 ${payload.message}`);
 			return dispatch(updateEventByIdRequest(payload));
 		} else {
 			localStorage.removeItem("token");
 			localStorage.clear();
+			toast.info(` 😾 ${payload.message}`);
 			return dispatch(loadEventsError(payload));
 		}
 	} catch (e) {
 		localStorage.removeItem("token");
 		localStorage.clear();
+		toast.error(` 🙀 ${e}`);
 		return dispatch(loadEventsError(e));
 	}
 };
@@ -64,15 +71,18 @@ export const deleteEventById = (id: string): Effect => async (dispatch, getState
 	try {
 		const payload: IResponse<IEvent> = await deleteEventService(id);
 		if (!!payload.success) {
+			toast.success(` 😻 ${payload.message}`);
 			return dispatch(deleteEventByIdRequest(payload));
 		} else {
 			localStorage.removeItem("token");
 			localStorage.clear();
+			toast.info(` 😾 ${payload.message}`);
 			return dispatch(loadEventsError(payload));
 		}
 	} catch (e) {
 		localStorage.removeItem("token");
 		localStorage.clear();
+		toast.error(` 🙀 ${e}`);
 		return dispatch(loadEventsError(e));
 	}
 };
