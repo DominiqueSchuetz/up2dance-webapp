@@ -4,7 +4,8 @@ import { Register } from "../components/Register";
 import { connect } from "react-redux";
 
 const mapStateToProps = (state: ApplicationReducerState) => ({
-	user: state.userReducer.payload.item,
+	userPayload: state.userReducer.payload.item,
+	registerPayload: state.registerReducer.payload,
 	isLoaded: state.userReducer.loading.isPayloadLoading
 });
 

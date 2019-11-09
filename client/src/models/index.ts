@@ -67,6 +67,7 @@ export interface ISignInUserData {
 }
 
 export interface IRegisterUserData {
+	_id?: string | undefined;
 	firstName: string;
 	lastName: string;
 	refId?: string | undefined;

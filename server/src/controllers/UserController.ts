@@ -80,10 +80,10 @@ export class UserController extends BaseController<IUser> {
 							successResponse(
 								res,
 								null,
-								"Hey " + createUser.firstName + " , you are successfully registered"
+								"Hey " + createUser.firstName + ", you are successfully registered"
 							);
 						} else {
-							badRequestResponse(res, "Could not create item", 3, Object(createUser).message);
+							badRequestResponse(res, "Could not register user", 3, Object(createUser).message);
 						}
 					} catch (error) {
 						internalServerErrorResponse(res, error.message);
@@ -94,14 +94,14 @@ export class UserController extends BaseController<IUser> {
 						if (result!._id) {
 							successResponse(res, result);
 						} else {
-							badRequestResponse(res, "Could not create item with file", 3, result);
+							badRequestResponse(res, "Could not register user with file", 3, result);
 						}
 					} catch (error) {
 						internalServerErrorResponse(res, error.message);
 					}
 				}
 			} else {
-				badRequestResponse(res, "No valid user");
+				badRequestResponse(res, "No valid user", 3);
 			}
 		} catch (error) {
 			internalServerErrorResponse(res, error.message);

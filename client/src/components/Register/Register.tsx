@@ -1,4 +1,4 @@
-import { ISignInUserData, IUser, IRegisterUserData } from "../../models";
+import { ISignInUserData, IUser, IRegisterUserData, IReduxState } from "../../models";
 import {
 	Grid,
 	Header,
@@ -13,57 +13,51 @@ import {
 } from "semantic-ui-react";
 import { IReduxRegisterUserAction } from "../../store/types/user.types";
 import React, { useState, useEffect, useRef, Fragment } from "react";
+import { EBandMemberInstrument } from "../../enums";
 import { NavLink } from "react-router-dom";
-import { isEmpty } from "lodash";
+import { Toast } from "../Toast";
 
 interface IStateProps {
-	// payload: IUser;
+	registerPayload: IReduxState<IRegisterUserData>;
 }
 
 interface IDispatchProps {
 	onRegisterUser(formData: FormData): Promise<IReduxRegisterUserAction>;
 }
 
-const instrumentOption: any = [
+const instrumentOption = [
 	{
-		key: "1234",
-		text: "Gesang",
-		value: "Gesang"
+		text: EBandMemberInstrument.VOCAL,
+		value: EBandMemberInstrument.VOCAL
 	},
 	{
-		key: "2345",
-		text: "Gesang/Gitarre",
-		value: "Gesang/Gitarre"
+		text: EBandMemberInstrument.VOCAL_AND_GUITAR,
+		value: EBandMemberInstrument.VOCAL_AND_GUITAR
 	},
 	{
-		key: "3456",
-		text: "Keyboard/Synths",
-		value: "Keyboard/Synths"
+		text: EBandMemberInstrument.KEYS,
+		value: EBandMemberInstrument.KEYS
 	},
 	{
-		key: "4567",
-		text: "Gitarre(Lead)",
-		value: "Gitarre(Lead)"
+		text: EBandMemberInstrument.GUITAR_LEAD,
+		value: EBandMemberInstrument.GUITAR_LEAD
 	},
 	{
-		key: "5678",
-		text: "Gitarre(Solo)",
-		value: "Gitarre(Solo)"
+		text: EBandMemberInstrument.GUITAR_SOLO,
+		value: EBandMemberInstrument.GUITAR_SOLO
 	},
 	{
-		key: "6789",
-		text: "Bass",
-		value: "Bass"
+		text: EBandMemberInstrument.BASS_GUITAR,
+		value: EBandMemberInstrument.BASS_GUITAR
 	},
 	{
-		key: "789",
-		text: "Schlagzeug",
-		value: "Schlagzeug"
+		text: EBandMemberInstrument.DRUMS,
+		value: EBandMemberInstrument.DRUMS
 	}
 ];
 
 const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
-	//const { onSignInUser } = props;
+	const { message, success } = props.registerPayload;
 	const [ firstName, setFirstName ] = useState<string>("");
 	const [ lastName, setLastName ] = useState<string>("");
 	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
@@ -76,10 +70,6 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const inputRef: any = useRef();
 	//as React.MutableRefObject<HTMLInputElement>;
 	const { onRegisterUser } = props;
-
-	useEffect(() => {
-		console.log("loading login component...");
-	}, []);
 
 	const handleOnChange = (
 		event: React.ChangeEvent<HTMLInputElement> | any,
@@ -160,8 +150,6 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 		Object(file).value = "";
 	};
 
-	const handleClick = () => {};
-
 	const handleRemove = () => {
 		setFile({ file: "" });
 		setFilePath(undefined);
@@ -170,6 +158,7 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<div className="App">
+			<Toast message={message} success={success} />
 			<Grid textAlign="center" style={{}} verticalAlign="middle">
 				<Grid.Column style={{ maxWidth: 450 }}>
 					<Header as="h2" color="teal" textAlign="center">
@@ -198,9 +187,6 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 							<Segment placeholder>{file.file ? imageUploaded : uplaodImage}</Segment>
 							<Form.Button fluid onClick={handleRemove}>
 								Bild löschen
-							</Form.Button>
-							<Form.Button fluid onClick={handleClick}>
-								test toast
 							</Form.Button>
 							<input
 								id="file-upload"
@@ -262,7 +248,7 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 							/>
 							<Button
 								as={NavLink}
-								to="#"
+								to="/login"
 								primary
 								color="teal"
 								fluid

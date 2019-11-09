@@ -74,13 +74,13 @@ export const signInUserService = async (userData: ISignInUserData): Promise<IRes
 	return responsePayload;
 };
 
-export const registerUserService = async (formData: FormData): Promise<IResponse<IUser>> => {
+export const registerUserService = async (formData: FormData): Promise<IResponse<IRegisterUserData>> => {
 	const HEADER = {
 		method: "POST",
 		body: formData
 	};
 
 	const postRegisterUser: Response = await fetch(REGISER_USERS_API, HEADER);
-	const responsePayload: Promise<IResponse<IUser>> = await postRegisterUser.json();
+	const responsePayload: Promise<IResponse<IRegisterUserData>> = await postRegisterUser.json();
 	return responsePayload;
 };

@@ -1,7 +1,9 @@
 import { connect } from "react-redux";
 import { Header } from "../components/Header";
+import { ApplicationReducerState } from "../store/reducers";
 
-export const mapStateToProps = () => ({});
-export const mapDispatchToProps = {};
+const mapStateToProps = (state: ApplicationReducerState) => ({
+	userPayload: state.userReducer.payload.item
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps)(Header);

@@ -4,7 +4,7 @@ import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 // import { authorizedUserReducer } from "../store/reducers";
 import thunk, { ThunkMiddleware, ThunkDispatch } from "redux-thunk";
-import { Header } from "../components/Header";
+import { HeaderContainer } from "../container";
 import { Footer } from "./Footer";
 import { rootReducer } from "../store/reducers";
 
@@ -21,7 +21,7 @@ const App: React.FC = () => {
 		<Provider store={reduxStore}>
 			<Router>
 				<Fragment>
-					<Header />
+					<HeaderContainer />
 					{/* <Sidebar.Pushable as={Segment}>
 						<SideBar animation="scale down" direction="bottom" visible={visible} />
 						<Sidebar.Pusher> */}

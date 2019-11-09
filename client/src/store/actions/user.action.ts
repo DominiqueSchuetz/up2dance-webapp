@@ -5,7 +5,7 @@ import {
 	IReduxRegisterUserAction
 } from "../types/user.types";
 import { EReduxActionTypesUser } from "../../enums";
-import { IResponse, IUser } from "../../models";
+import { IResponse, IUser, IRegisterUserData } from "../../models";
 
 export const loadUsersRequest = (): IReduxLoadUsersAction => ({
 	type: EReduxActionTypesUser.LOAD_USERS
@@ -16,7 +16,7 @@ export const signInRequest = (payload: IResponse<IUser> | any): IReduxSignInUser
 	payload
 });
 
-export const registerRequest = (payload: IResponse<IUser> | any): IReduxRegisterUserAction => ({
+export const registerRequest = (payload: IResponse<IRegisterUserData> | any): IReduxRegisterUserAction => ({
 	type: EReduxActionTypesUser.REGISTER_USER,
 	payload
 });

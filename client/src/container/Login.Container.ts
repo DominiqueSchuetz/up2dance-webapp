@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "react";
 
 const mapStateToProps = (state: ApplicationReducerState) => ({
-	users: state.userReducer.payload.items,
+	userPayload: state.userReducer.payload,
 	isLoaded: state.userReducer
 });
 

@@ -1,11 +1,12 @@
-import { ISignInUserData, IUser } from "../../models";
+import { ISignInUserData, IUser, IReduxState } from "../../models";
 import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
 import { IReduxSignInUserAction } from "../../store/types/user.types";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { Toast } from "../Toast";
 
 interface IStateProps {
-	payload: IUser;
+	userPayload: IReduxState<IUser>;
 }
 
 interface IDispatchProps {
@@ -14,23 +15,21 @@ interface IDispatchProps {
 
 const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { onSignInUser } = props;
+	const { message, success } = props.userPayload;
 	const [ email, setEmail ] = useState<string>("");
 	const [ password, setPassword ] = useState<string>("");
-
-	useEffect(() => {
-		console.log("loading login component...");
-	}, []);
 
 	const handleOnChange = (e: any) => {
 		e.target.name === "email" ? setEmail(e.target.value) : setPassword(e.target.value);
 	};
 
-	const handleLogin = async () => {
-		await onSignInUser({ email, password });
+	const handleLogin = () => {
+		onSignInUser({ email, password });
 	};
 
 	return (
 		<div className="App">
+			<Toast message={message} success={success} />
 			<Grid textAlign="center" style={{}} verticalAlign="middle">
 				<Grid.Column style={{ maxWidth: 450 }}>
 					<Header as="h2" color="teal" textAlign="center">

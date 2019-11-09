@@ -1,4 +1,4 @@
-import { IUser, IResponse } from "../../models";
+import { IUser, IResponse, IRegisterUserData } from "../../models";
 import { EReduxActionTypesUser } from "../../enums";
 import { Action } from "redux";
 
@@ -25,7 +25,7 @@ export interface IReduxGetUserByIdAction extends IReduxBaseAction {
 }
 export interface IReduxRegisterUserAction extends IReduxBaseAction {
 	type: EReduxActionTypesUser.REGISTER_USER;
-	payload: IResponse<IUser>;
+	payload: IResponse<IRegisterUserData>;
 }
 
 export interface IReduxSignInUserAction extends IReduxBaseAction {

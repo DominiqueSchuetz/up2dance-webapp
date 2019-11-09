@@ -18,3 +18,22 @@ export enum EReduxActionTypesUser {
 	UPDATE_USER = "UPDATE_USER",
 	DELETE_USER = "DELETE_USER"
 }
+
+export enum EBandMemberInstrumentSymbol {
+	VOCAL = "🎤",
+	VOCAL_AND_GUITAR = "🎤+ 🎸",
+	KEYS = "🎹",
+	GUITAR_LEAD = "🎸",
+	GUITAR_SOLO = "🎸",
+	BASS_GUITAR = "🎸",
+	DRUMS = "🥁"
+}
+export enum EBandMemberInstrument {
+	VOCAL = "Gesang",
+	VOCAL_AND_GUITAR = "Gesang/Gitarre",
+	KEYS = "Keyboard/Synths",
+	GUITAR_LEAD = "Gitarre(Lead)",
+	GUITAR_SOLO = "Gitarre(Solo)",
+	BASS_GUITAR = "Bass",
+	DRUMS = "Schlagzeug"
+}

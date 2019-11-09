@@ -1,8 +1,48 @@
-import React, { Fragment } from "react";
+import { EBandMemberInstrument, EBandMemberInstrumentSymbol } from "../../enums";
 import { Menu, Button, Image, Dropdown } from "semantic-ui-react";
+import React, { Fragment, useEffect, useState } from "react";
+import { IUser, IReduxState, IEvent, IRegisterUserData } from "../../models";
 import { NavLink } from "react-router-dom";
 
-const Header: React.FC = () => {
+interface IStateProps {
+	userPayload: IUser;
+}
+
+const Header: React.FC<IStateProps> = (props) => {
+	const { firstName, instrument } = props.userPayload;
+	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
+
+	useEffect(() => {
+		if (instrument) {
+			switch (instrument) {
+				case EBandMemberInstrument.VOCAL:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL);
+					break;
+				case EBandMemberInstrument.VOCAL_AND_GUITAR:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL_AND_GUITAR);
+					break;
+				case EBandMemberInstrument.GUITAR_LEAD:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_LEAD);
+					break;
+				case EBandMemberInstrument.GUITAR_SOLO:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_SOLO);
+					break;
+				case EBandMemberInstrument.BASS_GUITAR:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.BASS_GUITAR);
+					break;
+				case EBandMemberInstrument.DRUMS:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.DRUMS);
+					break;
+			}
+		}
+	});
+
+	const handleLogout = () => {
+		// TODO Remove jwt token
+		// TODO Remove user item
+		// TODO Navigate to root
+	};
+
 	return (
 		<Fragment>
 			<header>
@@ -19,23 +59,23 @@ const Header: React.FC = () => {
 									style={{ marginRight: 20 }}
 									size="mini"
 									circular
-									src="/images/avatar/large/patrick.png"
+									src="/images/avatar/large/matthew.png"
 								/>
-								<span> Hey Patrick 🥁</span>
+								<span>
+									{firstName ? `Hey, ${firstName.toLocaleUpperCase()} ` + ` ${instrumentSymbol}` : ""}
+								</span>
 							</Menu.Item>
-
 							<Menu.Item>
 								<Button as={NavLink} to="/login" primary>
 									Login
 								</Button>
 							</Menu.Item>
-
 							<Dropdown item text="Mehr">
 								<Dropdown.Menu>
 									<Dropdown.Item as={NavLink} to="/register">
 										Registrieren
 									</Dropdown.Item>
-									<Dropdown.Item as={NavLink} to="/">
+									<Dropdown.Item as={NavLink} to="/" onClick={handleLogout}>
 										Abmelden
 									</Dropdown.Item>
 								</Dropdown.Menu>
