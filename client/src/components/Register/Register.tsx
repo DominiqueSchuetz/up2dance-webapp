@@ -15,7 +15,6 @@ import { IReduxRegisterUserAction } from "../../store/types/user.types";
 import React, { useState, useEffect, useRef, Fragment } from "react";
 import { EBandMemberInstrument } from "../../enums";
 import { NavLink } from "react-router-dom";
-import { Toast } from "../Toast";
 
 interface IStateProps {
 	registerPayload: IReduxState<IRegisterUserData>;
@@ -158,7 +157,6 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<div className="App">
-			<Toast message={message} success={success} />
 			<Grid textAlign="center" style={{}} verticalAlign="middle">
 				<Grid.Column style={{ maxWidth: 450 }}>
 					<Header as="h2" color="teal" textAlign="center">

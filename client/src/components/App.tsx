@@ -7,6 +7,8 @@ import thunk, { ThunkMiddleware, ThunkDispatch } from "redux-thunk";
 import { HeaderContainer } from "../container";
 import { Footer } from "./Footer";
 import { rootReducer } from "../store/reducers";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "semantic-ui-css/semantic.min.css";
 import React, { Fragment } from "react";
@@ -21,6 +23,7 @@ const App: React.FC = () => {
 		<Provider store={reduxStore}>
 			<Router>
 				<Fragment>
+					<ToastContainer autoClose={5000} />
 					<HeaderContainer />
 					{/* <Sidebar.Pushable as={Segment}>
 						<SideBar animation="scale down" direction="bottom" visible={visible} />

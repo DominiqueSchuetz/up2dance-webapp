@@ -3,7 +3,6 @@ import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui
 import { IReduxSignInUserAction } from "../../store/types/user.types";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Toast } from "../Toast";
 
 interface IStateProps {
 	userPayload: IReduxState<IUser>;
@@ -29,7 +28,6 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<div className="App">
-			<Toast message={message} success={success} />
 			<Grid textAlign="center" style={{}} verticalAlign="middle">
 				<Grid.Column style={{ maxWidth: 450 }}>
 					<Header as="h2" color="teal" textAlign="center">
