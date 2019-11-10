@@ -28,6 +28,11 @@ export interface IReduxRegisterUserAction extends IReduxBaseAction {
 	payload: IResponse<IRegisterUserData>;
 }
 
+export interface IReduxIsUserAuthenticatedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.IS_USER_AUTHENTICATED;
+	payload: IResponse<IUser>;
+}
+
 export interface IReduxSignInUserAction extends IReduxBaseAction {
 	type: EReduxActionTypesUser.SIGNIN_USER;
 	payload: IResponse<IUser>;
@@ -51,4 +56,5 @@ export type ApplicationUserAction =
 	| IReduxRegisterUserAction
 	| IReduxSignInUserAction
 	| IReduxUpdateUserAction
-	| IReduxDeleteUserAction;
+	| IReduxDeleteUserAction
+	| IReduxIsUserAuthenticatedAction;

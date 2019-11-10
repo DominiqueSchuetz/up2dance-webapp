@@ -9,9 +9,30 @@ import { BaseController } from "./BaseController";
 import { IUser } from "../models/interfaces/IUser";
 import { Types } from "mongoose";
 import { pick, isEmpty, isString } from "lodash";
+import { Helpers } from "../lib/helpers";
 require("dotenv").config();
 
 export class UserController extends BaseController<IUser> {
+	protected _helpers = new Helpers();
+
+	/**
+	 * 
+	 * @param req 
+	 * @param res 
+	 */
+	protected async isUserAuthenticated(req: Request, res: Response): Promise<void> {
+		try {
+			const verifiedUser = await this._helpers.verfiyJwtToken(req.headers.authorization);
+			if (verifiedUser) {
+				successResponse(res, verifiedUser, "User is verified");
+			} else {
+				badRequestResponse(res, "User is not verified");
+			}
+		} catch (error) {
+			internalServerErrorResponse(res, error.message);
+		}
+	}
+
 	/**
      * 
      * @param req 
@@ -21,12 +42,12 @@ export class UserController extends BaseController<IUser> {
 		try {
 			const allItems = await this._repository.list();
 			if (allItems) {
-				let mapToNames = allItems.map((customer) => ({
-					firstName: customer.firstName,
-					lastName: customer.lastName,
-					email: customer.email,
-					instrument: customer.instrument,
-					comment: customer.comment
+				let mapToNames = allItems.map((user) => ({
+					firstName: user.firstName,
+					lastName: user.lastName,
+					email: user.email,
+					instrument: user.instrument,
+					comment: user.comment
 				}));
 				mapToNames.length > 0
 					? successResponse(res, { Info: mapToNames })

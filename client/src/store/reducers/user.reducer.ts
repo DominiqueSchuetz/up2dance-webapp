@@ -34,7 +34,15 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 				draft.payload.error_code = action.payload.error_code;
 				draft.payload.message = action.payload.message;
 				draft.payload.success = action.payload.success;
-				draft.payload.item = action.payload.data;
+				draft.payload.item = initialStateUser.payload.item;
+			});
+		case EReduxActionTypesUser.IS_USER_AUTHENTICATED:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.message = action.payload.message;
+				draft.payload.success = action.payload.success;
+				draft.payload.item = Object(action.payload).data.result;
 			});
 		default:
 			return state;

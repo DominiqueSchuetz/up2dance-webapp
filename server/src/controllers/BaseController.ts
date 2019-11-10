@@ -36,6 +36,10 @@ export abstract class BaseController<T extends Document> implements IController 
 			httpServer.post("/api/" + this._routes + "/create", checkAuth, this.create.bind(this));
 		}
 
+		if (this._routes === "user") {
+			httpServer.get("/api/" + this._routes + "/isUserAuthenticated", this.isUserAuthenticated.bind(this));
+		}
+
 		httpServer.get("/api/" + this._routes + "/all", this.list.bind(this));
 		httpServer.get("/api/" + this._routes + "/:id", this.getById.bind(this));
 		httpServer.put("/api/" + this._routes + "/:id", checkAuth, this.update.bind(this));
@@ -213,6 +217,14 @@ export abstract class BaseController<T extends Document> implements IController 
      * @param next 
      */
 	protected async signOut(req: Request, res: Response, next?: Next): Promise<void> {}
+
+	/**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+	protected async isUserAuthenticated(req: Request, res: Response, next?: Next): Promise<void> {}
 }
 
 // /**

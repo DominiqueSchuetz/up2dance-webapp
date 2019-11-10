@@ -6,7 +6,8 @@ import {
 	CREATE_EVENT_API,
 	UPDATE_EVENT_API,
 	DELETE_EVENT_API,
-	REGISER_USERS_API
+	REGISER_USERS_API,
+	IS_USER_AUTHENTICATED_API
 } from "../api";
 
 // ###################################################
@@ -82,5 +83,15 @@ export const registerUserService = async (formData: FormData): Promise<IResponse
 
 	const postRegisterUser: Response = await fetch(REGISER_USERS_API, HEADER);
 	const responsePayload: Promise<IResponse<IRegisterUserData>> = await postRegisterUser.json();
+	return responsePayload;
+};
+
+export const isUserAuthenticatedService = async (): Promise<IResponse<IUser>> => {
+	const HEADER = {
+		method: "GET",
+		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` }
+	};
+	const isUserAuthenticatedEvent: Response = await fetch(IS_USER_AUTHENTICATED_API, HEADER);
+	const responsePayload: Promise<IResponse<IUser>> = await isUserAuthenticatedEvent.json();
 	return responsePayload;
 };

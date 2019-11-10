@@ -1,18 +1,26 @@
 import { EBandMemberInstrument, EBandMemberInstrumentSymbol } from "../../enums";
+import { ApplicationUserAction } from "../../store/types/user.types";
 import { Menu, Button, Image, Dropdown } from "semantic-ui-react";
-import React, { Fragment, useEffect, useState } from "react";
 import { IUser, IReduxState, IEvent, IRegisterUserData } from "../../models";
+import React, { Fragment, useEffect, useState } from "react";
+import { isNil } from "lodash";
 import { NavLink } from "react-router-dom";
 
 interface IStateProps {
 	userPayload: IUser;
 }
 
-const Header: React.FC<IStateProps> = (props) => {
+interface IDispatchProps {
+	onIsUserAuthenticated(): Promise<ApplicationUserAction>;
+}
+
+const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
+	const { onIsUserAuthenticated } = props;
 	const { firstName, instrument } = props.userPayload;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
 	useEffect(() => {
+		onIsUserAuthenticated();
 		if (instrument) {
 			switch (instrument) {
 				case EBandMemberInstrument.VOCAL:
@@ -35,7 +43,7 @@ const Header: React.FC<IStateProps> = (props) => {
 					break;
 			}
 		}
-	});
+	}, []);
 
 	const handleLogout = () => {
 		// TODO Remove jwt token
