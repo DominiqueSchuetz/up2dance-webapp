@@ -4,19 +4,22 @@ import { Menu, Button, Image, Dropdown } from "semantic-ui-react";
 import { IUser, IReduxState, IEvent, IRegisterUserData } from "../../models";
 import React, { Fragment, useEffect, useState } from "react";
 import { isNil } from "lodash";
+import { IReduxLogOutUserAction } from "../../store/types/user.types";
 import { NavLink } from "react-router-dom";
 
 interface IStateProps {
-	userPayload: IUser;
+	userPayload: IReduxState<IUser>;
 }
 
 interface IDispatchProps {
 	onIsUserAuthenticated(): Promise<ApplicationUserAction>;
+	onLogOutUser(): IReduxLogOutUserAction;
 }
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { onIsUserAuthenticated } = props;
-	const { firstName, instrument } = props.userPayload;
+	const { onIsUserAuthenticated, onLogOutUser } = props;
+	const { firstName, instrument } = props.userPayload.item;
+	const successCode = props.userPayload.success;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
 	useEffect(() => {
@@ -46,9 +49,9 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 	}, []);
 
 	const handleLogout = () => {
-		// TODO Remove jwt token
-		// TODO Remove user item
-		// TODO Navigate to root
+		localStorage.removeItem("token");
+		localStorage.clear();
+		onLogOutUser();
 	};
 
 	return (
@@ -63,12 +66,14 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<Menu.Item as={NavLink} to="#" name="contact" />
 						<Menu.Menu position="right">
 							<Menu.Item>
-								<Image
-									style={{ marginRight: 20 }}
-									size="mini"
-									circular
-									src="/images/avatar/large/matthew.png"
-								/>
+								{successCode && (
+									<Image
+										style={{ marginRight: 20 }}
+										size="mini"
+										circular
+										src="/images/avatar/large/matthew.png"
+									/>
+								)}
 								<span>
 									{firstName ? `Hey, ${firstName.toLocaleUpperCase()} ` + ` ${instrumentSymbol}` : ""}
 								</span>

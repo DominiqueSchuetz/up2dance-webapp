@@ -1,13 +1,14 @@
 import { ApplicationEventsAction, IReduxGetEventsAction } from "../../../store/types/event.types";
 import { Segment, Card, Button, Dimmer, Loader, Header } from "semantic-ui-react";
+import { IEvent, IReduxState, IUser } from "../../../models";
 import React, { useEffect, Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
 import { EventCard, EventCardForm } from "../";
-import { IEvent } from "../../../models";
 import { isArray } from "lodash";
 
 interface IStateProps {
 	events: IEvent[];
+	userPayload: IReduxState<IUser>;
 	isLoaded: boolean;
 }
 
@@ -19,7 +20,15 @@ interface IDispatchProps {
 }
 
 const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { events, isLoaded, onGetAllEvents, onCreateEvent, onUpdateEventById, onDeleteEventById } = props;
+	const {
+		events,
+		isLoaded,
+		onGetAllEvents,
+		onCreateEvent,
+		onUpdateEventById,
+		onDeleteEventById,
+		userPayload
+	} = props;
 	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(
@@ -43,14 +52,16 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const modalTriggerButton = (
 		<Segment vertical textAlign="center" style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
-			<Button
-				circular
-				content="Neues Event"
-				icon="add"
-				labelPosition="right"
-				color="blue"
-				onClick={openModalDialogEditForm}
-			/>
+			{userPayload.success && (
+				<Button
+					circular
+					content="Neues Event"
+					icon="add"
+					labelPosition="right"
+					color="blue"
+					onClick={openModalDialogEditForm}
+				/>
+			)}
 		</Segment>
 	);
 
@@ -63,6 +74,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 							<EventCard
 								onDeleteEventById={onDeleteEventById}
 								updateEventById={onUpdateEventById}
+								userPayload={userPayload}
 								event={mapEvent}
 								children={modalStatus}
 							/>

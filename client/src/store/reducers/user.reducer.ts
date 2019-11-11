@@ -44,6 +44,14 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 				draft.payload.success = action.payload.success;
 				draft.payload.item = Object(action.payload).data.result;
 			});
+		case EReduxActionTypesUser.LOG_OUT_USER:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.error_code = initialStateUser.payload.error_code;
+				draft.payload.message = initialStateUser.payload.message;
+				draft.payload.success = initialStateUser.payload.success;
+				draft.payload.item = initialStateUser.payload.item;
+			});
 		default:
 			return state;
 	}

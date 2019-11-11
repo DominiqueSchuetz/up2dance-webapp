@@ -1,13 +1,14 @@
 import { Card, Image, List, Label, Button, Icon } from "semantic-ui-react";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
-import { IEvent, IAddress } from "../../../models";
+import { IEvent, IAddress, IReduxState, IUser } from "../../../models";
 import { EventDeleteDialog } from "../";
 import { EventCardForm } from "../";
 import { ApplicationEventsAction } from "../../../store/types/event.types";
 
 interface IStateProps {
 	event: IEvent;
+	userPayload: IReduxState<IUser>;
 }
 
 interface IDispatchProps {
@@ -18,7 +19,7 @@ interface IDispatchProps {
 }
 
 const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { event, updateEventById, onDeleteEventById } = props;
+	const { event, userPayload, updateEventById, onDeleteEventById } = props;
 	const address: IAddress | undefined = event.address;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -79,7 +80,11 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 	return (
 		<Fragment>
 			<Card>
-				<ModalDialog trigger={cardButtonGroup} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
+				<ModalDialog
+					trigger={userPayload.success ? cardButtonGroup : null}
+					modalStatus={modalStatus.modalOpen}
+					onClose={onCloseEvent}
+				>
 					{renderModalComponent}
 				</ModalDialog>
 				<Image

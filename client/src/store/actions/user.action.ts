@@ -3,6 +3,7 @@ import {
 	IReduxErrorUsersAction,
 	IReduxSignInUserAction,
 	IReduxRegisterUserAction,
+	IReduxLogOutUserAction,
 	IReduxIsUserAuthenticatedAction
 } from "../types/user.types";
 import { EReduxActionTypesUser } from "../../enums";
@@ -25,6 +26,10 @@ export const registerRequest = (payload: IResponse<IRegisterUserData> | any): IR
 export const isUserAuthenticatedRequest = (payload: IResponse<IUser> | any): IReduxIsUserAuthenticatedAction => ({
 	type: EReduxActionTypesUser.IS_USER_AUTHENTICATED,
 	payload
+});
+
+export const logOutUserRequest = (): IReduxLogOutUserAction => ({
+	type: EReduxActionTypesUser.LOG_OUT_USER
 });
 
 export const loadUserError = (payload: any): IReduxErrorUsersAction => ({

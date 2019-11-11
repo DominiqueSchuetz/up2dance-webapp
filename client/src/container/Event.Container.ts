@@ -8,6 +8,7 @@ import { Dispatch } from "react";
 const mapStateToProps = (state: ApplicationReducerState) => ({
 	events: state.eventReducer.payload.items,
 	event: state.eventReducer.payload.item,
+	userPayload: state.userReducer.payload,
 	isLoaded: state.eventReducer.loading.isPayloadLoading
 });
 

@@ -2,7 +2,7 @@ import { Modal, ModalProps } from "semantic-ui-react";
 import React, { Fragment } from "react";
 
 interface IStateProps {
-	trigger: React.ReactNode;
+	trigger?: React.ReactNode;
 	modalStatus: boolean;
 	onClose?: ((event: React.MouseEvent<HTMLElement, MouseEvent>, data: ModalProps) => void) | undefined;
 }
