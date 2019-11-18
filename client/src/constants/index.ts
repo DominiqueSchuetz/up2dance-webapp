@@ -1,5 +1,0 @@
-export const GET_ALL_EVENTS = "GET_ALL_EVENTS";
-export type GET_ALL_EVENTS = typeof GET_ALL_EVENTS;
-
-export const GET_CURRENT_EVENT = "GET_CURRENT_EVENT";
-export type GET_CURRENT_EVENT = typeof GET_CURRENT_EVENT;

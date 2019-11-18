@@ -4,6 +4,7 @@
     "jsx-wrap-multiline": false,
     "no-console": false,
     "max-line-length": false,
-    "indent": false
+    "indent": false,
+    "trailing-comma": false,
   }
 }

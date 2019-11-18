@@ -172,12 +172,9 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
-	public async delete(
-		id: Types.ObjectId,
-		callback?: (error: any, result: T) => void
-	): Promise<{ ok?: number; n?: number }> {
+	public async delete(id: Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
 		try {
-			const deletedItem = await this._model.deleteOne({ _id: id }).exec();
+			const deletedItem = await this._model.findByIdAndDelete({ _id: id }).exec();
 			if (deletedItem) {
 				return deletedItem;
 			}

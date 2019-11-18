@@ -4,6 +4,7 @@ import { sign, verify } from "jsonwebtoken";
 import { environments } from "../../config";
 import { IMedia } from "../models/interfaces/IMedia";
 import { renameSync, unlink, existsSync, mkdirSync } from "fs";
+import { IUser } from "../models/interfaces/IUser";
 require("dotenv").config();
 
 export class Helpers<T extends Document> {
@@ -19,7 +20,7 @@ export class Helpers<T extends Document> {
      * 
      * @param result 
      */
-	public async createJwtToken(result: T): Promise<{}> {
+	public async createJwtToken(result: T | {}): Promise<string> {
 		return new Promise((resolve, reject) => {
 			const token: string = sign({ result }, "process.env.JWT_KEY", { expiresIn: "1h" });
 			if (token) {
@@ -50,10 +51,10 @@ export class Helpers<T extends Document> {
      * 
      * @param jwttoken which was sent by the client
      */
-	public verfiyJwtToken(jwttoken: string): Promise<string | object> {
+	public verfiyJwtToken(jwtToken: string): Promise<string | object> {
 		return new Promise((resolve, reject) => {
-			if (jwttoken) {
-				const splitedToken: string = jwttoken!.split(" ")[1];
+			if (jwtToken) {
+				const splitedToken: string = jwtToken!.split(" ")[1];
 				const verifiedObject: string | object = verify(splitedToken, "process.env.JWT_KEY");
 				if (typeof verifiedObject === "object" && Object(verifiedObject).result._id) {
 					resolve(verifiedObject);

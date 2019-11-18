@@ -122,7 +122,11 @@ export class ApiServer implements IHttpServer {
 		});
 
 		// Cors middleware
-		const options: Options = { origins: [ "http://localhost:3000" ], allowHeaders: [], exposeHeaders: [] };
+		const options: Options = {
+			origins: [ "*" ],
+			allowHeaders: [ "*" ],
+			exposeHeaders: []
+		};
 		const cors = corsMiddleware(options);
 
 		this._restifyServer.pre(cors.preflight);

@@ -19,27 +19,25 @@ class EventSchema extends Schema {
 				eventType: {
 					type: String,
 					required: true,
-					enum: [
-						"Stadtfest",
-						"private Versanstaltung",
-						"Hochzeit",
-						"öffentliche Veranstaltung",
-						"sonstiges"
-					],
-					default: "sonstiges"
+					enum: [ "Öffentliche Veranstaltung", "Geschlossene Veranstaltung" ],
+					default: "Öffentliche Veranstaltung"
 				},
 				paSystem: {
 					required: false,
-					type: Boolean,
-					trim: true
+					type: Boolean
 				},
 				payment: {
 					required: false,
 					type: String,
 					trim: true
 				},
+				entry: {
+					required: false,
+					type: String,
+					trim: true
+				},
 				address: {
-					street: {
+					streetName: {
 						type: String,
 						required: false,
 						trim: true
@@ -54,15 +52,26 @@ class EventSchema extends Schema {
 						required: false,
 						trim: true
 					},
-					zipcode: {
+					state: {
+						type: String,
+						required: false,
+						trim: true
+					},
+					zipCode: {
+						type: String,
+						required: false,
+						trim: true
+					},
+					formatted_address: {
 						type: String,
 						required: false,
 						trim: true
 					},
 					location: {
 						type: {
-							type: String, // Don't do `{ location: { type: String } }`
-							enum: [ "Point" ], // 'location.type' must be 'Point'
+							type: String,
+							enum: [ "Point" ],
+							default: "Point",
 							required: false
 						},
 						coordinates: {
@@ -71,22 +80,22 @@ class EventSchema extends Schema {
 						}
 					}
 				},
-				commentEvent: {
+				comment: {
 					type: String,
 					required: false,
 					trim: true
 				},
 				eventDate: {
-					type: Date,
+					type: String,
 					required: true
 				},
 				timeStart: {
-					type: Date,
+					type: String,
 					required: false,
 					trim: true
 				},
 				timeEnd: {
-					type: Date,
+					type: String,
 					required: false,
 					trim: true
 				},

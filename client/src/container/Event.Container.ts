@@ -1,20 +1,22 @@
+import { getAllEvents, createEvent, updateEventById, deleteEventById } from "../store/effects/event.effects";
+import { ApplicationReducerState } from "../store/reducers";
+import { AnyAction, bindActionCreators } from "redux";
+import { EventCardList } from "../components/Event";
 import { connect } from "react-redux";
-import { getAllEvents } from "../actions/Event.Action";
-import { EventList } from "../components/Event";
-import { IEvent } from "../models";
+import { Dispatch } from "react";
 
-interface IState {
-	EventReducer: IEvent[];
-}
-
-export const mapStateToProps = (state: IState) => {
-	return {
-		events: state.EventReducer
-	};
-};
+const mapStateToProps = (state: ApplicationReducerState) => ({
+	events: state.eventReducer.payload.items,
+	event: state.eventReducer.payload.item,
+	userPayload: state.userReducer.payload,
+	isLoaded: state.eventReducer.loading.isPayloadLoading
+});
 
 export const mapDispatchToProps = {
-	onGetAllEvents: getAllEvents
+	onGetAllEvents: getAllEvents,
+	onUpdateEventById: updateEventById,
+	onDeleteEventById: deleteEventById,
+	onCreateEvent: createEvent
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventList);
+export default connect(mapStateToProps, mapDispatchToProps)(EventCardList);

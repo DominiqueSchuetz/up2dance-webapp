@@ -1,129 +1,101 @@
-import React, { Fragment } from "react";
+import { EBandMemberInstrument, EBandMemberInstrumentSymbol } from "../../enums";
+import { ApplicationUserAction } from "../../store/types/user.types";
+import { Menu, Button, Image, Dropdown } from "semantic-ui-react";
+import { IUser, IReduxState, IEvent, IRegisterUserData } from "../../models";
+import React, { Fragment, useEffect, useState } from "react";
+import { isNil } from "lodash";
+import { IReduxLogOutUserAction } from "../../store/types/user.types";
+import { NavLink } from "react-router-dom";
 
-const Header: React.FC = () => {
+interface IStateProps {
+	userPayload: IReduxState<IUser>;
+}
+
+interface IDispatchProps {
+	onIsUserAuthenticated(): Promise<ApplicationUserAction>;
+	onLogOutUser(): IReduxLogOutUserAction;
+}
+
+const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
+	const { onIsUserAuthenticated, onLogOutUser } = props;
+	const { firstName, instrument } = props.userPayload.item;
+	const successCode = props.userPayload.success;
+	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
+
+	useEffect(() => {
+		onIsUserAuthenticated();
+		if (instrument) {
+			switch (instrument) {
+				case EBandMemberInstrument.VOCAL:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL);
+					break;
+				case EBandMemberInstrument.VOCAL_AND_GUITAR:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL_AND_GUITAR);
+					break;
+				case EBandMemberInstrument.GUITAR_LEAD:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_LEAD);
+					break;
+				case EBandMemberInstrument.GUITAR_SOLO:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_SOLO);
+					break;
+				case EBandMemberInstrument.BASS_GUITAR:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.BASS_GUITAR);
+					break;
+				case EBandMemberInstrument.DRUMS:
+					setInstrumentSymbol(EBandMemberInstrumentSymbol.DRUMS);
+					break;
+			}
+		}
+	}, []);
+
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		localStorage.clear();
+		onLogOutUser();
+	};
+
 	return (
 		<Fragment>
 			<header>
-				<nav className="navbar dark">
-					<div className="nav-wrapper">
-						<a href="horizontal-half.html" className="brand-logo">
-							<i className="icon-diamond" />
-						</a>
-						<ul id="nav-mobile" className="right hide-on-med-and-down">
-							<li className="active">
-								<a className="dropdown-trigger" href="#!" data-target="pages">
-									Pages
-									<i className="material-icons right">arrow_drop_down</i>
-								</a>
-							</li>
-							<li>
-								<a href="blog.html">Blog</a>
-							</li>
-							<li>
-								<a href="team.html">Team</a>
-							</li>
-							<li>
-								<a href="docs/about.html">Docs</a>
-							</li>
-							<li>
-								<a href="#">Buy Now!</a>
-							</li>
-						</ul>
-
-						<ul id="pages" className="dropdown-content">
-							<li>
-								<a href="horizontal-half.html">Horizontal Halves</a>
-							</li>
-							<li>
-								<a href="sierra.html">Zoom Out</a>
-							</li>
-							<li>
-								<a className="active" href="circle-reveal.html">
-									Circle Reveal
-								</a>
-							</li>
-							<li>
-								<a href="phone-wall.html">Phone Wall</a>
-							</li>
-							<li>
-								<a href="element-transitions.html">Element Transitions</a>
-							</li>
-							<li>
-								<a href="basic-elements.html">Basic Elements</a>
-							</li>
-							<li>
-								<a href="card-shuffle.html">Shuffle</a>
-							</li>
-							<li>
-								<a href="postcards.html">Postcards</a>
-							</li>
-						</ul>
-
-						<a href="#" data-target="slide-out" className="sidenav-trigger button-collapse right">
-							<i className="material-icons black-text">menu</i>
-						</a>
-					</div>
+				<nav>
+					<Menu size="large" inverted>
+						<Menu.Item as={NavLink} to="/" name="home" />
+						<Menu.Item as={NavLink} to="#" name="events" />
+						<Menu.Item as={NavLink} to="#" name="band members" />
+						<Menu.Item as={NavLink} to="#" name="pictures" />
+						<Menu.Item as={NavLink} to="#" name="contact" />
+						<Menu.Menu position="right">
+							<Menu.Item>
+								{successCode && (
+									<Image
+										style={{ marginRight: 20 }}
+										size="mini"
+										circular
+										src="/images/avatar/large/matthew.png"
+									/>
+								)}
+								<span>
+									{firstName ? `Hey, ${firstName.toLocaleUpperCase()} ` + ` ${instrumentSymbol}` : ""}
+								</span>
+							</Menu.Item>
+							<Menu.Item>
+								<Button as={NavLink} to="/login" primary>
+									Login
+								</Button>
+							</Menu.Item>
+							<Dropdown item text="Mehr">
+								<Dropdown.Menu>
+									<Dropdown.Item as={NavLink} to="/register">
+										Registrieren
+									</Dropdown.Item>
+									<Dropdown.Item as={NavLink} to="/" onClick={handleLogout}>
+										Abmelden
+									</Dropdown.Item>
+								</Dropdown.Menu>
+							</Dropdown>
+						</Menu.Menu>
+					</Menu>
 				</nav>
-
-				<ul id="slide-out" className="sidenav">
-					<li className="no-padding">
-						<ul className="collapsible collapsible-accordion">
-							<li className="bold">
-								<a className="collapsible-header waves-effect waves-teal active">Pages</a>
-								<div className="collapsible-body">
-									<ul>
-										<li>
-											<a href="horizontal-half.html">Horizontal Halves</a>
-										</li>
-										<li>
-											<a href="sierra.html">Zoom Out</a>
-										</li>
-										<li>
-											<a className="active" href="circle-reveal.html">
-												Circle Reveal
-											</a>
-										</li>
-										<li>
-											<a href="phone-wall.html">Phone Wall</a>
-										</li>
-										<li>
-											<a href="element-transitions.html">Element Transitions</a>
-										</li>
-										<li>
-											<a href="basic-elements.html">Basic Elements</a>
-										</li>
-										<li>
-											<a href="card-shuffle.html">Shuffle</a>
-										</li>
-										<li>
-											<a href="postcards.html">Postcards</a>
-										</li>
-									</ul>
-								</div>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<a className="waves-effect waves-teal" href="blog.html">
-							Blog
-						</a>
-					</li>
-					<li>
-						<a className="waves-effect waves-teal" href="team.html">
-							Team
-						</a>
-					</li>
-					<li>
-						<a className="waves-effect waves-teal" href="docs/about.html">
-							Docs
-						</a>
-					</li>
-					<li>
-						<a className="waves-effect waves-teal" href="#">
-							Buy Now!
-						</a>
-					</li>
-				</ul>
 			</header>
 		</Fragment>
 	);

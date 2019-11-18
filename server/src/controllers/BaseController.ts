@@ -36,6 +36,10 @@ export abstract class BaseController<T extends Document> implements IController 
 			httpServer.post("/api/" + this._routes + "/create", checkAuth, this.create.bind(this));
 		}
 
+		if (this._routes === "user") {
+			httpServer.get("/api/" + this._routes + "/isUserAuthenticated", this.isUserAuthenticated.bind(this));
+		}
+
 		httpServer.get("/api/" + this._routes + "/all", this.list.bind(this));
 		httpServer.get("/api/" + this._routes + "/:id", this.getById.bind(this));
 		httpServer.put("/api/" + this._routes + "/:id", checkAuth, this.update.bind(this));
@@ -103,7 +107,9 @@ export abstract class BaseController<T extends Document> implements IController 
 	protected async create(req: Request, res: Response): Promise<void | string> {
 		try {
 			const result: T = await this._repository.create(req.body);
-			result && result._id ? successResponse(res, result) : badRequestResponse(res, "Could not create item");
+			result && result._id
+				? successResponse(res, result, "You created a new item successfully")
+				: badRequestResponse(res, "Could not create item");
 		} catch (error) {
 			internalServerErrorResponse(res, error.message);
 		}
@@ -118,7 +124,7 @@ export abstract class BaseController<T extends Document> implements IController 
 		try {
 			const result: T = await this._repository.update(req.params.id, req.body);
 			result && result._id
-				? successResponse(res, result)
+				? successResponse(res, result, "You updated a item successfully")
 				: badRequestResponse(res, "Could not update item by id");
 		} catch (error) {
 			internalServerErrorResponse(res, error.message);
@@ -132,9 +138,9 @@ export abstract class BaseController<T extends Document> implements IController 
      */
 	protected async remove(req: Request, res: Response): Promise<void> {
 		try {
-			const result = await this._repository.delete(req.params.id);
-			result && Object(result).n == 1 && Object(result).ok == 1
-				? successResponse(res, null, "Delete item successfully")
+			const result: T = await this._repository.delete(req.params.id);
+			result && result._id
+				? successResponse(res, result, "Delete item successfully")
 				: badRequestResponse(res, "Could not delete item by id");
 		} catch (error) {
 			internalServerErrorResponse(res, error.message);
@@ -211,6 +217,14 @@ export abstract class BaseController<T extends Document> implements IController 
      * @param next 
      */
 	protected async signOut(req: Request, res: Response, next?: Next): Promise<void> {}
+
+	/**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+	protected async isUserAuthenticated(req: Request, res: Response, next?: Next): Promise<void> {}
 }
 
 // /**

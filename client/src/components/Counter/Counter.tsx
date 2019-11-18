@@ -1,38 +1,33 @@
-import React, { Fragment } from "react";
-import { IEvent } from "../../models";
-import { IGetCurrentEvent } from "../../types";
+import React from "react";
+import { Grid } from "semantic-ui-react";
 
-interface IStateProps {
-	events: IEvent;
-}
-
-interface IDispatchProps {
-	onGetAllEvents(): any;
-	onGetCurrentEvent(): IGetCurrentEvent;
-}
-
-const Counter: React.FC<IStateProps & IDispatchProps> = (props) => {
-	// const { events, onGetCurrentEvent, onGetAllEvents } = props;
-
+const Counter: React.FC = () => {
 	return (
-		<Fragment>
-			<article>
-				<div className="circle-reveal-wrapper header light">
-					<div className="circle-background white" />
-					<div className="header-wrapper row valign-wrapper">
-						<div className="col s12 m8 offset-m2">
-							<h1>NEXT EVENT</h1>
-							<h3>IN</h3>
-							<h2>12d : 2h : 30sec</h2>
-							<span className="tagline">Show off your business in a whole new way.</span>
-							<button className="read-more">
-								<i className="icon-caret-down" />
-							</button>
-						</div>
-					</div>
-				</div>
-			</article>
-		</Fragment>
+		<section>
+			<Grid celled="internally" columns={1} textAlign="center" relaxed divided stretched stackable container>
+				<Grid.Row stretched>
+					<Grid.Column width={16}>
+						<h1>HEADLINE ONE</h1>
+					</Grid.Column>
+				</Grid.Row>
+			</Grid>
+			<Grid celled="internally" columns={4} textAlign="center" relaxed divided stretched stackable container>
+				<Grid.Row stretched>
+					<Grid.Column width={4}>
+						<h3>14 Tage</h3>
+					</Grid.Column>
+					<Grid.Column width={4}>
+						<h3>12 Stunden</h3>
+					</Grid.Column>
+					<Grid.Column width={4}>
+						<h3>43 Minuten</h3>
+					</Grid.Column>
+					<Grid.Column width={4}>
+						<h3>15 Sekunden</h3>
+					</Grid.Column>
+				</Grid.Row>
+			</Grid>
+		</section>
 	);
 };
 
