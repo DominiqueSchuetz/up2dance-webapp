@@ -21,6 +21,12 @@ export enum EReduxActionTypesUser {
 	DELETE_USER = "DELETE_USER"
 }
 
+export enum EReduxActionTypesMedia {
+	LOAD_MEDIA = "LOAD_MEDIA",
+	ERROR_MEDIA = "ERROR_MEDIA",
+	GET_MEDIA_BY_ID = "GET_MEDIA_BY_ID"
+}
+
 export enum EBandMemberInstrumentSymbol {
 	VOCAL = "🎤",
 	VOCAL_AND_GUITAR = "🎤+ 🎸",

@@ -1,7 +1,8 @@
 import { EBandMemberInstrument, EBandMemberInstrumentSymbol } from "../../enums";
 import { ApplicationUserAction } from "../../store/types/user.types";
+import { ApplicationMediaAction } from "../../store/types/media.types";
 import { Menu, Button, Image, Dropdown } from "semantic-ui-react";
-import { IUser, IReduxState, IEvent, IRegisterUserData } from "../../models";
+import { IUser, IReduxState, IEvent, IRegisterUserData, IMedia } from "../../models";
 import React, { Fragment, useEffect, useState } from "react";
 import { isNil } from "lodash";
 import { IReduxLogOutUserAction } from "../../store/types/user.types";
@@ -9,21 +10,22 @@ import { NavLink } from "react-router-dom";
 
 interface IStateProps {
 	userPayload: IReduxState<IUser>;
+	mediaPayload: any;
 }
 
 interface IDispatchProps {
 	onIsUserAuthenticated(): Promise<ApplicationUserAction>;
 	onLogOutUser(): IReduxLogOutUserAction;
+	onGetMediaById(id: string): any;
 }
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { onIsUserAuthenticated, onLogOutUser } = props;
-	const { firstName, instrument } = props.userPayload.item;
+	const { onIsUserAuthenticated, onLogOutUser, onGetMediaById, mediaPayload } = props;
+	const { firstName, instrument, refId } = props.userPayload.item;
 	const successCode = props.userPayload.success;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
 	useEffect(() => {
-		onIsUserAuthenticated();
 		if (instrument) {
 			switch (instrument) {
 				case EBandMemberInstrument.VOCAL:
