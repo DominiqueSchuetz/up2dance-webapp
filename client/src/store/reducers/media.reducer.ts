@@ -3,7 +3,7 @@ import { ApplicationState, IMedia } from "../../models";
 import { EReduxActionTypesMedia } from "../../enums";
 import produce from "immer";
 
-export const initialStateUser: ApplicationState<IMedia> = {
+export const initialStateMedia: ApplicationState<IMedia> = {
 	loading: { isPayloadLoading: false },
 	payload: {
 		success: false,
@@ -14,7 +14,7 @@ export const initialStateUser: ApplicationState<IMedia> = {
 	}
 };
 
-export const mediaReducer = (state: ApplicationState<IMedia> = initialStateUser, action: ApplicationMediaAction) => {
+export const mediaReducer = (state: ApplicationState<IMedia> = initialStateMedia, action: ApplicationMediaAction) => {
 	switch (action.type) {
 		case EReduxActionTypesMedia.LOAD_MEDIA:
 			return produce(state, (draft) => {
@@ -26,7 +26,7 @@ export const mediaReducer = (state: ApplicationState<IMedia> = initialStateUser,
 				draft.payload.error_code = action.payload.error_code;
 				draft.payload.message = action.payload.message;
 				draft.payload.success = action.payload.success;
-				draft.payload.item = initialStateUser.payload.item;
+				draft.payload.item = initialStateMedia.payload.item;
 			});
 		case EReduxActionTypesMedia.ERROR_MEDIA:
 			return produce(state, (draft) => {
@@ -34,7 +34,7 @@ export const mediaReducer = (state: ApplicationState<IMedia> = initialStateUser,
 				draft.payload.error_code = action.payload.error_code;
 				draft.payload.message = action.payload.message;
 				draft.payload.success = action.payload.success;
-				draft.payload.item = initialStateUser.payload.item;
+				draft.payload.item = initialStateMedia.payload.item;
 			});
 		default:
 			return state;

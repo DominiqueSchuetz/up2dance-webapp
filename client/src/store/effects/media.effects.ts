@@ -3,10 +3,10 @@ import { getMediaByIdService } from "../../services";
 import { Effect, IResponse, IMedia } from "../../models";
 
 // Update media by id
-export const getMediaById = (id: string, media: IMedia): Effect => async (dispatch, getState) => {
+export const getMediaById = (id: string): Effect => async (dispatch, getState) => {
 	dispatch(loadMediaRequest());
 	try {
-		const payload: IResponse<IMedia> = await getMediaByIdService(id, media);
+		const payload: IResponse<IMedia> = await getMediaByIdService(id);
 		if (!!payload.success) {
 			return dispatch(getMediaByIdRequest(payload));
 		} else {

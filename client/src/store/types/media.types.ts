@@ -17,7 +17,7 @@ export interface IReduxErrorMediaAction extends IReduxBaseAction {
 
 export interface IReduxGetMediaByIdAction extends IReduxBaseAction {
 	type: EReduxActionTypesMedia.GET_MEDIA_BY_ID;
-	payload: IResponse<IMedia[]>;
+	payload: IResponse<IMedia>;
 }
 
 export type ApplicationMediaAction = IReduxLoadMediaAction | IReduxErrorMediaAction | IReduxGetMediaByIdAction;

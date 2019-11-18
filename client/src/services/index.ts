@@ -100,11 +100,10 @@ export const isUserAuthenticatedService = async (): Promise<IResponse<IUser>> =>
 // ###################################################
 // #################  Media
 // ###################################################
-export const getMediaByIdService = async (id: string, media: IMedia): Promise<IResponse<IMedia>> => {
+export const getMediaByIdService = async (id: string): Promise<IResponse<IMedia>> => {
 	const HEADER = {
 		method: "GET",
-		headers: { "content-type": "application/json" },
-		body: JSON.stringify(media)
+		headers: { "content-type": "application/json" }
 	};
 	const getMediaById: Response = await fetch(GET_MEDIA_BY_ID_API + id, HEADER);
 	const responsePayload: Promise<IResponse<IMedia>> = await getMediaById.json();
