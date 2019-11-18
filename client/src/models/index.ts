@@ -2,6 +2,7 @@ import { ThunkAction } from "redux-thunk";
 import { ApplicationReducerState } from "../store/reducers";
 import { ApplicationEventsAction } from "../store/types/event.types";
 import { ApplicationUserAction } from "../store/types/user.types";
+import { ApplicationMediaAction } from "../store/types/media.types";
 
 export interface ILoadingState {
 	isPayloadLoading: boolean;
@@ -50,6 +51,13 @@ export interface IEvent {
 	hidden?: boolean | undefined;
 }
 
+export interface IMedia {
+	_id?: string | undefined;
+	fileName?: string;
+	filePath?: string;
+	fileUrl?: string;
+}
+
 export interface IUser {
 	_id?: string | undefined;
 	firstName: string;
@@ -80,4 +88,9 @@ export interface IRegisterUserData {
 	comment?: string | undefined;
 }
 
-export type Effect = ThunkAction<any, ApplicationReducerState, any, ApplicationEventsAction | ApplicationUserAction>;
+export type Effect = ThunkAction<
+	any,
+	ApplicationReducerState,
+	any,
+	ApplicationEventsAction | ApplicationUserAction | ApplicationMediaAction
+>;

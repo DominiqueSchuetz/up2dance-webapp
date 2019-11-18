@@ -1,4 +1,4 @@
-import { ISignInUserData, IResponse, IEvent, IUser, IRegisterUserData } from "../models";
+import { ISignInUserData, IResponse, IEvent, IUser, IRegisterUserData, IMedia } from "../models";
 import {
 	GET_ALL_EVENTS_API,
 	GET_ALL_USERS_API,
@@ -7,7 +7,8 @@ import {
 	UPDATE_EVENT_API,
 	DELETE_EVENT_API,
 	REGISER_USERS_API,
-	IS_USER_AUTHENTICATED_API
+	IS_USER_AUTHENTICATED_API,
+	GET_MEDIA_BY_ID_API
 } from "../api";
 
 // ###################################################
@@ -93,5 +94,19 @@ export const isUserAuthenticatedService = async (): Promise<IResponse<IUser>> =>
 	};
 	const isUserAuthenticatedEvent: Response = await fetch(IS_USER_AUTHENTICATED_API, HEADER);
 	const responsePayload: Promise<IResponse<IUser>> = await isUserAuthenticatedEvent.json();
+	return responsePayload;
+};
+
+// ###################################################
+// #################  Media
+// ###################################################
+export const getMediaByIdService = async (id: string, media: IMedia): Promise<IResponse<IMedia>> => {
+	const HEADER = {
+		method: "GET",
+		headers: { "content-type": "application/json" },
+		body: JSON.stringify(media)
+	};
+	const getMediaById: Response = await fetch(GET_MEDIA_BY_ID_API + id, HEADER);
+	const responsePayload: Promise<IResponse<IMedia>> = await getMediaById.json();
 	return responsePayload;
 };
