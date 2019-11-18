@@ -25,30 +25,40 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const successCode = props.userPayload.success;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
-	useEffect(() => {
-		if (instrument) {
-			switch (instrument) {
-				case EBandMemberInstrument.VOCAL:
-					setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL);
-					break;
-				case EBandMemberInstrument.VOCAL_AND_GUITAR:
-					setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL_AND_GUITAR);
-					break;
-				case EBandMemberInstrument.GUITAR_LEAD:
-					setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_LEAD);
-					break;
-				case EBandMemberInstrument.GUITAR_SOLO:
-					setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_SOLO);
-					break;
-				case EBandMemberInstrument.BASS_GUITAR:
-					setInstrumentSymbol(EBandMemberInstrumentSymbol.BASS_GUITAR);
-					break;
-				case EBandMemberInstrument.DRUMS:
-					setInstrumentSymbol(EBandMemberInstrumentSymbol.DRUMS);
-					break;
+	useEffect(
+		() => {
+			onIsUserAuthenticated();
+			if (refId) {
+				onGetMediaById(refId!);
 			}
-		}
-	}, []);
+
+			console.log("mediaPayload ", mediaPayload);
+
+			if (instrument) {
+				switch (instrument) {
+					case EBandMemberInstrument.VOCAL:
+						setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL);
+						break;
+					case EBandMemberInstrument.VOCAL_AND_GUITAR:
+						setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL_AND_GUITAR);
+						break;
+					case EBandMemberInstrument.GUITAR_LEAD:
+						setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_LEAD);
+						break;
+					case EBandMemberInstrument.GUITAR_SOLO:
+						setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_SOLO);
+						break;
+					case EBandMemberInstrument.BASS_GUITAR:
+						setInstrumentSymbol(EBandMemberInstrumentSymbol.BASS_GUITAR);
+						break;
+					case EBandMemberInstrument.DRUMS:
+						setInstrumentSymbol(EBandMemberInstrumentSymbol.DRUMS);
+						break;
+				}
+			}
+		},
+		[ refId ]
+	);
 
 	const handleLogout = () => {
 		localStorage.removeItem("token");
