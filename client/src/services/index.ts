@@ -8,7 +8,9 @@ import {
 	DELETE_EVENT_API,
 	REGISER_USERS_API,
 	IS_USER_AUTHENTICATED_API,
-	GET_MEDIA_BY_ID_API
+	GET_MEDIA_BY_ID_API,
+	UPDATE_USER_API,
+	DELETE_USER_API
 } from "../api";
 
 // ###################################################
@@ -59,9 +61,34 @@ export const deleteEventService = async (id: string): Promise<IResponse<IEvent>>
 // ###################################################
 // #################  Users
 // ###################################################
-export const loadUsersService = async (): Promise<IResponse<IUser>> => {
-	const fetchedUsers: Response = await fetch(GET_ALL_USERS_API);
-	const responsePayload: Promise<IResponse<IUser>> = fetchedUsers.json();
+export const getAllUsersService = async (): Promise<IResponse<IUser[]>> => {
+	const HEADER = {
+		method: "GET",
+		headers: { "content-type": "application/json" }
+	};
+	const fetchedUsers: Response = await fetch(GET_ALL_USERS_API, HEADER);
+	const responsePayload: Promise<IResponse<IUser[]>> = fetchedUsers.json();
+	return responsePayload;
+};
+
+export const updateUserService = async (id: string, user: IUser): Promise<IResponse<IUser>> => {
+	const HEADER = {
+		method: "PUT",
+		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
+		body: JSON.stringify(user)
+	};
+	const updateUser: Response = await fetch(UPDATE_USER_API + id, HEADER);
+	const responsePayload: Promise<IResponse<IUser>> = await updateUser.json();
+	return responsePayload;
+};
+
+export const deleteUserService = async (id: string): Promise<IResponse<IUser>> => {
+	const HEADER = {
+		method: "DELETE",
+		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` }
+	};
+	const deleteUser: Response = await fetch(DELETE_USER_API + id, HEADER);
+	const responsePayload: Promise<IResponse<IUser>> = await deleteUser.json();
 	return responsePayload;
 };
 

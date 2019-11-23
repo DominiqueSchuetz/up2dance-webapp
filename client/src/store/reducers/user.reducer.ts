@@ -20,6 +20,25 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = true;
 			});
+		case EReduxActionTypesUser.GET_USERS:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.message = action.payload.message;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.success = action.payload.success;
+				draft.payload.items = action.payload.data;
+			});
+		case EReduxActionTypesUser.DELETE_USER:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.message = action.payload.message;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.success = action.payload.success;
+				const filteredArray: IUser[] = draft.payload.items.filter(
+					(item) => item._id !== action.payload.data._id
+				);
+				draft.payload.items = filteredArray;
+			});
 		case EReduxActionTypesUser.SIGNIN_USER:
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;

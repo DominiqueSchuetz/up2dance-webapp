@@ -42,7 +42,8 @@ export class UserController extends BaseController<IUser> {
 		try {
 			const allItems = await this._repository.list();
 			if (allItems) {
-				let mapToNames = allItems.map((user) => ({
+				let mapToNames = allItems.map((user: IUser) => ({
+					_id: user._id,
 					firstName: user.firstName,
 					lastName: user.lastName,
 					email: user.email,
@@ -50,8 +51,8 @@ export class UserController extends BaseController<IUser> {
 					comment: user.comment
 				}));
 				mapToNames.length > 0
-					? successResponse(res, { Info: mapToNames })
-					: badRequestResponse(res, "No Users in database");
+					? successResponse(res, mapToNames)
+					: successResponse(res, null, "No users so far", 0);
 			} else {
 				badRequestResponse(res, "Could not list items");
 			}

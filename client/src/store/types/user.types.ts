@@ -17,7 +17,7 @@ export interface IReduxErrorUsersAction extends IReduxBaseAction {
 
 export interface IReduxGetUsersAction extends IReduxBaseAction {
 	type: EReduxActionTypesUser.GET_USERS;
-	payload: IResponse<IUser>;
+	payload: IResponse<IUser[]>;
 }
 export interface IReduxGetUserByIdAction extends IReduxBaseAction {
 	type: EReduxActionTypesUser.GET_USER_BY_ID;
