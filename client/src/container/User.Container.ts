@@ -1,5 +1,5 @@
 import { ApplicationReducerState } from "../store/reducers";
-import { getAllUsers, deleteUserById } from "../store/effects/user.effects";
+import { getAllUsers, deleteUserById, updateUserById } from "../store/effects/user.effects";
 import { AnyAction, bindActionCreators } from "redux";
 import { UserCardList } from "../components/Users";
 import { connect } from "react-redux";
@@ -12,7 +12,8 @@ const mapStateToProps = (state: ApplicationReducerState) => ({
 
 export const mapDispatchToProps = {
 	onGetAllUsers: getAllUsers,
-	onDeleteUserById: deleteUserById
+	onDeleteUserById: deleteUserById,
+	onUpdateUserById: updateUserById
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserCardList);

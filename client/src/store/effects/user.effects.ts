@@ -126,6 +126,8 @@ export const isUserAuthenticated = (): Effect => async (dispatch, getState) => {
 	dispatch(loadUsersRequest());
 	try {
 		const payload: IResponse<IUser> = await isUserAuthenticatedService();
+		console.log("effects were called: => ", payload);
+
 		if (!!payload.success) {
 			dispatch(isUserAuthenticatedRequest(payload));
 		} else {

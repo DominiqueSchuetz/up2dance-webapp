@@ -8,7 +8,7 @@ import { ApplicationEventsAction } from "../../../store/types/event.types";
 
 interface IStateProps {
 	event: IEvent;
-	userPayload: IReduxState<IUser>;
+	isAuthenticated: boolean;
 }
 
 interface IDispatchProps {
@@ -19,7 +19,7 @@ interface IDispatchProps {
 }
 
 const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { event, userPayload, updateEventById, onDeleteEventById } = props;
+	const { event, isAuthenticated, updateEventById, onDeleteEventById } = props;
 	const address: IAddress | undefined = event.address;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -81,7 +81,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 		<Fragment>
 			<Card>
 				<ModalDialog
-					trigger={userPayload.success ? cardButtonGroup : null}
+					trigger={isAuthenticated ? cardButtonGroup : null}
 					modalStatus={modalStatus.modalOpen}
 					onClose={onCloseEvent}
 				>

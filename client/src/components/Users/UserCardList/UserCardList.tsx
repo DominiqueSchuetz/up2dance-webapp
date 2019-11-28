@@ -1,5 +1,5 @@
 import { ApplicationUserAction } from "../../../store/types/user.types";
-import { Segment, Card, Button, Dimmer, Loader, Header } from "semantic-ui-react";
+import { Segment, Card, Button, Dimmer, Loader, Header, Container } from "semantic-ui-react";
 import { IEvent, IReduxState, IUser } from "../../../models";
 import React, { useEffect, Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
@@ -14,11 +14,12 @@ interface IStateProps {
 
 interface IDispatchProps {
 	onGetAllUsers(): Promise<IReduxGetUsersAction>;
+	onUpdateUserById?(id: string, user: IUser): Promise<ApplicationUserAction>;
 	onDeleteUserById(id: string): Promise<ApplicationUserAction>;
 }
 
 const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { isUserPayloadLoading, userPayload, onGetAllUsers } = props;
+	const { isUserPayloadLoading, userPayload, onGetAllUsers, onUpdateUserById, onDeleteUserById } = props;
 	const users: IUser[] = userPayload.items;
 
 	useEffect(
@@ -34,17 +35,13 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		if (!isUserPayloadLoading) {
 			if (isArray(users)) {
 				return users.map((mapUser: IUser) => (
-					<Fragment key={mapUser._id}>
-						<Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
-							{/* <UserCard
-								onDeleteEventById={onDeleteEventById}
-								updateEventById={onUpdateEventById}
-								userPayload={userPayload}
-								event={mapEvent}
-								children={modalStatus}
-							/> */}
-						</Segment>
-					</Fragment>
+					<div key={mapUser._id} style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
+						<UserCard
+							onUpdateUserById={onUpdateUserById}
+							onDeleteUserById={onDeleteUserById}
+							user={mapUser}
+						/>
+					</div>
 				));
 			} else {
 				return (
@@ -66,6 +63,11 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<section>
+			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
+				<Header as="h1" textAlign="center">
+					Mitglieder
+				</Header>
+			</Container>
 			<Card.Group itemsPerRow="4" centered stackable>
 				{renderUserCards(users)}
 			</Card.Group>

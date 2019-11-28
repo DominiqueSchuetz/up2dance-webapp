@@ -1,5 +1,5 @@
 import { ApplicationEventsAction, IReduxGetEventsAction } from "../../../store/types/event.types";
-import { Segment, Card, Button, Dimmer, Loader, Header } from "semantic-ui-react";
+import { Segment, Card, Button, Dimmer, Loader, Header, Container, Embed } from "semantic-ui-react";
 import { IEvent, IReduxState, IUser } from "../../../models";
 import React, { useEffect, Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
@@ -9,10 +9,12 @@ import { isArray } from "lodash";
 interface IStateProps {
 	events: IEvent[];
 	userPayload: IReduxState<IUser>;
+	isAuthenticated: boolean;
 	isLoaded: boolean;
 }
 
 interface IDispatchProps {
+	onIsUserAuthenticated(): Promise<boolean>;
 	onGetAllEvents(): Promise<IReduxGetEventsAction>;
 	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
 	onUpdateEventById(id: string, event: IEvent): Promise<ApplicationEventsAction>;
@@ -27,12 +29,14 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		onCreateEvent,
 		onUpdateEventById,
 		onDeleteEventById,
-		userPayload
+		onIsUserAuthenticated,
+		isAuthenticated
 	} = props;
 	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(
 		() => {
+			// onIsUserAuthenticated();
 			onGetAllEvents();
 		},
 		[ onGetAllEvents ]
@@ -52,7 +56,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const modalTriggerButton = (
 		<Segment vertical textAlign="center" style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
-			{userPayload.success && (
+			{isAuthenticated && (
 				<Button
 					circular
 					content="Neues Event"
@@ -74,7 +78,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 							<EventCard
 								onDeleteEventById={onDeleteEventById}
 								updateEventById={onUpdateEventById}
-								userPayload={userPayload}
+								isAuthenticated={isAuthenticated}
 								event={mapEvent}
 								children={modalStatus}
 							/>
@@ -101,6 +105,11 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<section>
+			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
+				<Header as="h1" textAlign="center">
+					Konzerte
+				</Header>
+			</Container>
 			<ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
 				<EventCardForm
 					headerText="Neues Event"

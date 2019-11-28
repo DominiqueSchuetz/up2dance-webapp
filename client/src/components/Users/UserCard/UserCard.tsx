@@ -1,26 +1,37 @@
-import { Card, Image, List, Label, Button, Icon } from "semantic-ui-react";
+import {
+	Card,
+	Image,
+	List,
+	Label,
+	Button,
+	Icon,
+	Item,
+	Container,
+	Segment,
+	Header,
+	Reveal,
+	Menu
+} from "semantic-ui-react";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
-import { IEvent, IAddress, IReduxState, IUser } from "../../../models";
+import { IAddress, IReduxState, IUser } from "../../../models";
 import { UserDeleteDialog } from "..";
 import { UserCardForm } from "..";
-import { ApplicationEventsAction } from "../../../store/types/event.types";
+import { ApplicationUserAction } from "../../../store/types/user.types";
+import { userInfo } from "os";
 
 interface IStateProps {
-	event: IEvent;
-	userPayload: IReduxState<IUser>;
+	user: IUser;
 }
 
 interface IDispatchProps {
-	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
-	onGetEventById?(id: string): Promise<ApplicationEventsAction>;
-	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
-	onDeleteEventById?(id: string): Promise<ApplicationEventsAction>;
+	onUpdateUserById?(id: string, user: IUser): Promise<ApplicationUserAction>;
+	onDeleteUserById?(id: string): Promise<ApplicationUserAction>;
 }
 
 const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { event, userPayload, updateEventById, onDeleteEventById } = props;
-	const address: IAddress | undefined = event.address;
+	const { user, onUpdateUserById, onDeleteUserById } = props;
+	const { refId } = user;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 	const [ deleteDialog, setDeleteDialog ] = useState<boolean>(false);
@@ -43,21 +54,21 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 		onCloseEvent();
 	};
 
-	const renderModalComponent: JSX.Element = deleteDialog ? (
-		<UserDeleteDialog
-			onDeleteEventById={onDeleteEventById}
-			event={event}
-			handleCancelEvent={handleSpecialEvent}
-			headerText="Event Löschen"
-		/>
-	) : (
-		<UserCardForm
-			updateEventById={updateEventById}
-			event={event}
-			handleCancelEvent={handleSpecialEvent}
-			headerText="Event Editieren"
-		/>
-	);
+	// const renderModalComponent: JSX.Element = deleteDialog ? (
+	// 	<UserDeleteDialog
+	// 		onDeleteEventById={onDeleteEventById}
+	// 		event={event}
+	// 		handleCancelEvent={handleSpecialEvent}
+	// 		headerText="Event Löschen"
+	// 	/>
+	// ) : (
+	// 	<UserCardForm
+	// 		updateEventById={updateEventById}
+	// 		event={event}
+	// 		handleCancelEvent={handleSpecialEvent}
+	// 		headerText="Event Editieren"
+	// 	/>
+	// );
 
 	const cardButtonGroup: JSX.Element = (
 		<Button.Group>
@@ -79,71 +90,54 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<Fragment>
-			<Card>
-				<ModalDialog
-					trigger={userPayload.success ? cardButtonGroup : null}
-					modalStatus={modalStatus.modalOpen}
-					onClose={onCloseEvent}
-				>
-					{renderModalComponent}
-				</ModalDialog>
-				<Image
-					src="/images/avatar/large/matthew.png"
-					size="medium"
-					wrapped
-					ui={true}
-					label={{
-						as: "a",
-						color: event.eventType !== "Öffentliche Veranstaltung" ? "orange" : "blue",
-						content: `${event.eventType}`,
-						icon: "bullhorn",
-						ribbon: true
-					}}
-				/>
-				<Card.Content>
-					<Card.Header textAlign="center">{event.eventName}</Card.Header>
-					<Card.Meta textAlign="center">
-						<span className="date">Am {event.eventDate}</span>
-					</Card.Meta>
-					<Card.Meta textAlign="center">
-						<span className="date">Um {event.timeStart} Uhr</span>
-					</Card.Meta>
-					<Card.Description textAlign="center">
-						<Label.Group tag>
-							<Label size="small" as="a">
-								14 €
-							</Label>
-						</Label.Group>
-					</Card.Description>
-				</Card.Content>
-				<Card.Content>
-					<List>
-						<List.Item>
-							<List.Header>{address!.city}</List.Header>
-							<List.Content>{address!.state}</List.Content>
-							<List.Content>{address!.zipCode}</List.Content>
-						</List.Item>
-						<List.Item>
-							<List.Header>Maps</List.Header>
-							<a href="/">
-								<Icon color="grey" size="big" name="map" />
-							</a>
-						</List.Item>
-					</List>
-				</Card.Content>
-				<Card.Content textAlign="center" extra>
-					<Button circular size="mini" inverted color="blue" icon="facebook" />
-					<Button
-						style={{ marginLeft: 10, marginRight: 10 }}
-						circular
-						size="mini"
-						inverted
-						color="orange"
-						icon="instagram"
-					/>
-					<Button circular size="mini" inverted color="red" icon="youtube" />
-				</Card.Content>
-			</Card>
+			<Segment textAlign="center" raised piled>
+				<Image centered circular src={refId ? "http://localhost:8080/api/media/" + refId : ""} size="medium" />
+			</Segment>
+			<Header as="h1" textAlign="center">
+				<Header.Content>{user.firstName}</Header.Content>
+				<br />
+				<Header.Content>
+					<Button.Group>
+						<Button animated="vertical">
+							<Button.Content hidden>
+								<Icon name="pencil alternate" />
+							</Button.Content>
+							<Button.Content visible>Bearbeiten</Button.Content>
+						</Button>
+						<Button.Or />
+						<Button color="grey" animated="vertical">
+							<Button.Content hidden>
+								<Icon name="trash alternate" />
+							</Button.Content>
+							<Button.Content visible>Löschen</Button.Content>
+						</Button>
+					</Button.Group>
+				</Header.Content>
+			</Header>
+
+			<Container text>
+				<Header as="h1">HEADER</Header>
+				<p>
+					Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean
+					massa strong. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+					Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis
+					enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
+				</p>
+			</Container>
+
+			{/* <Segment attached="top">
+				<img src="/images/paragraph.png" />
+			</Segment>
+
+			<Menu attached="bottom" tabular>
+				<Menu.Item name="active" active={true}>
+					Bio
+				</Menu.Item>
+
+				<Menu.Item name="2">Project #2</Menu.Item>
+
+				<Menu.Item name="3">Project #3</Menu.Item>
+			</Menu> */}
 		</Fragment>
 	);
 };

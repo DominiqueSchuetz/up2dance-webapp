@@ -48,6 +48,7 @@ export class UserController extends BaseController<IUser> {
 					lastName: user.lastName,
 					email: user.email,
 					instrument: user.instrument,
+					refId: user.refId,
 					comment: user.comment
 				}));
 				mapToNames.length > 0
