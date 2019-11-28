@@ -72,21 +72,23 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 		);
 
 	const cardButtonGroup: JSX.Element = (
-		<Button.Group>
-			<Button name="edit" animated onClick={openModalDialogEditForm}>
-				<Button.Content visible>Editieren</Button.Content>
-				<Button.Content hidden>
-					<Icon name="pencil" />
-				</Button.Content>
-			</Button>
-			<Button.Or />
-			<Button name="delete" animated color="grey" onClick={openModalDialogDeleteForm}>
-				<Button.Content visible>Löschen</Button.Content>
-				<Button.Content hidden>
-					<Icon name="trash alternate outline" />
-				</Button.Content>
-			</Button>
-		</Button.Group>
+		<Container textAlign="center" >
+			<Button.Group>
+				<Button name="edit" animated onClick={openModalDialogEditForm}>
+					<Button.Content visible>Editieren</Button.Content>
+					<Button.Content hidden>
+						<Icon name="pencil" />
+					</Button.Content>
+				</Button>
+				<Button.Or />
+				<Button name="delete" animated color="grey" onClick={openModalDialogDeleteForm}>
+					<Button.Content visible>Löschen</Button.Content>
+					<Button.Content hidden>
+						<Icon name="trash alternate outline" />
+					</Button.Content>
+				</Button>
+			</Button.Group>
+		</Container>
 	);
 
 	return (
@@ -103,12 +105,8 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 			</Segment>
 			<Header as="h1" textAlign="center">
 				<Header.Content>{user.firstName}</Header.Content>
-				<br />
-				<Header.Content>
-					{cardButtonGroup}
-				</Header.Content>
 			</Header>
-			<Container text>
+			<Container text >
 				<Segment raised piled>
 					<Header as="h1">HEADER</Header>
 					<p>
