@@ -22,6 +22,7 @@ import { userInfo } from "os";
 
 interface IStateProps {
 	user: IUser;
+	isAuthenticated: boolean;
 }
 
 interface IDispatchProps {
@@ -30,11 +31,11 @@ interface IDispatchProps {
 }
 
 const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { user, onUpdateUserById, onDeleteUserById } = props;
+	const { user, isAuthenticated, onUpdateUserById, onDeleteUserById } = props;
 	const { refId } = user;
 
-	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
-	const [ deleteDialog, setDeleteDialog ] = useState<boolean>(false);
+	const [modalStatus, setModalStaus] = useState<{ modalOpen: boolean }>({ modalOpen: false });
+	const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
 
 	const openModalDialogEditForm = (): void => {
 		setDeleteDialog(false);
@@ -54,21 +55,21 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 		onCloseEvent();
 	};
 
-	// const renderModalComponent: JSX.Element = deleteDialog ? (
-	// 	<UserDeleteDialog
-	// 		onDeleteEventById={onDeleteEventById}
-	// 		event={event}
-	// 		handleCancelEvent={handleSpecialEvent}
-	// 		headerText="Event Löschen"
-	// 	/>
-	// ) : (
-	// 	<UserCardForm
-	// 		updateEventById={updateEventById}
-	// 		event={event}
-	// 		handleCancelEvent={handleSpecialEvent}
-	// 		headerText="Event Editieren"
-	// 	/>
-	// );
+	const renderModalComponent: JSX.Element = deleteDialog ? (
+		<UserDeleteDialog
+			onDeleteUserById={onDeleteUserById}
+			user={user}
+			handleCancelUser={handleSpecialEvent}
+			headerText="User Löschen"
+		/>
+	) : (
+			<UserCardForm
+				onUpdateUserById={onUpdateUserById}
+				user={user}
+				handleCancelUser={handleSpecialEvent}
+				headerText="User Editieren"
+			/>
+		);
 
 	const cardButtonGroup: JSX.Element = (
 		<Button.Group>
@@ -90,54 +91,31 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<Fragment>
-			<Segment textAlign="center" raised piled>
+			<ModalDialog
+				trigger={isAuthenticated ? cardButtonGroup : null}
+				modalStatus={modalStatus.modalOpen}
+				onClose={onCloseEvent}
+			>
+				{renderModalComponent}
+			</ModalDialog>
+			<Segment textAlign="center">
 				<Image centered circular src={refId ? "http://localhost:8080/api/media/" + refId : ""} size="medium" />
 			</Segment>
 			<Header as="h1" textAlign="center">
 				<Header.Content>{user.firstName}</Header.Content>
 				<br />
 				<Header.Content>
-					<Button.Group>
-						<Button animated="vertical">
-							<Button.Content hidden>
-								<Icon name="pencil alternate" />
-							</Button.Content>
-							<Button.Content visible>Bearbeiten</Button.Content>
-						</Button>
-						<Button.Or />
-						<Button color="grey" animated="vertical">
-							<Button.Content hidden>
-								<Icon name="trash alternate" />
-							</Button.Content>
-							<Button.Content visible>Löschen</Button.Content>
-						</Button>
-					</Button.Group>
+					{cardButtonGroup}
 				</Header.Content>
 			</Header>
-
 			<Container text>
-				<Header as="h1">HEADER</Header>
-				<p>
-					Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean
-					massa strong. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-					Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis
-					enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
-				</p>
+				<Segment raised piled>
+					<Header as="h1">HEADER</Header>
+					<p>
+						{user.comment}
+					</p>
+				</Segment>
 			</Container>
-
-			{/* <Segment attached="top">
-				<img src="/images/paragraph.png" />
-			</Segment>
-
-			<Menu attached="bottom" tabular>
-				<Menu.Item name="active" active={true}>
-					Bio
-				</Menu.Item>
-
-				<Menu.Item name="2">Project #2</Menu.Item>
-
-				<Menu.Item name="3">Project #3</Menu.Item>
-			</Menu> */}
 		</Fragment>
 	);
 };

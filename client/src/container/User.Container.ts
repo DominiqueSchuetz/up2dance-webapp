@@ -7,6 +7,7 @@ import { Dispatch } from "react";
 
 const mapStateToProps = (state: ApplicationReducerState) => ({
 	isUserPayloadLoading: state.userReducer.loading.isPayloadLoading,
+	isAuthenticated: state.registerReducer.payload.success,
 	userPayload: state.userReducer.payload
 });
 

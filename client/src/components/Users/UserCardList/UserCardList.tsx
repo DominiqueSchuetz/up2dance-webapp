@@ -9,6 +9,7 @@ import { IReduxGetUsersAction } from "../../../store/types/user.types";
 
 interface IStateProps {
 	isUserPayloadLoading: boolean;
+	isAuthenticated: boolean;
 	userPayload: IReduxState<IUser>;
 }
 
@@ -19,7 +20,7 @@ interface IDispatchProps {
 }
 
 const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { isUserPayloadLoading, userPayload, onGetAllUsers, onUpdateUserById, onDeleteUserById } = props;
+	const { isUserPayloadLoading, isAuthenticated, userPayload, onGetAllUsers, onUpdateUserById, onDeleteUserById } = props;
 	const users: IUser[] = userPayload.items;
 
 	useEffect(
@@ -39,6 +40,7 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<UserCard
 							onUpdateUserById={onUpdateUserById}
 							onDeleteUserById={onDeleteUserById}
+							isAuthenticated={isAuthenticated}
 							user={mapUser}
 						/>
 					</div>

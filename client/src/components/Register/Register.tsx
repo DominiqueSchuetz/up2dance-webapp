@@ -57,15 +57,15 @@ const instrumentOption = [
 
 const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { message, success } = props.registerPayload;
-	const [ firstName, setFirstName ] = useState<string>("");
-	const [ lastName, setLastName ] = useState<string>("");
-	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
-	const [ fileName, setFileName ] = useState<string | undefined>("");
-	const [ file, setFile ] = useState<{ file: any }>({ file: "" });
-	const [ email, setEmail ] = useState<string>("");
-	const [ password, setPassword ] = useState<string>("");
-	const [ secretKey, setSecretKey ] = useState<string>("");
-	const [ comment, setComment ] = useState<string>("");
+	const [firstName, setFirstName] = useState<string>("");
+	const [lastName, setLastName] = useState<string>("");
+	const [filePath, setFilePath] = useState<any | undefined>(undefined);
+	const [fileName, setFileName] = useState<string | undefined>("");
+	const [file, setFile] = useState<{ file: any }>({ file: "" });
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [secretKey, setSecretKey] = useState<string>("");
+	const [comment, setComment] = useState<string>("");
 	const inputRef: any = useRef();
 	//as React.MutableRefObject<HTMLInputElement>;
 	const { onRegisterUser } = props;
@@ -156,114 +156,112 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	return (
-		<div className="App">
-			<Grid textAlign="center" style={{}} verticalAlign="middle">
-				<Grid.Column style={{ maxWidth: 450 }}>
-					<Header as="h2" color="teal" textAlign="center">
-						<Image src="images/avatar/large/matthew.png" /> Register
+		<Grid textAlign="center" style={{}} verticalAlign="middle">
+			<Grid.Column style={{ maxWidth: 450 }}>
+				<Header as="h2" color="teal" textAlign="center">
+					<Image src="images/avatar/large/matthew.png" /> Register
 					</Header>
-					<Form autoComplete="off" size="large">
-						<Segment stacked>
-							<Form.Input
-								type="text"
-								name="firstName"
-								value={firstName}
-								fluid
-								placeholder="Vorname"
-								onChange={handleOnChange}
-								error={firstName!.length > 1 ? false : true}
-							/>
-							<Form.Input
-								type="text"
-								name="lastName"
-								value={lastName}
-								fluid
-								placeholder="Nachname"
-								onChange={handleOnChange}
-								error={lastName!.length > 1 ? false : true}
-							/>
-							<Segment placeholder>{file.file ? imageUploaded : uplaodImage}</Segment>
-							<Form.Button fluid onClick={handleRemove}>
-								Bild löschen
+				<Form autoComplete="off" size="large">
+					<Segment stacked>
+						<Form.Input
+							type="text"
+							name="firstName"
+							value={firstName}
+							fluid
+							placeholder="Vorname"
+							onChange={handleOnChange}
+							error={firstName!.length > 1 ? false : true}
+						/>
+						<Form.Input
+							type="text"
+							name="lastName"
+							value={lastName}
+							fluid
+							placeholder="Nachname"
+							onChange={handleOnChange}
+							error={lastName!.length > 1 ? false : true}
+						/>
+						<Segment placeholder>{file.file ? imageUploaded : uplaodImage}</Segment>
+						<Form.Button fluid onClick={handleRemove}>
+							Bild löschen
 							</Form.Button>
-							<input
-								id="file-upload"
-								accept="image/png, image/jpeg, image/jpg"
-								ref={inputRef}
-								type="file"
-								hidden
-								name="filePath"
-								onChange={handleUploadAction}
-							/>
-							<Form.Dropdown
-								name="instrument"
-								clearable
-								placeholder="Instrument"
-								fluid
-								selection
-								options={instrumentOption}
-								onChange={handleOnChange}
-							/>
-							<Form.Input
-								type="text"
-								name="email"
-								value={email}
-								fluid
-								icon="user"
-								iconPosition="left"
-								placeholder="Email adresse"
-								onChange={handleOnChange}
-								error={email!.length > 1 && isEmailValid() ? false : true}
-							/>
-							<Form.Input
-								type="password"
-								name="password"
-								value={password}
-								fluid
-								icon="lock"
-								iconPosition="left"
-								placeholder="Password"
-								onChange={handleOnChange}
-								error={email!.length > 4 ? false : true}
-							/>
-							<Form.Input
-								type="password"
-								name="secretKey"
-								value={secretKey}
-								fluid
-								icon="lock"
-								iconPosition="left"
-								placeholder="Secret-Key"
-								onChange={handleOnChange}
-								error={email!.length > 4 ? false : true}
-							/>
-							<Form.TextArea
-								style={{ minHeight: 200 }}
-								name="comment"
-								value={comment}
-								placeholder="Kommentar..."
-								onChange={handleOnChange}
-							/>
-							<Button
-								as={NavLink}
-								to="/login"
-								primary
-								color="teal"
-								fluid
-								size="large"
-								onClick={handleRegister}
-								disabled={!firstName || !lastName || !email || !password || !secretKey}
-							>
-								Registrieren
+						<input
+							id="file-upload"
+							accept="image/png, image/jpeg, image/jpg"
+							ref={inputRef}
+							type="file"
+							hidden
+							name="filePath"
+							onChange={handleUploadAction}
+						/>
+						<Form.Dropdown
+							name="instrument"
+							clearable
+							placeholder="Instrument"
+							fluid
+							selection
+							options={instrumentOption}
+							onChange={handleOnChange}
+						/>
+						<Form.Input
+							type="text"
+							name="email"
+							value={email}
+							fluid
+							icon="user"
+							iconPosition="left"
+							placeholder="Email adresse"
+							onChange={handleOnChange}
+							error={email!.length > 1 && isEmailValid() ? false : true}
+						/>
+						<Form.Input
+							type="password"
+							name="password"
+							value={password}
+							fluid
+							icon="lock"
+							iconPosition="left"
+							placeholder="Password"
+							onChange={handleOnChange}
+							error={email!.length > 4 ? false : true}
+						/>
+						<Form.Input
+							type="password"
+							name="secretKey"
+							value={secretKey}
+							fluid
+							icon="lock"
+							iconPosition="left"
+							placeholder="Secret-Key"
+							onChange={handleOnChange}
+							error={email!.length > 4 ? false : true}
+						/>
+						<Form.TextArea
+							style={{ minHeight: 200 }}
+							name="comment"
+							value={comment}
+							placeholder="Kommentar..."
+							onChange={handleOnChange}
+						/>
+						<Button
+							as={NavLink}
+							to="/login"
+							primary
+							color="teal"
+							fluid
+							size="large"
+							onClick={handleRegister}
+							disabled={!firstName || !lastName || !email || !password || !secretKey}
+						>
+							Registrieren
 							</Button>
-						</Segment>
-					</Form>
-					<Message>
-						Du bist schon registriert? <a href="/login">Login</a>
-					</Message>
-				</Grid.Column>
-			</Grid>
-		</div>
+					</Segment>
+				</Form>
+				<Message>
+					Du bist schon registriert? <a href="/login">Login</a>
+				</Message>
+			</Grid.Column>
+		</Grid>
 	);
 };
 
