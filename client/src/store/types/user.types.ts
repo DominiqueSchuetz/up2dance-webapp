@@ -44,7 +44,7 @@ export interface IReduxSignInUserAction extends IReduxBaseAction {
 
 export interface IReduxUpdateUserAction extends IReduxBaseAction {
 	type: EReduxActionTypesUser.UPDATE_USER;
-	payload: IResponse<IUser>;
+	payload: IResponse<IRegisterUserData>;
 }
 
 export interface IReduxDeleteUserAction extends IReduxBaseAction {

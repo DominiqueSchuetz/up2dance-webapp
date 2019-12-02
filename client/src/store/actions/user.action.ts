@@ -45,7 +45,7 @@ export const getUsersRequest = (payload: IResponse<IUser[]>): IReduxGetUsersActi
 	payload
 });
 
-export const updateUserByIdRequest = (payload: IResponse<IUser>): IReduxUpdateUserAction => ({
+export const updateUserByIdRequest = (payload: IResponse<IRegisterUserData>): IReduxUpdateUserAction => ({
 	type: EReduxActionTypesUser.UPDATE_USER,
 	payload
 });

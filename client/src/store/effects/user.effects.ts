@@ -32,10 +32,10 @@ export const getAllUsers = (): Effect => async (dispatch, getState) => {
 };
 
 // Update user by id
-export const updateUserById = (id: string, event: IUser): Effect => async (dispatch, getState) => {
+export const updateUserById = (id: string, userFormData: FormData): Effect => async (dispatch, getState) => {
 	dispatch(loadUsersRequest());
 	try {
-		const payload: IResponse<IUser> = await updateUserService(id, event);
+		const payload: IResponse<IRegisterUserData> = await updateUserService(id, userFormData);
 		if (!!payload.success) {
 			toast.success(` 😻 ${payload.message}`);
 			dispatch(updateUserByIdRequest(payload));

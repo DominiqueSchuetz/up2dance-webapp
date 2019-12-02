@@ -71,14 +71,14 @@ export const getAllUsersService = async (): Promise<IResponse<IUser[]>> => {
 	return responsePayload;
 };
 
-export const updateUserService = async (id: string, user: IUser): Promise<IResponse<IUser>> => {
+export const updateUserService = async (id: string, userFormData: FormData): Promise<IResponse<IRegisterUserData>> => {
 	const HEADER = {
 		method: "PUT",
 		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
-		body: JSON.stringify(user)
+		body: JSON.stringify(userFormData)
 	};
 	const updateUser: Response = await fetch(UPDATE_USER_API + id, HEADER);
-	const responsePayload: Promise<IResponse<IUser>> = await updateUser.json();
+	const responsePayload: Promise<IResponse<IRegisterUserData>> = await updateUser.json();
 	return responsePayload;
 };
 
@@ -103,10 +103,10 @@ export const signInUserService = async (userData: ISignInUserData): Promise<IRes
 	return responsePayload;
 };
 
-export const registerUserService = async (formData: FormData): Promise<IResponse<IRegisterUserData>> => {
+export const registerUserService = async (userFormData: FormData): Promise<IResponse<IRegisterUserData>> => {
 	const HEADER = {
 		method: "POST",
-		body: formData
+		body: userFormData
 	};
 
 	const postRegisterUser: Response = await fetch(REGISER_USERS_API, HEADER);

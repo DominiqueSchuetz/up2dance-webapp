@@ -20,7 +20,7 @@ interface IDispatchProps {
 }
 
 const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { isUserPayloadLoading, isAuthenticated, userPayload, onGetAllUsers, onUpdateUserById, onDeleteUserById } = props;
+	const { isUserPayloadLoading, isAuthenticated, userPayload, onGetAllUsers } = props;
 	const users: IUser[] = userPayload.items;
 
 	useEffect(
@@ -37,12 +37,7 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 			if (isArray(users)) {
 				return users.map((mapUser: IUser) => (
 					<div key={mapUser._id} style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
-						<UserCard
-							onUpdateUserById={onUpdateUserById}
-							onDeleteUserById={onDeleteUserById}
-							isAuthenticated={isAuthenticated}
-							user={mapUser}
-						/>
+						<UserCard isAuthenticated={isAuthenticated} user={mapUser} />
 					</div>
 				));
 			} else {

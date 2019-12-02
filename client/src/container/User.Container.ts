@@ -13,8 +13,7 @@ const mapStateToProps = (state: ApplicationReducerState) => ({
 
 export const mapDispatchToProps = {
 	onGetAllUsers: getAllUsers,
-	onDeleteUserById: deleteUserById,
-	onUpdateUserById: updateUserById
+	onDeleteUserById: deleteUserById
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserCardList);
