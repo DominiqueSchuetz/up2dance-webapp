@@ -151,6 +151,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const handleRegister = () => {
 		let userFormData: FormData = new FormData();
+
 		userFormData.append("firstName", firstName);
 		userFormData.append("lastName", lastName);
 		userFormData.append("filePath", filePath);
@@ -160,7 +161,6 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		userFormData.append("secretKey", secretKey);
 		userFormData.append("comment", comment);
 
-		// userFormData.forEach((e) => console.log(e));
 		if (isUpdatedComponent) {
 			onUpdateUserById!(user!._id!, userFormData);
 		} else {
@@ -174,7 +174,6 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		setSecretKey("");
 		setRefId("");
 		setComment("");
-		// handleRemove();
 	};
 
 	return (
@@ -261,8 +260,8 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 					onChange={handleOnChange}
 				/>
 				<Button
-					// as={NavLink}
-					// to="/login"
+					as={NavLink}
+					to={isUpdatedComponent ? "#" : "/login"}
 					primary
 					color="teal"
 					fluid

@@ -1,14 +1,13 @@
 import { CounterContainer, EventContainer, LoginContainer, RegisterContainer, UserContainer } from "../container";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-// import { authorizedUserReducer } from "../store/reducers";
-import thunk, { ThunkMiddleware, ThunkDispatch } from "redux-thunk";
+import { applyMiddleware, createStore } from "redux";
+import thunk, { ThunkMiddleware } from "redux-thunk";
 import { HeaderContainer } from "../container";
-import { Footer } from "./Footer";
 import { rootReducer } from "../store/reducers";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Footer } from "./Footer";
 
 import "semantic-ui-css/semantic.min.css";
 import React, { Fragment } from "react";

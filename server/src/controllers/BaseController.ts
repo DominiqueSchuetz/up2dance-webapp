@@ -1,4 +1,4 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, Types } from "mongoose";
 import { Helpers } from "../lib/helpers";
 import * as MediaSchema from "../models/Media";
 import { Request, Response, Next } from "restify";
@@ -172,6 +172,53 @@ export abstract class BaseController<T extends Document> implements IController 
 								req.body.refId = respondedMediaObject._id;
 								try {
 									const finalResult = await this._repository.create(req.body);
+									if (finalResult && finalResult._id) {
+										return finalResult;
+									} else {
+										return new Error(Object(finalResult).message);
+									}
+								} catch (error) {
+									return error;
+								}
+							}
+						);
+					} catch (error) {
+						return error;
+					}
+				}
+			} catch (error) {
+				return error;
+			}
+		} else {
+			badRequestResponse(res, "Invalid image");
+		}
+	}
+
+	/**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+	protected async updateByFileReference(req: Request, res: Response, id: Types.ObjectId): Promise<any> {
+		if (typeof req.files === "object" || typeof req.body.fileUrl === "string") {
+			try {
+				const result = await this._helpers.uploadFileToFolder(req);
+				if (Object.keys(result)!.length != 0 && result!.constructor === Object) {
+					let newFileReqObject = {
+						fileName: Object(result)!.fileName,
+						filePath: Object(result)!.filePath ? Object(result)!.filePath : null,
+						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null
+					};
+					try {
+						return await this._repository.createWithCallback(
+							newFileReqObject,
+							MediaSchema,
+							async (error, respondedMediaObject) => {
+								if (error) throw new Error(error);
+								req.body.refId = respondedMediaObject._id;
+								try {
+									const finalResult = await this._repository.update(id, req.body);
 									if (finalResult && finalResult._id) {
 										return finalResult;
 									} else {

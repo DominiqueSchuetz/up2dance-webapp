@@ -1,4 +1,4 @@
-import { registerUser, updateUserById } from "../store/effects/user.effects";
+import { registerUser } from "../store/effects/user.effects";
 import { ApplicationReducerState } from "../store/reducers";
 import { Register } from "../components/Register";
 import { connect } from "react-redux";
@@ -10,8 +10,7 @@ const mapStateToProps = (state: ApplicationReducerState) => ({
 });
 
 export const mapDispatchToProps = {
-	onRegisterUser: registerUser,
-	onUpdateUserById: updateUserById
+	onRegisterUser: registerUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

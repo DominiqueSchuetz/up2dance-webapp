@@ -74,8 +74,8 @@ export const getAllUsersService = async (): Promise<IResponse<IUser[]>> => {
 export const updateUserService = async (id: string, userFormData: FormData): Promise<IResponse<IRegisterUserData>> => {
 	const HEADER = {
 		method: "PUT",
-		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
-		body: JSON.stringify(userFormData)
+		headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+		body: userFormData
 	};
 	const updateUser: Response = await fetch(UPDATE_USER_API + id, HEADER);
 	const responsePayload: Promise<IResponse<IRegisterUserData>> = await updateUser.json();

@@ -1,5 +1,5 @@
 import { ApplicationEventsAction, IReduxGetEventsAction } from "../../../store/types/event.types";
-import { Segment, Card, Button, Dimmer, Loader, Header, Container, Embed } from "semantic-ui-react";
+import { Segment, Card, Button, Dimmer, Loader, Header, Container } from "semantic-ui-react";
 import { IEvent, IReduxState, IUser } from "../../../models";
 import React, { useEffect, Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
@@ -29,14 +29,12 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		onCreateEvent,
 		onUpdateEventById,
 		onDeleteEventById,
-		onIsUserAuthenticated,
 		isAuthenticated
 	} = props;
 	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(
 		() => {
-			// onIsUserAuthenticated();
 			onGetAllEvents();
 		},
 		[ onGetAllEvents ]
@@ -89,7 +87,12 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 				return (
 					<Fragment>
 						<Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
-							<Header as="h2">Es gibt derzeit keine Events... 😴</Header>
+							<Header as="h2">
+								Es gibt derzeit keine Events...{" "}
+								<span role="img" aria-label="sleeping-emoji">
+									😴
+								</span>
+							</Header>
 						</Segment>
 					</Fragment>
 				);

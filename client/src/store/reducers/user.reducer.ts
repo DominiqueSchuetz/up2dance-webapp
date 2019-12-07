@@ -63,6 +63,31 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 				draft.payload.success = action.payload.success;
 				draft.payload.item = Object(action.payload).data.result;
 			});
+		case EReduxActionTypesUser.UPDATE_USER:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.message = action.payload.message;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.success = action.payload.success;
+				draft.payload.item = action.payload.data;
+
+				const updatedArray: IUser[] = draft.payload.items.map((item) => {
+					const { _id, firstName, lastName, email, refId, comment } = action.payload.data;
+					if (item._id === _id) {
+						return {
+							...item,
+							_id,
+							firstName,
+							lastName,
+							email,
+							refId,
+							comment
+						};
+					}
+					return item;
+				});
+				draft.payload.items = updatedArray;
+			});
 		case EReduxActionTypesUser.LOG_OUT_USER:
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;

@@ -1,10 +1,10 @@
+import { ApplicationEventsAction } from "../../../store/types/event.types";
 import { Card, Image, List, Label, Button, Icon } from "semantic-ui-react";
+import { IEvent, IAddress } from "../../../models";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
-import { IEvent, IAddress, IReduxState, IUser } from "../../../models";
 import { EventDeleteDialog } from "../";
 import { EventCardForm } from "../";
-import { ApplicationEventsAction } from "../../../store/types/event.types";
 
 interface IStateProps {
 	event: IEvent;

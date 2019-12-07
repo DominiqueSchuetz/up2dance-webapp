@@ -68,8 +68,6 @@ export class UserController extends BaseController<IUser> {
      * @param res 
      */
 	protected async register(req: Request, res: Response, next: Next): Promise<void> {
-		console.log("req => ", req);
-
 		const firstName =
 			typeof req.body.firstName == "string" && req.body.firstName.trim().length > 1
 				? req.body.firstName.trim()
@@ -199,6 +197,9 @@ export class UserController extends BaseController<IUser> {
 				: false;
 		const instrument = typeof req.body.instrument == "string" ? req.body.instrument.trim() : false;
 
+		const files = Object.keys(req.files).length ? true : false;
+		const fileUrl = typeof req.body.fileUrl == "string" ? true : false;
+
 		if (id && jwtToken) {
 			try {
 				const authResult = await this._helpers.authorizeItem(id, jwtToken);
@@ -211,30 +212,41 @@ export class UserController extends BaseController<IUser> {
 						const passwordEnc = await this._helpers.encrypt(password);
 						if (passwordEnc) {
 							req.body.password = passwordEnc;
-							try {
-								const result = await this._repository.update(id, req.body);
-								if (result && result._id) {
-									try {
-										const jwtToken = await this._helpers.createJwtToken(result);
-										typeof jwtToken === "string"
-											? successResponse(res, {
-													Info: "Hey " + result.firstName + ", you are updated successfully",
-													JWT_Token: jwtToken
-												})
-											: badRequestResponse(res, "Could not create jwt-token");
-									} catch (error) {
-										internalServerErrorResponse(res, error.message);
+
+							if (!files && !fileUrl) {
+								try {
+									const result = await this._repository.update(id, req.body);
+									if (result && result._id) {
+										try {
+											const jwtToken = await this._helpers.createJwtToken(result);
+											typeof jwtToken === "string"
+												? successResponse(res, result, "You updated a item successfully")
+												: badRequestResponse(res, "Could not update item by id");
+										} catch (error) {
+											internalServerErrorResponse(res, error.message);
+										}
+									} else {
+										badRequestResponse(
+											res,
+											"Could not update item with given id",
+											3,
+											Object(result).message
+										);
 									}
-								} else {
-									badRequestResponse(
-										res,
-										"Could not update item with given id",
-										3,
-										Object(result).message
-									);
+								} catch (error) {
+									internalServerErrorResponse(res, error.message);
 								}
-							} catch (error) {
-								internalServerErrorResponse(res, error.message);
+							} else {
+								try {
+									const result = await this.updateByFileReference(req, res, id);
+									if (result!._id) {
+										successResponse(res, result);
+									} else {
+										badRequestResponse(res, "Could not register user with file", 3, result);
+									}
+								} catch (error) {
+									internalServerErrorResponse(res, error.message);
+								}
 							}
 						}
 					} catch (error) {
@@ -264,14 +276,12 @@ export class UserController extends BaseController<IUser> {
 		if (id && jwtToken) {
 			try {
 				const authResult = await this._helpers.authorizeItem(id, jwtToken);
-				if (typeof authResult === "boolean" && authResult === true) {
+				if (Boolean(authResult)) {
 					try {
 						const result = await this._repository.delete(id);
-						if (result && Object(result).n == 1 && Object(result).ok == 1) {
-							successResponse(res, null, "Delete item successfully");
-						} else {
-							badRequestResponse(res, "Could not found any item by given id", 3, Object(result).message);
-						}
+						result && result._id
+							? successResponse(res, result, "Delete item successfully")
+							: badRequestResponse(res, "Could not delete item by id");
 					} catch (error) {
 						internalServerErrorResponse(res, error.message);
 					}

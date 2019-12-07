@@ -1,12 +1,11 @@
-import { ISignInUserData, IUser, IRegisterUserData, IReduxState } from "../../models";
-import { Grid, Header, Image, Message, Modal } from "semantic-ui-react";
-import { IReduxRegisterUserAction, ApplicationUserAction } from "../../store/types/user.types";
-import { RegisterForm } from "./";
 import React, { Fragment, useEffect, useState } from "react";
+import { Grid, Header, Image, Message, Modal } from "semantic-ui-react";
+import { ApplicationUserAction } from "../../store/types/user.types";
+import { IUser } from "../../models";
+import { RegisterForm } from "./";
 import { isNil } from "lodash";
 
 interface IStateProps {
-	// registerPayload?: IReduxState<IRegisterUserData>;
 	user?: IUser;
 	headerText?: string;
 }

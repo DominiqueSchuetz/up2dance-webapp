@@ -2,17 +2,7 @@ import { ApplicationUserAction } from "../../../store/types/user.types";
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { IUser } from "../../../models";
 import { isNil } from "lodash";
-import {
-	Form,
-	Segment,
-	Icon,
-	Image,
-	Header,
-	Modal,
-	Button,
-	DropdownProps,
-	InputOnChangeData
-} from "semantic-ui-react";
+import { Form, Segment, Icon, Image, Header, Modal, Button, DropdownProps, InputOnChangeData } from "semantic-ui-react";
 
 interface IStateProps {
 	headerText?: string;
@@ -27,13 +17,13 @@ interface IDispatchProps {
 const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { handleCancelUser, onUpdateUserById, headerText, user } = props;
 
-	const [firstName, setFirstName] = useState<string>("");
-	const [lastName, setLastName] = useState<string>("");
-	const [email, setEmail] = useState<string>("");
+	const [ firstName, setFirstName ] = useState<string>("");
+	const [ lastName, setLastName ] = useState<string>("");
+	const [ email, setEmail ] = useState<string>("");
 
-	const [filePath, setFilePath] = useState<any | undefined>(undefined);
-	const [fileName, setFileName] = useState<string | undefined>("");
-	const [file, setFile] = useState<{ file: any }>({ file: "" });
+	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
+	const [ fileName, setFileName ] = useState<string | undefined>("");
+	const [ file, setFile ] = useState<{ file: any }>({ file: "" });
 
 	const inputRef: any = useRef();
 
@@ -44,12 +34,14 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 				setLastName(user!.lastName);
 			}
 		},
-		[user]
+		[ user ]
 	);
 
-	const handleOnSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>) => {
+	const handleOnSubmit = async (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>
+	) => {
 		e.preventDefault();
-	
+
 		let formData: FormData = new FormData();
 		formData.append("firstName", firstName);
 		formData.append("lastName", lastName);
@@ -61,7 +53,7 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 			firstName,
 			lastName,
 			email
-		}
+		};
 
 		onUpdateUserById!(user!._id!, dummyUser);
 
@@ -70,11 +62,6 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		setEmail("");
 
 		handleCancelUser();
-	};
-
-	const handleOnKeyDown = (event: React.KeyboardEvent) => {
-		event.preventDefault();
-		return false;
 	};
 
 	const handleOnChange = (

@@ -1,25 +1,10 @@
-import {
-	Card,
-	Image,
-	List,
-	Label,
-	Button,
-	Icon,
-	Item,
-	Container,
-	Segment,
-	Header,
-	Reveal,
-	Menu
-} from "semantic-ui-react";
+import { Image, Button, Icon, Container, Segment, Header } from "semantic-ui-react";
+import { ApplicationUserAction } from "../../../store/types/user.types";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
-import { IAddress, IReduxState, IUser } from "../../../models";
-import { UserDeleteDialog } from "../";
-import { UserCardForm } from "..";
 import { Register } from "../../Register";
-import { ApplicationUserAction } from "../../../store/types/user.types";
-import { userInfo } from "os";
+import { IUser } from "../../../models";
+import { UserDeleteDialog } from "../";
 
 interface IStateProps {
 	user: IUser;
@@ -27,12 +12,12 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-	// onUpdateUserById?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
-	// onDeleteUserById?(id: string): Promise<ApplicationUserAction>;
+	onUpdateUserById?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
+	onDeleteUserById(id: string): Promise<ApplicationUserAction>;
 }
 
 const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { user, isAuthenticated } = props;
+	const { user, isAuthenticated, onDeleteUserById, onUpdateUserById } = props;
 	const { refId } = user;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -57,9 +42,19 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const renderModalComponent: JSX.Element = deleteDialog ? (
-		<UserDeleteDialog user={user} handleCancelUser={handleSpecialEvent} headerText="User Löschen" />
+		<UserDeleteDialog
+			user={user}
+			handleCancelUser={handleSpecialEvent}
+			onDeleteUserById={onDeleteUserById}
+			headerText="User Löschen"
+		/>
 	) : (
-		<Register user={user} handleCancelUser={handleSpecialEvent} headerText="User Editieren" />
+		<Register
+			user={user}
+			handleCancelUser={handleSpecialEvent}
+			onUpdateUserById={onUpdateUserById}
+			headerText="User Editieren"
+		/>
 	);
 
 	const cardButtonGroup: JSX.Element = (

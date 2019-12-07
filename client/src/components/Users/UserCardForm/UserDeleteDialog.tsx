@@ -10,7 +10,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-	onDeleteUserById?(id: string): Promise<ApplicationUserAction>;
+	onDeleteUserById(id: string): Promise<ApplicationUserAction>;
 }
 
 const UserDeleteDialog: React.FC<IStateProps & IDispatchProps> = (props) => {
