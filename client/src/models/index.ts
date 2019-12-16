@@ -3,6 +3,7 @@ import { ApplicationReducerState } from "../store/reducers";
 import { ApplicationEventsAction } from "../store/types/event.types";
 import { ApplicationUserAction } from "../store/types/user.types";
 import { ApplicationMediaAction } from "../store/types/media.types";
+import { ApplicationCustomersAction } from "../store/types/customer.types";
 
 export interface ILoadingState {
 	isPayloadLoading: boolean;
@@ -69,6 +70,17 @@ export interface IUser {
 	comment?: string | undefined;
 }
 
+export interface ICustomer {
+	_id?: string | undefined;
+	firstName: string;
+	lastName: string;
+	companyName: string;
+	phone: string;
+	email: string;
+	comment: string;
+	event?: IEvent;
+}
+
 export interface ISignInUserData {
 	email: string;
 	password: string;
@@ -92,5 +104,5 @@ export type Effect = ThunkAction<
 	any,
 	ApplicationReducerState,
 	any,
-	ApplicationEventsAction | ApplicationUserAction | ApplicationMediaAction
+	ApplicationEventsAction | ApplicationUserAction | ApplicationMediaAction | ApplicationCustomersAction
 >;

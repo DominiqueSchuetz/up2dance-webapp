@@ -1,4 +1,12 @@
-import { CounterContainer, EventContainer, LoginContainer, RegisterContainer, UserContainer } from "../container";
+import {
+	CounterContainer,
+	EventContainer,
+	LoginContainer,
+	RegisterContainer,
+	UserContainer,
+	GalleryContainer,
+	CustomerContainer
+} from "../container";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { applyMiddleware, createStore } from "redux";
@@ -33,6 +41,8 @@ const App: React.FC = () => {
 						<Route path="/" exact component={CounterContainer} />
 						<Route path="/" exact strict component={EventContainer} />
 						<Route path="/" exact strict component={UserContainer} />
+						<Route path="/" exact strict component={GalleryContainer} />
+						<Route path="/" exact strict component={CustomerContainer} />
 						<Route path="/" exact strict component={Footer} />
 					</main>
 					{/* </Sidebar.Pusher>

@@ -86,17 +86,21 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 			>
 				{renderModalComponent}
 			</ModalDialog>
-			<Segment textAlign="center">
-				<Image centered circular src={refId ? "http://localhost:8080/api/media/" + refId : ""} size="medium" />
-			</Segment>
+			<Container textAlign="center">
+				<Image
+					centered
+					bordered
+					circular
+					src={refId ? "http://localhost:8080/api/media/" + refId : ""}
+					size="medium"
+				/>
+			</Container>
 			<Header as="h1" textAlign="center">
 				<Header.Content>{user.firstName}</Header.Content>
 			</Header>
 			<Container text>
-				<Segment raised piled>
-					<Header as="h1">HEADER</Header>
-					<p>{user.comment}</p>
-				</Segment>
+				<Header as="h1">HEADER</Header>
+				<p>{user.comment}</p>
 			</Container>
 		</Fragment>
 	);

@@ -1,5 +1,5 @@
 import { ApplicationEventsAction, IReduxGetEventsAction } from "../../../store/types/event.types";
-import { Segment, Card, Button, Dimmer, Loader, Header, Container } from "semantic-ui-react";
+import { Segment, Card, Button, Dimmer, Loader, Header, Container, Grid, GridColumn } from "semantic-ui-react";
 import { IEvent, IReduxState, IUser } from "../../../models";
 import React, { useEffect, Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
@@ -53,7 +53,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const modalTriggerButton = (
-		<Segment vertical textAlign="center" style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
+		<Container textAlign="center" style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
 			{isAuthenticated && (
 				<Button
 					circular
@@ -64,7 +64,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 					onClick={openModalDialogEditForm}
 				/>
 			)}
-		</Segment>
+		</Container>
 	);
 
 	const renderEventCards = (events: IEvent[]) => {
@@ -72,7 +72,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 			if (isArray(events)) {
 				return events.map((mapEvent: IEvent) => (
 					<Fragment key={mapEvent._id}>
-						<Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
+						<Grid.Column stretched textAlign="center">
 							<EventCard
 								onDeleteEventById={onDeleteEventById}
 								updateEventById={onUpdateEventById}
@@ -80,7 +80,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 								event={mapEvent}
 								children={modalStatus}
 							/>
-						</Segment>
+						</Grid.Column>
 					</Fragment>
 				));
 			} else {
@@ -109,7 +109,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	return (
 		<section>
 			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
-				<Header as="h1" textAlign="center">
+				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
 					Konzerte
 				</Header>
 			</Container>
@@ -120,9 +120,16 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 					handleCancelEvent={handleCancelEvent}
 				/>
 			</ModalDialog>
-			<Card.Group itemsPerRow="4" centered stackable>
+			<Grid
+				container
+				columns={3}
+				textAlign="center"
+				doubling
+				stackabl
+				style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}
+			>
 				{renderEventCards(events)}
-			</Card.Group>
+			</Grid>
 		</section>
 	);
 };

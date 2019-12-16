@@ -61,6 +61,8 @@ export const deleteUserById = (id: string): Effect => async (dispatch, getState)
 		if (!!payload.success) {
 			toast.success(` 😻 ${payload.message}`);
 			dispatch(deleteUserByIdRequest(payload));
+			localStorage.removeItem("token");
+			localStorage.clear();
 		} else {
 			localStorage.removeItem("token");
 			localStorage.clear();
@@ -131,7 +133,7 @@ export const isUserAuthenticated = (): Effect => async (dispatch, getState) => {
 		} else {
 			localStorage.removeItem("token");
 			localStorage.clear();
-			toast.info(` 😾 ${payload.message}`);
+			// toast.error(` 😾 Du bist nicht angemeldet`);
 			dispatch(loadUserError(payload));
 		}
 	} catch (e) {

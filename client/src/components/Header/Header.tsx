@@ -16,8 +16,8 @@ interface IDispatchProps {
 }
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { onIsUserAuthenticated, onLogOutUser } = props;
-	const { firstName, instrument, refId } = props.userPayload.item;
+	const { onIsUserAuthenticated, onLogOutUser, userPayload } = props;
+	const { firstName, instrument, refId } = userPayload.item;
 	const successCode = props.userPayload.success;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 

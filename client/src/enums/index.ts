@@ -21,6 +21,12 @@ export enum EReduxActionTypesUser {
 	DELETE_USER = "DELETE_USER"
 }
 
+export enum EReduxActionTypesCustomer {
+	LOAD_CUSTOMERS = "LOAD_CUSTOMERS",
+	ERROR_CUSTOMERS = "ERROR_CUSTOMERS",
+	CREATE_CUSTOMER = "CREATE_CUSTOMER"
+}
+
 export enum EReduxActionTypesMedia {
 	LOAD_MEDIA = "LOAD_MEDIA",
 	ERROR_MEDIA = "ERROR_MEDIA",

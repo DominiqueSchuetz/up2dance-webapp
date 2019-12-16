@@ -36,8 +36,6 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		[ onGetAllUsers ]
 	);
 
-	console.log("users => ", users);
-
 	const renderUserCards = (users: IUser[]) => {
 		if (!isUserPayloadLoading) {
 			if (isArray(users)) {
@@ -77,7 +75,7 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	return (
 		<section>
 			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
-				<Header as="h1" textAlign="center">
+				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
 					Mitglieder
 				</Header>
 			</Container>

@@ -49,7 +49,7 @@ export class CustomerController extends BaseController<ICustomer> {
 		let foundCustomerObject: ICustomer;
 		let result;
 		const hasEvent = typeof req.body.event === "object" ? true : false;
-		const { firstName, lastName, companyName, phone, email, commentCustomer } = req.body;
+		const { firstName, lastName, companyName, phone, email, comment } = req.body;
 
 		try {
 			foundCustomerObject = await this._repository.getByEmail(email);
@@ -61,7 +61,7 @@ export class CustomerController extends BaseController<ICustomer> {
 						companyName,
 						phone,
 						email,
-						commentCustomer
+						comment
 					};
 					try {
 						result = await this._repository.create(newCustomerObject);
@@ -89,7 +89,7 @@ export class CustomerController extends BaseController<ICustomer> {
 						companyName,
 						phone,
 						email,
-						commentCustomer
+						comment
 					};
 					try {
 						await this._repository.createWithCallback(

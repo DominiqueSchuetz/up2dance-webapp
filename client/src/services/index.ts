@@ -1,4 +1,4 @@
-import { ISignInUserData, IResponse, IEvent, IUser, IRegisterUserData, IMedia } from "../models";
+import { ISignInUserData, IResponse, IEvent, IUser, IRegisterUserData, IMedia, ICustomer } from "../models";
 import {
 	GET_ALL_EVENTS_API,
 	GET_ALL_USERS_API,
@@ -10,7 +10,8 @@ import {
 	IS_USER_AUTHENTICATED_API,
 	GET_MEDIA_BY_ID_API,
 	UPDATE_USER_API,
-	DELETE_USER_API
+	DELETE_USER_API,
+	CREATE_CUSTOMER_API
 } from "../api";
 
 // ###################################################
@@ -134,5 +135,19 @@ export const getMediaByIdService = async (id: string): Promise<IResponse<IMedia>
 	};
 	const getMediaById: Response = await fetch(GET_MEDIA_BY_ID_API + id, HEADER);
 	const responsePayload: Promise<IResponse<IMedia>> = await getMediaById.json();
+	return responsePayload;
+};
+
+// ###################################################
+// #################  Customer
+// ###################################################
+export const creatCustomerService = async (customer: ICustomer): Promise<IResponse<ICustomer>> => {
+	const HEADER = {
+		method: "POST",
+		headers: { "content-type": "application/json" },
+		body: JSON.stringify(customer)
+	};
+	const createNewCustomer: Response = await fetch(CREATE_CUSTOMER_API, HEADER);
+	const responsePayload: Promise<IResponse<ICustomer>> = await createNewCustomer.json();
 	return responsePayload;
 };
