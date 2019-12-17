@@ -5,6 +5,7 @@ import React, { useEffect, Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
 import { EventCard, EventCardForm } from "../";
 import { isArray } from "lodash";
+import { EKindOfEventAction } from "../../../enums";
 
 interface IStateProps {
 	events: IEvent[];
@@ -117,6 +118,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 				<EventCardForm
 					headerText="Neues Event"
 					onCreateEvent={onCreateEvent}
+					kindOfAction={{ kind: EKindOfEventAction.NEW_EVENT }}
 					handleCancelEvent={handleCancelEvent}
 				/>
 			</ModalDialog>

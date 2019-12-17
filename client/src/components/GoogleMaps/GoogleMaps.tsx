@@ -17,7 +17,7 @@ interface IAddressComponent {
 }
 
 interface IStateProps {
-	getAddress: any;
+	getAddress?: any;
 	storedAddress: IAddress;
 }
 

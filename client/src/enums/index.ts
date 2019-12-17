@@ -51,3 +51,9 @@ export enum EBandMemberInstrument {
 	BASS_GUITAR = "Bass",
 	DRUMS = "Schlagzeug"
 }
+
+export enum EKindOfEventAction {
+	NEW_EVENT,
+	UPDATE_EVENT,
+	CUSTOMER_EVENT
+}

@@ -31,7 +31,7 @@ class CustomerSchema extends Schema {
 				phone: {
 					required: true,
 					type: String,
-					trim: true
+					trim: false
 				},
 				email: {
 					required: true,

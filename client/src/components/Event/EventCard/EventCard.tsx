@@ -5,6 +5,7 @@ import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
 import { EventDeleteDialog } from "../";
 import { EventCardForm } from "../";
+import { EKindOfEventAction } from "../../../enums";
 
 interface IStateProps {
 	event: IEvent;
@@ -55,6 +56,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 			updateEventById={updateEventById}
 			event={event}
 			handleCancelEvent={handleSpecialEvent}
+			kindOfAction={{ kind: EKindOfEventAction.UPDATE_EVENT }}
 			headerText="Event Editieren"
 		/>
 	);
