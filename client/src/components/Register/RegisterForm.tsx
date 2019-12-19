@@ -3,6 +3,7 @@ import { ApplicationUserAction } from "../../store/types/user.types";
 import { IUser, IRegisterUserData, IReduxState } from "../../models";
 import React, { Fragment, useState, useRef, useEffect } from "react";
 import { EBandMemberInstrument } from "../../enums";
+import { isEmailValid } from "../../lib";
 import { NavLink } from "react-router-dom";
 
 interface IStateProps {
@@ -106,10 +107,6 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 			default:
 				break;
 		}
-	};
-
-	const isEmailValid = (): boolean => {
-		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 	};
 
 	const handleUploadAction = (event: any) => {
@@ -228,7 +225,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 					iconPosition="left"
 					placeholder="Email adresse"
 					onChange={handleOnChange}
-					error={email!.length > 1 && isEmailValid() ? false : true}
+					error={email!.length > 1 && isEmailValid(email) ? false : true}
 				/>
 				<Form.Input
 					type="password"

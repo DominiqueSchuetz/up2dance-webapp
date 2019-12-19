@@ -1,11 +1,22 @@
-import { Input, Button, TextArea, Form, Container, Header, DropdownProps, InputOnChangeData } from "semantic-ui-react";
+import {
+	Input,
+	Button,
+	TextArea,
+	Form,
+	Container,
+	Header,
+	DropdownProps,
+	InputOnChangeData,
+	Message
+} from "semantic-ui-react";
+import { ApplicationCustomersAction } from "../../store/types/customer.types";
+import { IAddress, IEvent, ICustomer } from "../../models";
 import React, { useEffect, useState } from "react";
+import { EKindOfEventAction } from "../../enums";
+import { isEmailValid } from "../../lib";
 import { ModalDialog } from "../ModalDialog";
 import { EventCardForm } from "../Event";
-import { EKindOfEventAction } from "../../enums";
 import { GoogleMaps } from "../GoogleMaps";
-import { IAddress, IEvent, ICustomer } from "../../models";
-import { ApplicationCustomersAction } from "../../store/types/customer.types";
 
 interface IStateProps {}
 
@@ -87,6 +98,17 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 			event
 		};
 		onCreateCustomer(customerObject);
+
+		resetFormFields(
+			setFirstName,
+			setLastName,
+			setCompanyName,
+			setEmail,
+			setPhone,
+			setComment,
+			setEvent,
+			setAddress
+		);
 	};
 
 	const eventTriggerButton = (
@@ -139,7 +161,7 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 			<Form.Group widths="equal">
 				<Form.Field
 					id="form-input-control-email"
-					error={lastName.length > 2 ? false : true}
+					error={email!.length > 1 && isEmailValid(email) ? false : true}
 					required
 					control={Input}
 					name="email"
@@ -147,6 +169,13 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 					onChange={handleOnChange}
 					label="Email"
 					placeholder="Email"
+				/>
+				<Message
+					warning
+					header="Could you check something!"
+					list={[
+						"That e-mail has been subscribed, but you have not yet clicked the verification link in your e-mail."
+					]}
 				/>
 				<Form.Field
 					id="form-input-control-phone"
@@ -183,6 +212,8 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 				control={Button}
 				onClick={submitFormCustomer}
 				content="Anfrage absenden"
+				color={firstName && lastName && isEmailValid(email) ? "green" : "red"}
+				disabled={!firstName || !lastName || !isEmailValid(email)}
 			/>
 		</Form>
 	);
@@ -201,3 +232,23 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 };
 
 export default Customer;
+
+function resetFormFields(
+	setFirstName: React.Dispatch<React.SetStateAction<string>>,
+	setLastName: React.Dispatch<React.SetStateAction<string>>,
+	setCompanyName: React.Dispatch<React.SetStateAction<string>>,
+	setEmail: React.Dispatch<React.SetStateAction<string>>,
+	setPhone: React.Dispatch<React.SetStateAction<string>>,
+	setComment: React.Dispatch<React.SetStateAction<string>>,
+	setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>,
+	setAddress: React.Dispatch<React.SetStateAction<IAddress | undefined>>
+) {
+	setFirstName("");
+	setLastName("");
+	setCompanyName("");
+	setEmail("");
+	setPhone("");
+	setComment("");
+	setEvent(undefined);
+	setAddress(undefined);
+}

@@ -1,8 +1,9 @@
+import { Form, Segment, Icon, Image, Header, Modal, Button, DropdownProps, InputOnChangeData } from "semantic-ui-react";
 import { ApplicationUserAction } from "../../../store/types/user.types";
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { IUser } from "../../../models";
+import { isEmailValid } from "../../../lib";
 import { isNil } from "lodash";
-import { Form, Segment, Icon, Image, Header, Modal, Button, DropdownProps, InputOnChangeData } from "semantic-ui-react";
 
 interface IStateProps {
 	headerText?: string;
@@ -81,10 +82,6 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 			default:
 				break;
 		}
-	};
-
-	const isEmailValid = (): boolean => {
-		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 	};
 
 	const handleUploadAction = (event: any) => {
@@ -168,7 +165,7 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 								iconPosition="left"
 								placeholder="Email adresse"
 								onChange={handleOnChange}
-								error={email!.length > 1 && isEmailValid() ? false : true}
+								error={email!.length > 1 && isEmailValid(email) ? false : true}
 							/>
 						</Segment>
 					</Form>
