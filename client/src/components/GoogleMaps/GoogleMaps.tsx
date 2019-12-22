@@ -17,6 +17,7 @@ interface IAddressComponent {
 }
 
 interface IStateProps {
+	hasSearchBox?: boolean;
 	getAddress?: any;
 	storedAddress: IAddress;
 }
@@ -25,7 +26,7 @@ const mapStyles = [ { backgroundColor: "red" } ];
 const GOOGLE_MAPS_LIBARIES = [ "places" ];
 
 const GoogleMaps: React.FC<IStateProps> = (props) => {
-	const { getAddress, storedAddress } = props;
+	const { getAddress, storedAddress, hasSearchBox } = props;
 	const { isLoaded, loadError } = useLoadScript({
 		id: "script-loader",
 		version: "weekly",
@@ -172,27 +173,29 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 
 	const renderMap = () => (
 		<Fragment>
-			<Segment.Group>
-				<Segment>
-					<StandaloneSearchBox
-						options={{ componentRestrictions: { country: "de" } }}
-						onLoad={handleOnloadSearchBox}
-						onPlacesChanged={handleOnPlaceChanged}
-					>
-						<Form.Input
-							onKeyDown={handleOnKeyDown}
-							error={address.city.length > 0 ? false : true}
-							fluid
-							type="text"
-							iconPosition="left"
-							icon="map"
-							placeholder="Adresse"
-							value={formatted_address}
-							onChange={handleOnChangeSearchbox}
-						/>
-					</StandaloneSearchBox>
-				</Segment>
-			</Segment.Group>
+			{hasSearchBox && (
+				<Segment.Group>
+					<Segment>
+						<StandaloneSearchBox
+							options={{ componentRestrictions: { country: "de" } }}
+							onLoad={handleOnloadSearchBox}
+							onPlacesChanged={handleOnPlaceChanged}
+						>
+							<Form.Input
+								onKeyDown={handleOnKeyDown}
+								error={address.city.length > 0 ? false : true}
+								fluid
+								type="text"
+								iconPosition="left"
+								icon="map"
+								placeholder="Adresse"
+								value={formatted_address}
+								onChange={handleOnChangeSearchbox}
+							/>
+						</StandaloneSearchBox>
+					</Segment>
+				</Segment.Group>
+			)}
 
 			<GoogleMap
 				id="google-maps"

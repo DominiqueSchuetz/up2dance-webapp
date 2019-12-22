@@ -29,7 +29,7 @@ class CustomerSchema extends Schema {
 					trim: true
 				},
 				phone: {
-					required: true,
+					required: false,
 					type: String,
 					trim: false
 				},

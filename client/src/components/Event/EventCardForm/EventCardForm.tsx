@@ -27,6 +27,7 @@ interface IStateProps {
 	event?: IEvent;
 	kindOfAction: IEventType;
 	getEventObjectFromForm?: any;
+	showToggleHidden?: boolean;
 }
 interface IDispatchProps {
 	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
@@ -75,7 +76,8 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		headerText,
 		event,
 		kindOfAction,
-		getEventObjectFromForm
+		getEventObjectFromForm,
+		showToggleHidden
 	} = props;
 	const [ eventName, setEventName ] = useState<string>("");
 	const [ eventType, setEventType ] = useState<string | undefined>(undefined);
@@ -95,6 +97,10 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 			const date = moment(Date.now()).locale("de").format("LL");
 			setActualDate(date);
 
+			if (!showToggleHidden) {
+				setHiddenFlag(true);
+			}
+
 			if (!isNil(event)) {
 				setEventName(event.eventName);
 				setEventType(event.eventType);
@@ -102,8 +108,8 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 				setTimeStart(event.timeStart);
 				setTimeEnd(event.timeEnd);
 				setAdmissionCharge(event.entry);
+				setHiddenFlag(event.hidden!);
 				setAddress(event.address);
-			} else {
 			}
 		},
 		[ event ]
@@ -132,6 +138,12 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		e.preventDefault();
 
 		const entry = money.length > 0 && !switchState ? money : admissionCharge;
+
+		// if (!showToggleHidden) {
+		// 	console.log("war hier !!!");
+
+		// 	setHiddenFlag(true);
+		// }
 
 		const newEvent: IEvent = {
 			eventName,
@@ -335,20 +347,27 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<Segment.Group>
 							<Form.Field>
 								<Segment>
-									<GoogleMaps storedAddress={address!} getAddress={onGetAddress} />
+									<GoogleMaps
+										hasSearchBox={true}
+										storedAddress={address!}
+										getAddress={onGetAddress}
+									/>
 								</Segment>
 							</Form.Field>
 						</Segment.Group>
-						<Segment.Group>
-							<Segment>
-								<Radio
-									type="radio"
-									onChange={handleOnChangeHidden}
-									toggle
-									label="Nicht auf der Website anzeigen"
-								/>
-							</Segment>
-						</Segment.Group>
+						{showToggleHidden && (
+							<Segment.Group>
+								<Segment>
+									<Radio
+										type="radio"
+										onChange={handleOnChangeHidden}
+										toggle
+										checked={hidden}
+										label="Nicht auf der Website anzeigen"
+									/>
+								</Segment>
+							</Segment.Group>
+						)}
 					</Form>
 				</Modal.Description>
 			</Modal.Content>

@@ -53,6 +53,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 		/>
 	) : (
 		<EventCardForm
+			showToggleHidden={true}
 			updateEventById={updateEventById}
 			event={event}
 			handleCancelEvent={handleSpecialEvent}

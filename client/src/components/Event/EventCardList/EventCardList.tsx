@@ -116,6 +116,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 			</Container>
 			<ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
 				<EventCardForm
+					showToggleHidden={true}
 					headerText="Neues Event"
 					onCreateEvent={onCreateEvent}
 					kindOfAction={{ kind: EKindOfEventAction.NEW_EVENT }}

@@ -7,7 +7,8 @@ import {
 	Header,
 	DropdownProps,
 	InputOnChangeData,
-	Message
+	Message,
+	List
 } from "semantic-ui-react";
 import { ApplicationCustomersAction } from "../../store/types/customer.types";
 import { IAddress, IEvent, ICustomer } from "../../models";
@@ -118,9 +119,20 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 			color={address ? "green" : "black"}
 			circular
 			onClick={openModalDialog}
+			disabled={!firstName || !lastName || !isEmailValid(email)}
 		>
 			Veranstaltungsdetails
 		</Form.Button>
+	);
+
+	const ListExampleIcon = (event: IEvent) => (
+		<List bulleted>
+			{event && event.eventName && <List.Item content={event.eventName} />}
+			{event && event.eventType && <List.Item content={event.eventType} />}
+			{event && event.eventDate && <List.Item content={event.eventDate} />}
+			{event && event.timeStart && <List.Item content={event.timeStart} />}
+			{event && event.timeEnd && <List.Item content={event.timeEnd} />}
+		</List>
 	);
 
 	const CustomerForm = () => (
@@ -190,13 +202,16 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 			</Form.Group>
 			<ModalDialog trigger={eventTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
 				<EventCardForm
+					event={event}
+					showToggleHidden={false}
 					headerText="Veranstaltungsdetails"
 					handleCancelEvent={handleCancelEvent}
 					kindOfAction={{ kind: EKindOfEventAction.CUSTOMER_EVENT }}
 					getEventObjectFromForm={getEventObjectFromForm}
 				/>
 			</ModalDialog>
-			{address && <GoogleMaps storedAddress={address!} getAddress={() => {}} />}
+			{ListExampleIcon(event!)}
+			{address && <GoogleMaps hasSearchBox={false} storedAddress={address!} getAddress={() => {}} />}
 			<Form.Field
 				style={{ minHeight: 200 }}
 				id="form-textarea-control-comment"
