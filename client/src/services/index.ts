@@ -11,7 +11,10 @@ import {
 	GET_MEDIA_BY_ID_API,
 	UPDATE_USER_API,
 	DELETE_USER_API,
-	CREATE_CUSTOMER_API
+	CREATE_CUSTOMER_API,
+	CREATE_MEDIA_API,
+	GET_ALL_MEDIA_API,
+	DELETE_MEDIA_API
 } from "../api";
 
 // ###################################################
@@ -135,6 +138,38 @@ export const getMediaByIdService = async (id: string): Promise<IResponse<IMedia>
 	};
 	const getMediaById: Response = await fetch(GET_MEDIA_BY_ID_API + id, HEADER);
 	const responsePayload: Promise<IResponse<IMedia>> = await getMediaById.json();
+	return responsePayload;
+};
+
+export const createMediaService = async (userFormData: FormData): Promise<IResponse<IMedia>> => {
+	const HEADER = {
+		method: "POST",
+		headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+		body: userFormData
+	};
+
+	const postMediaService: Response = await fetch(CREATE_MEDIA_API, HEADER);
+	const responsePayload: Promise<IResponse<IMedia>> = await postMediaService.json();
+	return responsePayload;
+};
+
+export const getAllMediaService = async (): Promise<IResponse<IMedia[]>> => {
+	const HEADER = {
+		method: "GET",
+		headers: { "content-type": "application/json" }
+	};
+	const fetchedMedia: Response = await fetch(GET_ALL_MEDIA_API, HEADER);
+	const responsePayload: Promise<IResponse<IUser[]>> = fetchedMedia.json();
+	return responsePayload;
+};
+
+export const deleteMediaService = async (id: string): Promise<IResponse<IMedia>> => {
+	const HEADER = {
+		method: "DELETE",
+		headers: { "content-type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` }
+	};
+	const deleteMedia: Response = await fetch(DELETE_MEDIA_API + id, HEADER);
+	const responsePayload: Promise<IResponse<IMedia>> = await deleteMedia.json();
 	return responsePayload;
 };
 

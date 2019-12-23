@@ -15,9 +15,30 @@ export interface IReduxErrorMediaAction extends IReduxBaseAction {
 	payload: IResponse<IMedia>;
 }
 
+export interface IReduxGetAllMediaAction extends IReduxBaseAction {
+	type: EReduxActionTypesMedia.GET_ALL_MEDIA;
+	payload: IResponse<IMedia[]>;
+}
+
 export interface IReduxGetMediaByIdAction extends IReduxBaseAction {
 	type: EReduxActionTypesMedia.GET_MEDIA_BY_ID;
 	payload: IResponse<IMedia>;
 }
 
-export type ApplicationMediaAction = IReduxLoadMediaAction | IReduxErrorMediaAction | IReduxGetMediaByIdAction;
+export interface IReduxCreateMediaAction extends IReduxBaseAction {
+	type: EReduxActionTypesMedia.CREATE_MEDIA;
+	payload: IResponse<IMedia>;
+}
+
+export interface IReduxDeleteMediaAction extends IReduxBaseAction {
+	type: EReduxActionTypesMedia.DELETE_MEDIA;
+	payload: IResponse<IMedia>;
+}
+
+export type ApplicationMediaAction =
+	| IReduxLoadMediaAction
+	| IReduxErrorMediaAction
+	| IReduxGetMediaByIdAction
+	| IReduxGetAllMediaAction
+	| IReduxCreateMediaAction
+	| IReduxDeleteMediaAction;

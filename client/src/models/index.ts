@@ -57,6 +57,7 @@ export interface IMedia {
 	fileName?: string;
 	filePath?: string;
 	fileUrl?: string;
+	isUserPicture?: boolean;
 }
 
 export interface IUser {

@@ -30,7 +30,10 @@ export enum EReduxActionTypesCustomer {
 export enum EReduxActionTypesMedia {
 	LOAD_MEDIA = "LOAD_MEDIA",
 	ERROR_MEDIA = "ERROR_MEDIA",
-	GET_MEDIA_BY_ID = "GET_MEDIA_BY_ID"
+	GET_ALL_MEDIA = "GET_ALL_MEDIA",
+	GET_MEDIA_BY_ID = "GET_MEDIA_BY_ID",
+	CREATE_MEDIA = "CREATE_MEDIA",
+	DELETE_MEDIA = "DELETE_MEDIA"
 }
 
 export enum EBandMemberInstrumentSymbol {

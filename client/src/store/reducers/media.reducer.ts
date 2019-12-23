@@ -9,7 +9,7 @@ export const initialStateMedia: ApplicationState<IMedia> = {
 		success: false,
 		message: "",
 		error_code: 0,
-		item: { _id: "", fileName: "", filePath: "", fileUrl: "" },
+		item: { _id: "", fileName: "", filePath: "", fileUrl: "", isUserPicture: false },
 		items: []
 	}
 };
@@ -20,7 +20,33 @@ export const mediaReducer = (state: ApplicationState<IMedia> = initialStateMedia
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = true;
 			});
+		case EReduxActionTypesMedia.GET_ALL_MEDIA:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.message = action.payload.message;
+				draft.payload.success = action.payload.success;
+				draft.payload.items = action.payload.data;
+			});
 		case EReduxActionTypesMedia.GET_MEDIA_BY_ID:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.message = action.payload.message;
+				draft.payload.success = action.payload.success;
+				draft.payload.item = initialStateMedia.payload.item;
+			});
+		// TODO UPDATE THE STATE
+		case EReduxActionTypesMedia.CREATE_MEDIA:
+			return produce(state, (draft) => {
+				draft.loading.isPayloadLoading = false;
+				draft.payload.error_code = action.payload.error_code;
+				draft.payload.message = action.payload.message;
+				draft.payload.success = action.payload.success;
+				draft.payload.item = initialStateMedia.payload.item;
+			});
+		// TODO UPDATE THE STATE
+		case EReduxActionTypesMedia.DELETE_MEDIA:
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;
 				draft.payload.error_code = action.payload.error_code;

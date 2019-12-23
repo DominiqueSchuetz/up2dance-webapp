@@ -1,35 +1,57 @@
-import React, { useEffect } from "react";
-import { Grid, Image, Container, Header, Transition } from "semantic-ui-react";
+import { IReduxGetAllMediaAction } from "../../store/types/media.types";
+import { Grid, Image, Container, Header, Dimmer, Loader, Segment, GridColumn } from "semantic-ui-react";
+import React, { useEffect, Fragment } from "react";
+import { IMedia } from "../../models";
+import { isArray } from "lodash";
 
-interface IStateProps {}
+interface IStateProps {
+	allMedia: IMedia[];
+	hasLoaded: boolean;
+}
 
-interface IDispatchProps {}
+interface IDispatchProps {
+	onGetAllMedia(): Promise<IReduxGetAllMediaAction>;
+}
 
 const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
-	useEffect(() => {}, []);
-
-	const GridExampleDoubling = () => (
-		<Grid doubling columns={3}>
-			<Grid.Column>
-				<Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
-			</Grid.Column>
-			<Grid.Column>
-				<Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
-			</Grid.Column>
-			<Grid.Column>
-				<Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
-			</Grid.Column>
-			<Grid.Column>
-				<Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
-			</Grid.Column>
-			<Grid.Column>
-				<Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
-			</Grid.Column>
-			<Grid.Column>
-				<Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
-			</Grid.Column>
-		</Grid>
+	const { allMedia, onGetAllMedia, hasLoaded } = props;
+	useEffect(
+		() => {
+			onGetAllMedia();
+		},
+		[ onGetAllMedia ]
 	);
+
+	const renderAllPictures = (allMedia: IMedia[]) => {
+		if (!hasLoaded) {
+			if (isArray(allMedia)) {
+				return allMedia.map((mapMedia: IMedia) => (
+					<Grid.Column key={mapMedia._id}>
+						<Image src={"http://localhost:8080/api/media/" + mapMedia._id} />
+					</Grid.Column>
+				));
+			} else {
+				return (
+					<Fragment>
+						<Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
+							<Header as="h2">
+								Es gibt derzeit keine Bilder...{" "}
+								<span role="img" aria-label="sleeping-emoji">
+									😴
+								</span>
+							</Header>
+						</Segment>
+					</Fragment>
+				);
+			}
+		} else {
+			return (
+				<Dimmer active inverted page>
+					<Loader inline />
+				</Dimmer>
+			);
+		}
+	};
 
 	return (
 		<section>
@@ -38,7 +60,9 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 					Gallery
 				</Header>
 			</Container>
-			<Container>{GridExampleDoubling()}</Container>
+			<Grid doubling columns="three">
+				{renderAllPictures(allMedia)}
+			</Grid>
 		</section>
 	);
 };

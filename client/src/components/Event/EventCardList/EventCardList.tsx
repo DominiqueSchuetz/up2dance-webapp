@@ -128,7 +128,6 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 				columns={3}
 				textAlign="center"
 				doubling
-				stackabl
 				style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}
 			>
 				{renderEventCards(events)}
