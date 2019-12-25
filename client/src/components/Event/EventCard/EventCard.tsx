@@ -1,5 +1,5 @@
 import { ApplicationEventsAction } from "../../../store/types/event.types";
-import { Card, Image, List, Label, Button, Icon } from "semantic-ui-react";
+import { Card, Image, List, Label, Button, Icon, Grid, GridColumn, Accordion } from "semantic-ui-react";
 import { IEvent, IAddress } from "../../../models";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
@@ -82,7 +82,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<Fragment>
-			<Card>
+			<Card raised>
 				<ModalDialog
 					trigger={isAuthenticated ? cardButtonGroup : null}
 					modalStatus={modalStatus.modalOpen}
@@ -90,7 +90,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 				>
 					{renderModalComponent}
 				</ModalDialog>
-				<Image
+				{/* <Image
 					src="/images/avatar/large/matthew.png"
 					size="medium"
 					wrapped
@@ -102,9 +102,64 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 						icon: "bullhorn",
 						ribbon: true
 					}}
-				/>
-				<Card.Content>
-					<Card.Header textAlign="center">{event.eventName}</Card.Header>
+				/> */}
+
+				<Card.Content textAlign="center" style={{ height: "450px" }}>
+					<Grid doubling columns="5" textAlign="center" style={{ fontSize: "17px", fontWeight: "bold" }}>
+						<GridColumn>10</GridColumn>
+						<GridColumn>05</GridColumn>
+						<GridColumn>20</GridColumn>
+					</Grid>
+
+					<Icon
+						name="chess rock"
+						size="small"
+						color="orange"
+						style={{ marginTop: "40px", marginBottom: "40px" }}
+					/>
+					<Card.Header
+						textAlign="center"
+						style={{ fontSize: "20px", fontWeight: "bold" }}
+						content="UP2DANCE"
+					/>
+					<Card.Description
+						textAlign="center"
+						style={{ fontFamily: "Lucida Console", marginTop: "30px", marginBottom: "30px" }}
+					>
+						<span>spielt/</span>
+					</Card.Description>
+
+					<Card.Header
+						textAlign="center"
+						style={{ fontSize: "31px", fontWeight: "bold", fontVariant: "small-caps" }}
+						content={event.eventName}
+					/>
+
+					<Card.Header
+						textAlign="center"
+						style={{ fontSize: "14px", marginTop: "60px", marginBottom: "10px" }}
+					>
+						<p>HALLE (SAALE), SA </p>
+						<p>OBJEKT 5</p>
+						{/* <span className="date">Am {event.eventDate}</span> */}
+					</Card.Header>
+
+					{/* <Icon
+						name="map"
+						color="orange"
+						size="big"
+
+						// style={{ marginTop: "40px", marginBottom: "40px" }}
+					/> */}
+
+					<Icon
+						size="small"
+						name="heart"
+						color="orange"
+						style={{ marginTop: "40px", marginBottom: "40px" }}
+					/>
+
+					{/* <Card.Header textAlign="center">{event.eventName}</Card.Header>
 					<Card.Meta textAlign="center">
 						<span className="date">Am {event.eventDate}</span>
 					</Card.Meta>
@@ -117,9 +172,10 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 								14 €
 							</Label>
 						</Label.Group>
-					</Card.Description>
+					</Card.Description> */}
 				</Card.Content>
-				<Card.Content>
+
+				{/* <Card.Content>
 					<List>
 						<List.Item>
 							<List.Header>{address!.city}</List.Header>
@@ -145,7 +201,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 						icon="instagram"
 					/>
 					<Button circular size="mini" inverted color="red" icon="youtube" />
-				</Card.Content>
+				</Card.Content> */}
 			</Card>
 		</Fragment>
 	);

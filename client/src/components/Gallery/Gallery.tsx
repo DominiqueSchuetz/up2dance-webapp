@@ -25,9 +25,11 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const renderAllPictures = (allMedia: IMedia[]) => {
 		if (!hasLoaded) {
 			if (isArray(allMedia)) {
-				return allMedia.map((mapMedia: IMedia) => (
+				const randomizedArray = allMedia.filter((e) => !e.isUserPicture).sort(() => Math.random() - 0.5);
+				randomizedArray.length = 6;
+				return randomizedArray.map((mapMedia: IMedia) => (
 					<Grid.Column key={mapMedia._id}>
-						<Image src={"http://localhost:8080/api/media/" + mapMedia._id} />
+						<Image size="large" src={"http://localhost:8080/api/media/" + mapMedia._id} />
 					</Grid.Column>
 				));
 			} else {
@@ -60,9 +62,11 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 					Gallery
 				</Header>
 			</Container>
-			<Grid doubling columns="three">
-				{renderAllPictures(allMedia)}
-			</Grid>
+			<Container textAlign="center">
+				<Grid doubling columns="three">
+					{renderAllPictures(allMedia)}
+				</Grid>
+			</Container>
 		</section>
 	);
 };

@@ -6,6 +6,7 @@ import { ModalDialog } from "../../ModalDialog";
 import { EventCard, EventCardForm } from "../";
 import { isArray } from "lodash";
 import { EKindOfEventAction } from "../../../enums";
+import { eventNames } from "cluster";
 
 interface IStateProps {
 	events: IEvent[];
@@ -71,7 +72,9 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const renderEventCards = (events: IEvent[]) => {
 		if (!isLoaded) {
 			if (isArray(events)) {
-				return events.map((mapEvent: IEvent) => (
+				// TODO Sort by date
+				const toogleVisibility = isAuthenticated ? events : events.filter((e) => e.hidden !== true);
+				return toogleVisibility.map((mapEvent: IEvent) => (
 					<Fragment key={mapEvent._id}>
 						<Grid.Column stretched textAlign="center">
 							<EventCard
@@ -111,7 +114,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		<section>
 			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
 				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
-					Konzerte
+					KONZERTE
 				</Header>
 			</Container>
 			<ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>

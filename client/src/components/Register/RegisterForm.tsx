@@ -5,6 +5,7 @@ import React, { Fragment, useState, useRef, useEffect } from "react";
 import { EBandMemberInstrument } from "../../enums";
 import { isEmailValid } from "../../lib";
 import { NavLink } from "react-router-dom";
+import { FileUpload } from "../FileUpload";
 
 interface IStateProps {
 	registerPayload?: IReduxState<IRegisterUserData>;
@@ -56,12 +57,11 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const [ refId, setRefId ] = useState<string>("");
 	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
 	const [ fileName, setFileName ] = useState<string | undefined>("");
-	const [ file, setFile ] = useState<{ file: any }>({ file: "" });
+
 	const [ password, setPassword ] = useState<string>("");
 	const [ secretKey, setSecretKey ] = useState<string>("");
 	const [ comment, setComment ] = useState<string>("");
 	const [ isUpdatedComponent, setIsUpdatedComponent ] = useState<boolean>(false);
-	const inputRef: any = useRef();
 
 	useEffect(
 		() => {
@@ -77,6 +77,11 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		},
 		[ user ]
 	);
+
+	const getImageObjectFromComponent = (imageObject: { file: any; fileNameWithoutType: any }) => {
+		setFilePath(imageObject.file);
+		setFileName(imageObject.fileNameWithoutType);
+	};
 
 	const handleOnChange = (
 		event: React.ChangeEvent<HTMLInputElement> | any,
@@ -109,43 +114,6 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		}
 	};
 
-	const handleUploadAction = (event: any) => {
-		const naiveFileName: string = Object(event.target.files)[0].name;
-		const fileNameWithoutType = naiveFileName.substring(0, naiveFileName.lastIndexOf("."));
-		const file: File = event.target.files[0];
-		setFilePath(file);
-		setFileName(fileNameWithoutType);
-		setFile({ file: URL.createObjectURL(event.target.files[0]) });
-	};
-
-	const imageUploaded = <Image src={file.file} size="medium" centered circular />;
-	const imageUploaded2 = (
-		<Image centered circular src={refId ? "http://localhost:8080/api/media/" + refId : ""} size="medium" />
-	);
-	const uplaodImage = (
-		<Fragment>
-			<Header icon>
-				<Icon name="upload" />
-				<h4>Du hast bis jetzt noch kein Profilfoto hochgeladen.</h4>
-			</Header>
-			<Button primary onClick={() => inputRef.current.click()}>
-				Profilfoto hinzufügen
-			</Button>
-		</Fragment>
-	);
-
-	const resetFile = () => {
-		const file = document.querySelector("#file-upload");
-		Object(file).value = "";
-	};
-
-	const handleRemove = () => {
-		setFile({ file: "" });
-		setRefId("");
-		setFilePath(undefined);
-		resetFile();
-	};
-
 	const handleRegister = () => {
 		let userFormData: FormData = new FormData();
 
@@ -157,6 +125,8 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		userFormData.append("password", password);
 		userFormData.append("secretKey", secretKey);
 		userFormData.append("comment", comment);
+
+		userFormData.forEach((e) => console.log("formData => ", e));
 
 		if (isUpdatedComponent) {
 			onUpdateUserById!(user!._id!, userFormData);
@@ -194,18 +164,12 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 					onChange={handleOnChange}
 					error={lastName!.length > 1 ? false : true}
 				/>
-				<Segment placeholder>{file.file ? imageUploaded : refId ? imageUploaded2 : uplaodImage}</Segment>
-				<Form.Button fluid onClick={handleRemove}>
-					Bild löschen
-				</Form.Button>
-				<input
-					id="file-upload"
-					accept="image/png, image/jpeg, image/jpg"
-					ref={inputRef}
-					type="file"
-					hidden
+				<FileUpload
+					id="register-form-file-upload"
 					name="filePath"
-					onChange={handleUploadAction}
+					size="medium"
+					centered
+					getImageObjectFromComponent={getImageObjectFromComponent}
 				/>
 				<Form.Dropdown
 					name="instrument"

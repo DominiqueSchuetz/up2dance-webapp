@@ -1,6 +1,7 @@
 import { Form, Segment, Icon, Image, Header, Modal, Button, DropdownProps, InputOnChangeData } from "semantic-ui-react";
 import { ApplicationUserAction } from "../../../store/types/user.types";
 import React, { Fragment, useState, useEffect, useRef } from "react";
+import { FileUpload } from "../../FileUpload";
 import { IUser } from "../../../models";
 import { isEmailValid } from "../../../lib";
 import { isNil } from "lodash";
@@ -21,12 +22,8 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const [ firstName, setFirstName ] = useState<string>("");
 	const [ lastName, setLastName ] = useState<string>("");
 	const [ email, setEmail ] = useState<string>("");
-
 	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
 	const [ fileName, setFileName ] = useState<string | undefined>("");
-	const [ file, setFile ] = useState<{ file: any }>({ file: "" });
-
-	const inputRef: any = useRef();
 
 	useEffect(
 		() => {
@@ -37,6 +34,11 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		},
 		[ user ]
 	);
+
+	const getImageObjectFromComponent = (imageObject: { filePath: any; fileName: any }) => {
+		setFilePath(imageObject.filePath);
+		setFileName(imageObject.fileName);
+	};
 
 	const handleOnSubmit = async (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>
@@ -84,39 +86,6 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		}
 	};
 
-	const handleUploadAction = (event: any) => {
-		const naiveFileName: string = Object(event.target.files)[0].name;
-		const fileNameWithoutType = naiveFileName.substring(0, naiveFileName.lastIndexOf("."));
-		const file: File = event.target.files[0];
-		setFilePath(file);
-		setFileName(fileNameWithoutType);
-		setFile({ file: URL.createObjectURL(event.target.files[0]) });
-	};
-
-	const imageUploaded = <Image src={file.file} size="medium" centered circular />;
-	const uplaodImage = (
-		<Fragment>
-			<Header icon>
-				<Icon name="upload" />
-				<h4>Du hast bis jetzt noch kein Profilfoto hochgeladen.</h4>
-			</Header>
-			<Button primary onClick={() => inputRef.current.click()}>
-				Profilfoto hinzufügen
-			</Button>
-		</Fragment>
-	);
-
-	const resetFile = () => {
-		const file = document.querySelector("#file-upload");
-		Object(file).value = "";
-	};
-
-	const handleRemove = () => {
-		setFile({ file: "" });
-		setFilePath(undefined);
-		resetFile();
-	};
-
 	return (
 		<Fragment>
 			<Modal.Header>{headerText}</Modal.Header>
@@ -142,20 +111,14 @@ const UserCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 								onChange={handleOnChange}
 								error={lastName!.length > 1 ? false : true}
 							/>
-							<Segment placeholder>{file.file ? imageUploaded : uplaodImage}</Segment>
-							<Form.Button fluid onClick={handleRemove}>
-								Bild löschen
-							</Form.Button>
-							<input
-								id="file-upload"
-								accept="image/png, image/jpeg, image/jpg"
-								ref={inputRef}
-								type="file"
-								hidden
+							<FileUpload
+								id="user-card-form-file-upload"
 								name="filePath"
-								onChange={handleUploadAction}
+								size="medium"
+								centered
+								circular
+								getImageObjectFromComponent={getImageObjectFromComponent}
 							/>
-
 							<Form.Input
 								type="text"
 								name="email"
