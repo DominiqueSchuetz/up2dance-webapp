@@ -14,7 +14,7 @@ interface IStateProps {
 interface IDispatchProps {}
 
 const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { id, name, size, refId, getImageObjectFromComponent } = props;
+	const { id, circular, name, size, refId, getImageObjectFromComponent } = props;
 
 	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
 	const [ fileName, setFileName ] = useState<string | undefined>("");
@@ -30,8 +30,10 @@ const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
 		[ refId ]
 	);
 
-	const imageUploaded = <Image src={file.file} size={size} centered circular />;
-	const imageUploaded2 = <Image src={"http://localhost:8080/api/media/" + imgId} size={size} centered circular />;
+	const imageUploaded = <Image src={file.file} size={size} circular={circular} centered />;
+	const imageUploaded2 = (
+		<Image src={"http://localhost:8080/api/media/" + imgId} size={size} centered circular={circular} />
+	);
 
 	const uplaodImage = (
 		<Fragment>
@@ -39,8 +41,9 @@ const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
 				<Icon name="upload" />
 				<h4>Du hast bis jetzt noch kein Bild hochgeladen.</h4>
 			</Header>
+			<br />
 			<Button primary onClick={() => inputRef.current.click()}>
-				Profilfoto hinzufügen
+				Foto hinzufügen
 			</Button>
 		</Fragment>
 	);
@@ -71,11 +74,12 @@ const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<Fragment>
-			<Segment placeholder>{file.file ? imageUploaded : imgId ? imageUploaded2 : uplaodImage}</Segment>
-			<Form.Button fluid onClick={handleRemove}>
-				Bild löschen
-			</Form.Button>
-
+			<Fragment>
+				<Segment textAlign="center">{file.file ? imageUploaded : imgId ? imageUploaded2 : uplaodImage}</Segment>
+				<Form.Button fluid onClick={handleRemove} style={{ marginBottom: "15px" }}>
+					Bild löschen
+				</Form.Button>
+			</Fragment>
 			<input
 				id={id}
 				type="file"

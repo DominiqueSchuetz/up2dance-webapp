@@ -170,6 +170,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 					size="medium"
 					centered
 					refId={refId}
+					circular
 					getImageObjectFromComponent={getImageObjectFromComponent}
 				/>
 				<Form.Dropdown

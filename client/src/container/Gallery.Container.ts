@@ -1,16 +1,18 @@
 import { ApplicationReducerState } from "../store/reducers";
-import { getAllMedia } from "../store/effects/media.effects";
+import { getAllMedia, createMedia, deleteMediaById } from "../store/effects/media.effects";
 import { Gallery } from "../components/Gallery";
 import { connect } from "react-redux";
 
 const mapStateToProps = (state: ApplicationReducerState) => ({
 	allMedia: state.mediaReducer.payload.items,
 	media: state.mediaReducer.payload.item,
-	hasLoaded: state.mediaReducer.loading.isPayloadLoading
+	hasLoaded: state.mediaReducer.loading.isPayloadLoading,
+	isAuthenticated: state.registerReducer.payload.success
 });
 
 export const mapDispatchToProps = {
-	onGetAllMedia: getAllMedia
+	onGetAllMedia: getAllMedia,
+	onCreateMedia: createMedia
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Gallery);
