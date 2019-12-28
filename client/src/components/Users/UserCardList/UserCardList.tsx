@@ -76,7 +76,7 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		<section>
 			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
 				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
-					Mitglieder
+					MITGLIEDER
 				</Header>
 			</Container>
 			<Card.Group itemsPerRow="4" centered stackable>

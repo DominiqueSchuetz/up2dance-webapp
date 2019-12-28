@@ -1,4 +1,4 @@
-import React, { useState, useRef, Fragment } from "react";
+import React, { useState, useRef, Fragment, useEffect } from "react";
 import { Image, ImageProps, Segment, Form, Header, Button, Icon } from "semantic-ui-react";
 
 interface IStateProps {
@@ -7,22 +7,31 @@ interface IStateProps {
 	size: ImageProps["size"];
 	circular?: ImageProps["circular"];
 	centered?: ImageProps["centered"];
+	refId?: string;
 	getImageObjectFromComponent?: any;
 }
 
 interface IDispatchProps {}
 
 const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { id, name, size } = props;
-	const { getImageObjectFromComponent } = props;
+	const { id, name, size, refId, getImageObjectFromComponent } = props;
 
 	const [ filePath, setFilePath ] = useState<any | undefined>(undefined);
 	const [ fileName, setFileName ] = useState<string | undefined>("");
 	const [ file, setFile ] = useState<{ file: any }>({ file: "" });
+	const [ imgId, setImgId ] = useState<string | undefined>("");
 
 	const inputRef: any = useRef();
 
+	useEffect(
+		() => {
+			setImgId(refId);
+		},
+		[ refId ]
+	);
+
 	const imageUploaded = <Image src={file.file} size={size} centered circular />;
+	const imageUploaded2 = <Image src={"http://localhost:8080/api/media/" + imgId} size={size} centered circular />;
 
 	const uplaodImage = (
 		<Fragment>
@@ -56,13 +65,13 @@ const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const handleRemove = () => {
 		setFile({ file: "" });
 		setFilePath(undefined);
+		setImgId(undefined);
 		resetFile();
 	};
 
 	return (
 		<Fragment>
-			<Segment placeholder>{file.file ? imageUploaded : uplaodImage}</Segment>
-
+			<Segment placeholder>{file.file ? imageUploaded : imgId ? imageUploaded2 : uplaodImage}</Segment>
 			<Form.Button fluid onClick={handleRemove}>
 				Bild löschen
 			</Form.Button>

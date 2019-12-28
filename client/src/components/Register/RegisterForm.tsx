@@ -165,10 +165,11 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 					error={lastName!.length > 1 ? false : true}
 				/>
 				<FileUpload
-					id="register-form-file-upload"
+					id="file-upload"
 					name="filePath"
 					size="medium"
 					centered
+					refId={refId}
 					getImageObjectFromComponent={getImageObjectFromComponent}
 				/>
 				<Form.Dropdown
