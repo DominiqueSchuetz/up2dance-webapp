@@ -9,6 +9,7 @@ import {
 import { getAllMediaService, getMediaByIdService, createMediaService, deleteMediaService } from "../../services";
 import { Effect, IResponse, IMedia } from "../../models";
 import { toast } from "react-toastify";
+import { loadUserError } from "../actions/user.action";
 
 // Get all media
 export const getAllMedia = (): Effect => async (dispatch, getState) => {
@@ -66,18 +67,18 @@ export const deleteMediaById = (id: string): Effect => async (dispatch, getState
 		if (!!payload.success) {
 			toast.success(` 😻 ${payload.message}`);
 			dispatch(deleteMediaRequest(payload));
-			localStorage.removeItem("token");
-			localStorage.clear();
 		} else {
 			localStorage.removeItem("token");
 			localStorage.clear();
 			toast.info(` 😾 ${payload.message}`);
+			dispatch(loadUserError(payload));
 			dispatch(loadMediaError(payload));
 		}
 	} catch (e) {
 		localStorage.removeItem("token");
 		localStorage.clear();
 		toast.error(` 🙀 ${e}`);
+		dispatch(loadUserError(e));
 		dispatch(loadMediaError(e));
 	}
 };

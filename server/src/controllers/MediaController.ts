@@ -59,7 +59,14 @@ export class MediaController extends BaseController<IMedia> {
 							res.writeHead(200, { "Content-Type": "image/png" });
 							res.end(data);
 						} else {
-							badRequestResponse(res, "Could not show item by id");
+							readFile("./uploads/not-found/notFound.png", (err: NodeJS.ErrnoException, data: Buffer) => {
+								if (!err && data) {
+									res.writeHead(200, { "Content-Type": "image/png" });
+									res.end(data);
+								} else {
+									badRequestResponse(res, "Could not show item by id");
+								}
+							});
 						}
 					});
 				} else {
@@ -112,18 +119,16 @@ export class MediaController extends BaseController<IMedia> {
      */
 	protected async remove(req: Request, res: Response): Promise<void> {
 		try {
-			const file = await this._repository.getById(req.params.id);
 			const result = await this._repository.delete(req.params.id);
-
-			if (result && Object(result).n == 1 && Object(result).ok == 1) {
+			if (result && result._id) {
 				//delete file from public folder
-				const filePath = file.filePath;
+				const filePath = result.filePath;
 				try {
 					unlinkSync(filePath);
 				} catch (error) {
 					internalServerErrorResponse(res, error.message);
 				}
-				successResponse(res, null, "Item successfully deleted");
+				successResponse(res, result, "Delete item successfully");
 			} else {
 				badRequestResponse(res, "Could not get item by id");
 			}

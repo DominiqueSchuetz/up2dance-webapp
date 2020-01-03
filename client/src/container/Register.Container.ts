@@ -1,3 +1,4 @@
+import { deleteMediaById } from "../store/effects/media.effects";
 import { registerUser } from "../store/effects/user.effects";
 import { ApplicationReducerState } from "../store/reducers";
 import { Register } from "../components/Register";
@@ -10,7 +11,8 @@ const mapStateToProps = (state: ApplicationReducerState) => ({
 });
 
 export const mapDispatchToProps = {
-	onRegisterUser: registerUser
+	onRegisterUser: registerUser,
+	onDeleteMediaById: deleteMediaById
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

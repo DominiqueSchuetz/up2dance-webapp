@@ -92,8 +92,7 @@ export interface IRegisterUserData {
 	firstName: string;
 	lastName: string;
 	refId?: string | undefined;
-	filePath?: FileList | File | undefined;
-	fileName?: string | undefined;
+	media?: IMedia;
 	instrument?: string | undefined;
 	email: string;
 	password: string;

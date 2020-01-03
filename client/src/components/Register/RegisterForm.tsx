@@ -121,12 +121,11 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		userFormData.append("lastName", lastName);
 		userFormData.append("filePath", filePath);
 		userFormData.append("fileName", fileName!);
+		userFormData.append("isUserPicture", JSON.stringify(true));
 		userFormData.append("email", email);
 		userFormData.append("password", password);
 		userFormData.append("secretKey", secretKey);
 		userFormData.append("comment", comment);
-
-		userFormData.forEach((e) => console.log("formData => ", e));
 
 		if (isUpdatedComponent) {
 			onUpdateUserById!(user!._id!, userFormData);

@@ -77,7 +77,7 @@ export abstract class BaseController<T extends Document> implements IController 
 			const allItems: T[] = await this._repository.list();
 			allItems.length > 0
 				? successResponse(res, allItems)
-				: badRequestResponse(res, "No items in database so far");
+				: successResponse(res, [], "No items in database so far");
 		} catch (error) {
 			internalServerErrorResponse(res, error.message);
 		}
@@ -161,7 +161,8 @@ export abstract class BaseController<T extends Document> implements IController 
 					let newFileReqObject = {
 						fileName: Object(result)!.fileName,
 						filePath: Object(result)!.filePath ? Object(result)!.filePath : null,
-						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null
+						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null,
+						isUserPicture: req.body.isUserPicture || false
 					};
 					try {
 						return await this._repository.createWithCallback(
@@ -208,7 +209,8 @@ export abstract class BaseController<T extends Document> implements IController 
 					let newFileReqObject = {
 						fileName: Object(result)!.fileName,
 						filePath: Object(result)!.filePath ? Object(result)!.filePath : null,
-						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null
+						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null,
+						isUserPicture: req.body.isUserPicture || false
 					};
 					try {
 						return await this._repository.createWithCallback(

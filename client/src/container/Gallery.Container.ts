@@ -12,7 +12,8 @@ const mapStateToProps = (state: ApplicationReducerState) => ({
 
 export const mapDispatchToProps = {
 	onGetAllMedia: getAllMedia,
-	onCreateMedia: createMedia
+	onCreateMedia: createMedia,
+	onDeleteMediaById: deleteMediaById
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Gallery);

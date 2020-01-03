@@ -38,7 +38,7 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const renderUserCards = (users: IUser[]) => {
 		if (!isUserPayloadLoading) {
-			if (isArray(users)) {
+			if (isArray(users) && users.length > 0) {
 				return users.map((mapUser: IUser) => (
 					<div key={mapUser._id} style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
 						<UserCard

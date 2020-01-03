@@ -77,7 +77,7 @@ const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
 			<Fragment>
 				<Segment textAlign="center">{file.file ? imageUploaded : imgId ? imageUploaded2 : uplaodImage}</Segment>
 				<Form.Button fluid onClick={handleRemove} style={{ marginBottom: "15px" }}>
-					Bild löschen
+					Bild verwerfen
 				</Form.Button>
 			</Fragment>
 			<input

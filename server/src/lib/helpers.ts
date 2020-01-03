@@ -3,8 +3,20 @@ import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 import { environments } from "../../config";
 import { IMedia } from "../models/interfaces/IMedia";
-import { renameSync, unlink, existsSync, mkdirSync } from "fs";
+import {
+	renameSync,
+	createWriteStream,
+	write,
+	unlink,
+	existsSync,
+	mkdirSync,
+	writeFile,
+	appendFileSync,
+	writeFileSync,
+	unlinkSync
+} from "fs";
 import { IUser } from "../models/interfaces/IUser";
+import { Request } from "restify";
 require("dotenv").config();
 
 export class Helpers<T extends Document> {
@@ -103,7 +115,7 @@ export class Helpers<T extends Document> {
 							if (!existsSync(pathToFileUploadFolderProd) || !existsSync(pathToFileUploadFolderDev)) {
 								mkdirSync(pathToFileUploadFolderProd);
 							}
-							const pathToDisk: string = `./uploads/${req.files[key].name}`;
+							const pathToDisk: string = `./uploads/${Date.now()}_${req.files[key].name}`;
 							renameSync(req.files[key].path, pathToDisk);
 							unlink(req.files[key].path, (err) => {
 								if (!err) reject("Error in uploading a file");
@@ -130,6 +142,18 @@ export class Helpers<T extends Document> {
 				reject("No valid key value ==> need either a fileUrl or a filePath");
 			}
 		});
+	}
+
+	/**
+	 * 
+	 * @param filePath 
+	 */
+	public deleteFileToFolder(filePath: string) {
+		try {
+			unlinkSync(filePath);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	/**

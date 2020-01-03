@@ -71,7 +71,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const renderEventCards = (events: IEvent[]) => {
 		if (!isLoaded) {
-			if (isArray(events)) {
+			if (isArray(events) && events.length > 0) {
 				// TODO Sort by date
 				const toogleVisibility = isAuthenticated ? events : events.filter((e) => e.hidden !== true);
 				return toogleVisibility.map((mapEvent: IEvent) => (

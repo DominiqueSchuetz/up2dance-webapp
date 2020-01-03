@@ -44,8 +44,8 @@ export const mediaReducer = (state: ApplicationState<IMedia> = initialStateMedia
 				draft.payload.message = action.payload.message;
 				draft.payload.success = action.payload.success;
 				draft.payload.item = initialStateMedia.payload.item;
+				draft.payload.items.push(action.payload.data);
 			});
-		// TODO UPDATE THE STATE
 		case EReduxActionTypesMedia.DELETE_MEDIA:
 			return produce(state, (draft) => {
 				draft.loading.isPayloadLoading = false;
@@ -53,6 +53,10 @@ export const mediaReducer = (state: ApplicationState<IMedia> = initialStateMedia
 				draft.payload.message = action.payload.message;
 				draft.payload.success = action.payload.success;
 				draft.payload.item = initialStateMedia.payload.item;
+				const filteredArray: IMedia[] = draft.payload.items.filter(
+					(item) => item._id !== action.payload.data._id
+				);
+				draft.payload.items = filteredArray;
 			});
 		case EReduxActionTypesMedia.ERROR_MEDIA:
 			return produce(state, (draft) => {

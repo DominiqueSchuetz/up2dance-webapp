@@ -53,7 +53,7 @@ export class UserController extends BaseController<IUser> {
 				}));
 				mapToNames.length > 0
 					? successResponse(res, mapToNames)
-					: successResponse(res, null, "No users so far", 0);
+					: successResponse(res, [], "No items in database so far");
 			} else {
 				badRequestResponse(res, "Could not list items");
 			}
@@ -238,6 +238,13 @@ export class UserController extends BaseController<IUser> {
 								}
 							} else {
 								try {
+									const getUserObject = await this._repository.getByIdAndRefId(id);
+									if (getUserObject.refId && getUserObject.refId.filePath) {
+										// Delete file from disc
+										const filePath = getUserObject.refId.filePath;
+										await this._helpers.deleteFileToFolder(filePath);
+									}
+
 									const result = await this.updateByFileReference(req, res, id);
 									if (result!._id) {
 										successResponse(res, result);
@@ -275,8 +282,8 @@ export class UserController extends BaseController<IUser> {
 
 		if (id && jwtToken) {
 			try {
-				const authResult = await this._helpers.authorizeItem(id, jwtToken);
-				if (Boolean(authResult)) {
+				const authResult: boolean = await this._helpers.authorizeItem(id, jwtToken);
+				if (authResult) {
 					try {
 						const result = await this._repository.delete(id);
 						result && result._id
