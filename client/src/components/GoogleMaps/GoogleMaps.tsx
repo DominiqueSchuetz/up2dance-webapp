@@ -7,8 +7,12 @@ import {
 	StandaloneSearchBoxProps,
 	Marker
 } from "@react-google-maps/api";
+import mapStylesDarkMode from "./darkMode.json";
 import { IAddress } from "../../models";
 import { isNil, isEmpty } from "lodash";
+import { getTimes } from "suncalc";
+import moment from "moment";
+import "moment/locale/de";
 
 interface IAddressComponent {
 	long_name: string;
@@ -22,7 +26,6 @@ interface IStateProps {
 	storedAddress: IAddress;
 }
 
-const mapStyles = [ { backgroundColor: "red" } ];
 const GOOGLE_MAPS_LIBARIES = [ "places" ];
 
 const GoogleMaps: React.FC<IStateProps> = (props) => {
@@ -62,6 +65,8 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		},
 		[ storedAddress ]
 	);
+
+	console.log("GoogleMaps gets rendered!");
 
 	const handleOnloadSearchBox = (ref: StandaloneSearchBoxProps) => {
 		setStandaloneSearchBox(ref);
@@ -199,11 +204,11 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 
 			<GoogleMap
 				id="google-maps"
+				options={checkDarkMode() ? { styles: mapStylesDarkMode } : {}}
 				zoom={zoom}
 				center={postion}
 				mapContainerStyle={{ height: "30em", width: "100%" }}
 				mapContainerClassName="google-maps-container"
-				options={{ styles: mapStyles }}
 			>
 				{true && <Marker position={postion} />}
 			</GoogleMap>
@@ -223,3 +228,8 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 };
 
 export default GoogleMaps;
+
+const checkDarkMode = (): boolean => {
+	const { sunset, sunriseEnd } = getTimes(new Date(), 51.48217, 11.9658);
+	return moment().isAfter(sunset) || moment().isBefore(sunriseEnd);
+};

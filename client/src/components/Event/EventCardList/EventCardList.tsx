@@ -6,7 +6,8 @@ import { ModalDialog } from "../../ModalDialog";
 import { EventCard, EventCardForm } from "../";
 import { isArray } from "lodash";
 import { EKindOfEventAction } from "../../../enums";
-import { eventNames } from "cluster";
+import { filterByActualYear, parseToDateFormat, sortedArray } from "../../../lib";
+import moment from "moment";
 
 interface IStateProps {
 	events: IEvent[];
@@ -72,8 +73,18 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const renderEventCards = (events: IEvent[]) => {
 		if (!isLoaded) {
 			if (isArray(events) && events.length > 0) {
-				// TODO Sort by date
-				const toogleVisibility = isAuthenticated ? events : events.filter((e) => e.hidden !== true);
+				// Sort by Date
+				const sortedArray = events.slice().sort(function(a, b) {
+					const c = new Date(parseToDateFormat(a.eventDate));
+					const d = new Date(parseToDateFormat(b.eventDate));
+					return +c - +d;
+				});
+
+				// filter by Date
+				const filteredArray = sortedArray.filter((date) => filterByActualYear(date.eventDate));
+				filteredArray.length = 3;
+
+				const toogleVisibility = isAuthenticated ? sortedArray : filteredArray.filter((e) => e.hidden !== true);
 				return toogleVisibility.map((mapEvent: IEvent) => (
 					<Fragment key={mapEvent._id}>
 						<Grid.Column stretched textAlign="center">

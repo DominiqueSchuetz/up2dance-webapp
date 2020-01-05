@@ -25,7 +25,7 @@ interface IDispatchProps {
 	onCreateCustomer(customer: ICustomer): Promise<ApplicationCustomersAction>;
 }
 
-const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
+const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { onCreateCustomer } = props;
 
 	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -140,7 +140,7 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 			<Form.Group widths="equal">
 				<Form.Field
 					id="form-input-control-first-name"
-					error={firstName.length > 2 ? false : true}
+					// error={firstName.length > 2 ? false : true}
 					required
 					control={Input}
 					name="firstName"
@@ -151,7 +151,7 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 				/>
 				<Form.Field
 					id="form-input-control-last-name"
-					error={lastName.length > 2 ? false : true}
+					// error={lastName.length > 2 ? false : true}
 					required
 					control={Input}
 					name="lastName"
@@ -173,7 +173,7 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 			<Form.Group widths="equal">
 				<Form.Field
 					id="form-input-control-email"
-					error={email!.length > 1 && isEmailValid(email) ? false : true}
+					//error={email!.length > 6 && isEmailValid(email) ? false : true}
 					required
 					control={Input}
 					name="email"
@@ -237,7 +237,7 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 		<section>
 			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
 				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
-					Kontakt
+					KONTAKT
 				</Header>
 			</Container>
 
@@ -246,7 +246,7 @@ const Customer: React.FC<IStateProps & IDispatchProps> = (props) => {
 	);
 };
 
-export default Customer;
+export default CustomerForm;
 
 function resetFormFields(
 	setFirstName: React.Dispatch<React.SetStateAction<string>>,

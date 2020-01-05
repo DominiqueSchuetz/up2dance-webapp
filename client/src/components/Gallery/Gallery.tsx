@@ -4,10 +4,10 @@ import {
 	IReduxDeleteMediaAction
 } from "../../store/types/media.types";
 import { Grid, Image, Container, Header, Dimmer, Loader, Segment, Button, Icon, Modal } from "semantic-ui-react";
-import React, { useEffect, Fragment, useRef, useState } from "react";
+import React, { useEffect, Fragment, useRef, useState, useCallback, useMemo } from "react";
+import { ModalDialog } from "../ModalDialog";
 import { IMedia } from "../../models";
 import { isArray } from "lodash";
-import { ModalDialog } from "../ModalDialog";
 
 interface IStateProps {
 	allMedia: IMedia[];
@@ -103,12 +103,14 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const renderAllPictures = (allMedia: IMedia[]) => {
 		if (!hasLoaded) {
 			if (isArray(allMedia)) {
+				console.log("rerender gallery");
+
 				const filterByUserPicture = allMedia.filter((e) => !e.isUserPicture);
 				if (filterByUserPicture.length > 0) {
-					const randomizedArray = filterByUserPicture.sort(() => Math.random() - 0.5);
-					randomizedArray.length = 6;
+					// const randomizedArray = filterByUserPicture.sort(() => Math.random() - 0.5);
+					filterByUserPicture.length = 6;
 
-					return randomizedArray.map((mapMedia: IMedia) => (
+					return filterByUserPicture.map((mapMedia: IMedia) => (
 						<Grid.Column key={mapMedia._id}>
 							<Image
 								size="large"
@@ -165,21 +167,21 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 export default Gallery;
 
-function deleteImage(
+const deleteImage = (
 	mapMedia: IMedia,
 	setModalStaus: React.Dispatch<
 		React.SetStateAction<{
 			modalOpen: boolean;
 		}>
 	>
-) {
-	FILE_ID = mapMedia._id!;
-	NAME = mapMedia.fileName!;
+) => {
 	return {
 		corner: "right",
 		icon: { name: "delete", color: "black" },
 		onClick: () => {
 			setModalStaus({ modalOpen: true });
+			FILE_ID = mapMedia._id!;
+			NAME = mapMedia.fileName!;
 		}
 	};
-}
+};

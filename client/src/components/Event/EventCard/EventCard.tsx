@@ -141,7 +141,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 					>
 						<p>HALLE (SAALE), SA </p>
 						<p>OBJEKT 5</p>
-						{/* <span className="date">Am {event.eventDate}</span> */}
+						<span className="date">Am {event.eventDate}</span>
 					</Card.Header>
 
 					{/* <Icon

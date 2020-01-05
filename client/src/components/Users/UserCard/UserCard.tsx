@@ -99,7 +99,6 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 				<Header.Content>{user.firstName}</Header.Content>
 			</Header>
 			<Container text>
-				<Header as="h1">HEADER</Header>
 				<p>{user.comment}</p>
 			</Container>
 		</Fragment>
