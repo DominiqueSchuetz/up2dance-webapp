@@ -3,12 +3,15 @@ import { Response } from "restify";
 /**
  * 
  * @param res 
- * @param message 
  * @param data 
+ * @param jwtToken 
+ * @param message 
+ * @param error_code 
  */
 export const successResponse = (
 	res: Response,
 	data: unknown = null,
+	jwtToken: string = undefined,
 	message: string = "success",
 	error_code: number = 0
 ) => {
@@ -17,7 +20,8 @@ export const successResponse = (
 		success: true,
 		error_code,
 		message,
-		data
+		data,
+		jwtToken
 	});
 };
 

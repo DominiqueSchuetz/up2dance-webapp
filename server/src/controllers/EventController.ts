@@ -21,7 +21,9 @@ export class EventController extends BaseController<IEvent> {
 	protected async list(req: Request, res: Response, next?: Next): Promise<void> {
 		try {
 			const allItems: IEvent[] = await this._repository.list();
-			allItems.length > 0 ? successResponse(res, allItems) : successResponse(res, null, "No events so far", 0);
+			allItems.length > 0
+				? successResponse(res, allItems)
+				: successResponse(res, undefined, undefined, "No events so far", 0);
 			//console.log(moment("2019-01-21T18:51:15.724Z").locale("de").format("LL"));
 			//console.log(moment("2019-01-21T18:51:15.724Z").locale("de").format("LT"));
 		} catch (error) {

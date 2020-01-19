@@ -27,6 +27,8 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 				draft.payload.error_code = action.payload.error_code;
 				draft.payload.success = action.payload.success;
 				draft.payload.items = action.payload.data;
+
+				console.log("items => ", action.payload.data);
 			});
 		case EReduxActionTypesUser.DELETE_USER:
 			return produce(state, (draft) => {
@@ -62,6 +64,8 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 				draft.payload.message = action.payload.message;
 				draft.payload.success = action.payload.success;
 				draft.payload.item = Object(action.payload).data.result;
+				console.log("alt => ", draft.payload.item);
+				console.log("neu => ", Object(action.payload).data.result);
 			});
 		case EReduxActionTypesUser.UPDATE_USER:
 			return produce(state, (draft) => {
@@ -71,8 +75,8 @@ export const userReducer = (state: ApplicationState<IUser> = initialStateUser, a
 				draft.payload.success = action.payload.success;
 				draft.payload.item = action.payload.data;
 
+				const { _id, firstName, lastName, email, refId, comment } = action.payload.data;
 				const updatedArray: IUser[] = draft.payload.items.map((item) => {
-					const { _id, firstName, lastName, email, refId, comment } = action.payload.data;
 					if (item._id === _id) {
 						return {
 							...item,

@@ -22,11 +22,22 @@ export interface IReduxState<T> {
 	item: T;
 }
 
+// export interface IReduxState<T> {
+// 	success: boolean;
+// 	isItemAuthenticated: boolean;
+// 	jwtToken: string;
+// 	message: string;
+// 	error_code: number;
+// 	items: T[];
+// 	item: T
+// }
+
 export interface IResponse<T> {
 	success: boolean;
 	error_code: number;
 	message: string;
 	data: T[] & T;
+	jwtToken: string;
 }
 
 export interface IAddress {

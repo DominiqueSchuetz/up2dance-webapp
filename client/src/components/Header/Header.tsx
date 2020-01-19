@@ -48,7 +48,7 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 				}
 			}
 		},
-		[ refId ]
+		[ onIsUserAuthenticated ]
 	);
 
 	const handleLogout = () => {

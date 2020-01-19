@@ -26,3 +26,7 @@ export const sortedArray = <T>(arrayOfDates: T[], key: string) => {
 	});
 	return sorted;
 };
+
+export const removeString = (originalString: string, stringToRemove: string): string => {
+	return originalString.replace(new RegExp(stringToRemove, "g"), "").trim();
+};

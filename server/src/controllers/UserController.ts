@@ -24,7 +24,7 @@ export class UserController extends BaseController<IUser> {
 		try {
 			const verifiedUser = await this._helpers.verfiyJwtToken(req.headers.authorization);
 			if (verifiedUser) {
-				successResponse(res, verifiedUser, "User is verified");
+				successResponse(res, verifiedUser, req.headers.authorization, "User is verified");
 			} else {
 				badRequestResponse(res, "User is not verified");
 			}
@@ -146,9 +146,9 @@ export class UserController extends BaseController<IUser> {
 						? successResponse(
 								res,
 								{
-									jwt_token: jwtToken,
 									isLoggedIn: true
 								},
+								jwtToken,
 								`Hey ${result.firstName}, you're logged in successfully`
 							)
 						: badRequestResponse(res, "Could not create jwt-token");
@@ -214,13 +214,18 @@ export class UserController extends BaseController<IUser> {
 							req.body.password = passwordEnc;
 
 							if (!files && !fileUrl) {
+								const result = await this._repository.update(id, req.body);
+								const jwtToken = await this._helpers.createJwtToken(mapToUserObject(result));
 								try {
-									const result = await this._repository.update(id, req.body);
 									if (result && result._id) {
 										try {
-											const jwtToken = await this._helpers.createJwtToken(result);
 											typeof jwtToken === "string"
-												? successResponse(res, result, "You updated a item successfully")
+												? successResponse(
+														res,
+														result,
+														jwtToken,
+														"You updated an item successfully"
+													)
 												: badRequestResponse(res, "Could not update item by id");
 										} catch (error) {
 											internalServerErrorResponse(res, error.message);
@@ -238,7 +243,7 @@ export class UserController extends BaseController<IUser> {
 								}
 							} else {
 								try {
-									const getUserObject = await this._repository.getByIdAndRefId(id);
+									const getUserObject = await this._repository.getByIdAndRefId(id, "refId");
 									if (getUserObject.refId && getUserObject.refId.filePath) {
 										// Delete file from disc
 										const filePath = getUserObject.refId.filePath;
@@ -246,8 +251,10 @@ export class UserController extends BaseController<IUser> {
 									}
 
 									const result = await this.updateByFileReference(req, res, id);
+									const jwtToken = await this._helpers.createJwtToken(result);
+
 									if (result!._id) {
-										successResponse(res, result);
+										successResponse(res, result, jwtToken, "You updated an item successfully");
 									} else {
 										badRequestResponse(res, "Could not register user with file", 3, result);
 									}

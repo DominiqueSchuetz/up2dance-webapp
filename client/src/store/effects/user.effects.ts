@@ -19,6 +19,7 @@ import {
 } from "../actions/user.action";
 import { toast } from "react-toastify";
 import { decode } from "jsonwebtoken";
+import { removeString } from "../../lib";
 
 // Get all users
 export const getAllUsers = (): Effect => async (dispatch, getState) => {
@@ -38,6 +39,9 @@ export const updateUserById = (id: string, userFormData: FormData): Effect => as
 		const payload: IResponse<IRegisterUserData> = await updateUserService(id, userFormData);
 		if (!!payload.success) {
 			toast.success(` 😻 ${payload.message}`);
+			localStorage.removeItem("token");
+			localStorage.clear();
+			localStorage.setItem("token", removeString(payload.jwtToken, "Bearer"));
 			dispatch(updateUserByIdRequest(payload));
 		} else {
 			localStorage.removeItem("token");
@@ -83,7 +87,7 @@ export const signInUser = (userData: ISignInUserData): Effect => async (dispatch
 	try {
 		const payload: IResponse<IUser> = await signInUserService(userData);
 		if (!!payload.success) {
-			const jwtToken = Object(payload.data)!.jwt_token;
+			const jwtToken = payload.jwtToken;
 			localStorage.setItem("token", jwtToken);
 			toast.success(` 😻 ${payload.message}`);
 			dispatch(signInRequest(decode(jwtToken)));
@@ -128,6 +132,9 @@ export const isUserAuthenticated = (): Effect => async (dispatch, getState) => {
 	dispatch(loadUsersRequest());
 	try {
 		const payload: IResponse<IUser> = await isUserAuthenticatedService();
+
+		console.log("payload => ", payload);
+
 		if (!!payload.success) {
 			dispatch(isUserAuthenticatedRequest(payload));
 		} else {
