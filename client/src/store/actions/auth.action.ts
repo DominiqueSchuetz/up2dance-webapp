@@ -11,10 +11,11 @@ import {
 	IReduxSignInUserEndedAction,
 	IReduxSignOutUserAction,
 	IReduxSignOutUserSucceededAction,
-	IReduxSignOutUserErrorAction
+	IReduxSignOutUserErrorAction,
+	ApplicationAuthAction
 } from "../types/auth.types";
 import { EReduxActionTypesAuthUser } from "../../enums";
-import { IResponse, IAuthUser } from "../../models";
+import { IResponse, IAuthUser, IUser } from "../../models";
 
 export const doIsUserAuthenticatedStartedAction = (): IReduxIsUserAuthenticatedStarted => ({
 	type: EReduxActionTypesAuthUser.IS_USER_AUTHENTICATED_STARTED
@@ -81,5 +82,23 @@ export const doSignOutUserSucceeded = (): IReduxSignOutUserSucceededAction => ({
 
 export const doSignOutUserError = (payload: IResponse<null, IAuthUser>): IReduxSignOutUserErrorAction => ({
 	type: EReduxActionTypesAuthUser.SIGN_OUT_USER_ERROR,
+	payload
+});
+
+//
+// ───────────────────────────────────────────────────────────── UPDATE AUTH_USER ─────
+//
+export const doUpdateAuthUserSucceeded = (payload: IResponse<IUser, IAuthUser>): ApplicationAuthAction => ({
+	type: EReduxActionTypesAuthUser.UPDATE_AUTH_USER_SUCCEEDED,
+	payload
+});
+
+export const doUpdateAuthUserFailed = (payload: IResponse<IUser, IAuthUser>): ApplicationAuthAction => ({
+	type: EReduxActionTypesAuthUser.UPDATE_AUTH_USER_FAILED,
+	payload
+});
+
+export const doUpdateAuthUserError = (payload: IResponse<IUser, IAuthUser>): ApplicationAuthAction => ({
+	type: EReduxActionTypesAuthUser.UPDATE_AUTH_USER_ERROR,
 	payload
 });

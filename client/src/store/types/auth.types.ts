@@ -1,4 +1,4 @@
-import { IResponse, IAuthUser } from "../../models";
+import { IResponse, IAuthUser, IUser } from "../../models";
 import { EReduxActionTypesAuthUser } from "../../enums";
 import { Action } from "redux";
 
@@ -73,6 +73,23 @@ export interface IReduxSignOutUserErrorAction extends IReduxBaseAction {
 	payload: IResponse<null, IAuthUser>;
 }
 
+//
+// ──────────────────────────────────────────────────────────── UPDATE AUTH_USER ─────
+//
+export interface IReduxUpdateAuthUserSucceededAction extends IReduxBaseAction {
+	type: EReduxActionTypesAuthUser.UPDATE_AUTH_USER_SUCCEEDED;
+	payload: IResponse<IUser, IAuthUser>;
+}
+
+export interface IReduxUpdateAuthUserFailedAction extends IReduxBaseAction {
+	type: EReduxActionTypesAuthUser.UPDATE_AUTH_USER_FAILED;
+	payload: IResponse<IUser, IAuthUser>;
+}
+export interface IReduxUpdateAuthUserErrorAction extends IReduxBaseAction {
+	type: EReduxActionTypesAuthUser.UPDATE_AUTH_USER_ERROR;
+	payload: IResponse<IUser, IAuthUser>;
+}
+
 export type ApplicationAuthAction =
 	| IReduxIsUserAuthenticated
 	| IReduxIsUserAuthenticatedStarted
@@ -87,4 +104,7 @@ export type ApplicationAuthAction =
 	| IReduxSignInUserEndedAction
 	| IReduxSignOutUserAction
 	| IReduxSignOutUserSucceededAction
-	| IReduxSignOutUserErrorAction;
+	| IReduxSignOutUserErrorAction
+	| IReduxUpdateAuthUserSucceededAction
+	| IReduxUpdateAuthUserFailedAction
+	| IReduxUpdateAuthUserErrorAction;

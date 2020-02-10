@@ -26,7 +26,6 @@ export const effetIsUserAuthenticated = (): Effect => async (dispatch, getState)
 		const payload: IResponse<IAuthUser> = await isUserAuthenticatedService();
 		if (payload.success && (payload.authPayload as IAuthUser).isAuthenticated) {
 			dispatch(doIsUserAuthenticatedSucceededAction(payload));
-			// toast.success(`🤩${payload.message}`);
 		} else {
 			dispatch(doIsUserAuthenticatedFailedAction(payload));
 			removeAndClearJwtTokenFromBrowser();

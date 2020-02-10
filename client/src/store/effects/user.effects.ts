@@ -20,9 +20,11 @@ import {
 	doRemoveUserError,
 	doRemoveUserEnded
 } from "../actions/user.actions";
+import { doUpdateAuthUserSucceeded } from "../actions/auth.action";
 import { listUsersService, registerUserService, updateUserService, deleteUserService } from "../../services";
-import { Effect, IUser, IResponse } from "../../models";
+import { Effect, IUser, IResponse, IAuthUser } from "../../models";
 import { toast } from "react-toastify";
+import { removeAndClearJwtTokenFromBrowser, addJwtTokenToApplication } from "../../lib";
 
 //
 // ────────────────────────────────────────────────────────────── LIST Users ─────
@@ -89,9 +91,12 @@ export const effectRegisterUser = (userFormData: FormData): Effect => async (dis
 export const effectUpdateUser = (id: string, userFormData: FormData): Effect => async (dispatch) => {
 	dispatch(doUpdateUserStarted());
 	try {
-		const payload: IResponse<IUser> = await updateUserService(id, userFormData);
+		const payload: IResponse<IUser, IAuthUser> = await updateUserService(id, userFormData);
 		if (payload.success && payload.errorCode === 0) {
+			dispatch(doUpdateAuthUserSucceeded(payload));
 			dispatch(doUpdateUserSucceeded(payload));
+			removeAndClearJwtTokenFromBrowser();
+			addJwtTokenToApplication((payload.authPayload as IAuthUser).jwtToken!);
 			toast.success(`🤩${payload.message}`);
 		} else {
 			dispatch(doUpdateUserFailed(payload));

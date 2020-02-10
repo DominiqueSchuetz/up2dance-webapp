@@ -38,6 +38,13 @@ export const authReducer = produce((draft: ApplicationState<IAuthUser>, action: 
 			draft.payload.errorMessage = null;
 			draft.payload.authPayload = null;
 			break;
+		case EReduxActionTypesAuthUser.UPDATE_AUTH_USER_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			draft.payload.authPayload = action.payload.authPayload;
+			break;
 		default:
 	}
 }, INITIAL_STATE<IAuthUser>());
