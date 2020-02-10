@@ -6,18 +6,18 @@ import { Register } from "../../Register";
 import { IUser } from "../../../models";
 import { UserDeleteDialog } from "../";
 
-interface IStateProps {
-	user: IUser;
-	isAuthenticated: boolean;
-}
+type IStateProps = {
+	readonly user: IUser;
+	readonly isAuthenticated: boolean;
+};
 
-interface IDispatchProps {
-	onUpdateUserById?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
-	onDeleteUserById(id: string): Promise<ApplicationUserAction>;
-}
+type IDispatchProps = {
+	onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
+	onDeleteUser(id: string): Promise<ApplicationUserAction>;
+};
 
 const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { user, isAuthenticated, onDeleteUserById, onUpdateUserById } = props;
+	const { user, isAuthenticated, onDeleteUser, onUpdateUser } = props;
 	const { refId } = user;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -45,14 +45,14 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 		<UserDeleteDialog
 			user={user}
 			handleCancelUser={handleSpecialEvent}
-			onDeleteUserById={onDeleteUserById}
+			onDeleteUser={onDeleteUser}
 			headerText="User Löschen"
 		/>
 	) : (
 		<Register
 			user={user}
 			handleCancelUser={handleSpecialEvent}
-			onUpdateUserById={onUpdateUserById}
+			onUpdateUser={onUpdateUser}
 			headerText="User Editieren"
 		/>
 	);

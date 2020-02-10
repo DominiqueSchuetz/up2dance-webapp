@@ -1,61 +1,27 @@
-import { EBandMemberInstrument, EBandMemberInstrumentSymbol } from "../../enums";
-import { ApplicationUserAction } from "../../store/types/user.types";
-import { IReduxLogOutUserAction } from "../../store/types/user.types";
-import { Menu, Button, Image, Dropdown } from "semantic-ui-react";
 import React, { Fragment, useEffect, useState } from "react";
-import { IUser, IReduxState } from "../../models";
 import { NavLink } from "react-router-dom";
+import PropTypes, { InferType } from "prop-types";
+import { IUser } from "../../models";
+import { Menu, Button, Image, Dropdown } from "semantic-ui-react";
+import { IReduxSignOutUserAction, IReduxIsUserAuthenticated } from "../../store/types/auth.types";
 
-interface IStateProps {
-	userPayload: IReduxState<IUser>;
-}
+type IStateProps = {
+	readonly user: IUser;
+	readonly isAuthenticated: boolean | undefined;
+};
 
-interface IDispatchProps {
-	onIsUserAuthenticated(): Promise<ApplicationUserAction>;
-	onLogOutUser(): IReduxLogOutUserAction;
-}
+type IDispatchProps = {
+	onSignOut(): IReduxSignOutUserAction;
+	onIsUserAuthenticated(): any;
+};
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { onIsUserAuthenticated, onLogOutUser, userPayload } = props;
-	const { firstName, instrument, refId } = userPayload.item;
-	const successCode = props.userPayload.success;
+	const { isAuthenticated, user, onSignOut, onIsUserAuthenticated } = props;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
-	useEffect(
-		() => {
-			onIsUserAuthenticated();
-
-			if (instrument) {
-				switch (instrument) {
-					case EBandMemberInstrument.VOCAL:
-						setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL);
-						break;
-					case EBandMemberInstrument.VOCAL_AND_GUITAR:
-						setInstrumentSymbol(EBandMemberInstrumentSymbol.VOCAL_AND_GUITAR);
-						break;
-					case EBandMemberInstrument.GUITAR_LEAD:
-						setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_LEAD);
-						break;
-					case EBandMemberInstrument.GUITAR_SOLO:
-						setInstrumentSymbol(EBandMemberInstrumentSymbol.GUITAR_SOLO);
-						break;
-					case EBandMemberInstrument.BASS_GUITAR:
-						setInstrumentSymbol(EBandMemberInstrumentSymbol.BASS_GUITAR);
-						break;
-					case EBandMemberInstrument.DRUMS:
-						setInstrumentSymbol(EBandMemberInstrumentSymbol.DRUMS);
-						break;
-				}
-			}
-		},
-		[ onIsUserAuthenticated ]
-	);
-
-	const handleLogout = () => {
-		localStorage.removeItem("token");
-		localStorage.clear();
-		onLogOutUser();
-	};
+	useEffect(() => {
+		onIsUserAuthenticated();
+	}, []);
 
 	return (
 		<Fragment>
@@ -69,17 +35,21 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<Menu.Item as={NavLink} to="#" name="contact" />
 						<Menu.Menu position="right">
 							<Menu.Item>
-								{successCode && (
+								{isAuthenticated &&
+								user.refId && (
 									<Image
 										style={{ marginRight: 20 }}
 										size="mini"
 										circular
-										src={refId ? "http://localhost:8080/api/media/" + refId : ""}
+										src={"http://localhost:8080/api/media/" + user.refId}
 									/>
 								)}
-								<span>
-									{firstName ? `Hey, ${firstName.toLocaleUpperCase()} ` + ` ${instrumentSymbol}` : ""}
-								</span>
+								{isAuthenticated &&
+								user.firstName && (
+									<span>
+										{user.firstName ? `Hey, ${user.firstName} ` + ` ${instrumentSymbol}` : ""}
+									</span>
+								)}
 							</Menu.Item>
 							<Menu.Item>
 								<Button as={NavLink} to="/login" primary>
@@ -91,7 +61,7 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 									<Dropdown.Item as={NavLink} to="/register">
 										Registrieren
 									</Dropdown.Item>
-									<Dropdown.Item as={NavLink} to="/" onClick={handleLogout}>
+									<Dropdown.Item as={NavLink} to="/" onClick={() => onSignOut()}>
 										Abmelden
 									</Dropdown.Item>
 								</Dropdown.Menu>
@@ -102,6 +72,14 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 			</header>
 		</Fragment>
 	);
+};
+
+Header.propTypes = {
+	isAuthenticated: PropTypes.bool
+};
+
+Header.defaultProps = {
+	isAuthenticated: false
 };
 
 export default Header;

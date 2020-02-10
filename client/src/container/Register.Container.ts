@@ -1,18 +1,11 @@
-import { deleteMediaById } from "../store/effects/media.effects";
-import { registerUser } from "../store/effects/user.effects";
-import { ApplicationReducerState } from "../store/reducers";
+import { effectRemoveMedia } from "../store/effects/media.effects";
+import { effectRegisterUser } from "../store/effects/user.effects";
 import { Register } from "../components/Register";
 import { connect } from "react-redux";
 
-const mapStateToProps = (state: ApplicationReducerState) => ({
-	isLoaded: state.userReducer.loading.isPayloadLoading,
-	userPayload: state.userReducer.payload.item
-	// registerPayload: state.registerReducer.payload,
-});
-
 export const mapDispatchToProps = {
-	onRegisterUser: registerUser,
-	onDeleteMediaById: deleteMediaById
+	onRegisterUser: effectRegisterUser,
+	onDeleteMediaById: effectRemoveMedia
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(null, mapDispatchToProps)(Register);

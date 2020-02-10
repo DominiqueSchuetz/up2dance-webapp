@@ -1,36 +1,32 @@
-import {
-	IReduxGetAllMediaAction,
-	IReduxCreateMediaAction,
-	IReduxDeleteMediaAction
-} from "../../store/types/media.types";
+import { IReduxListMediaAction, IReduxAddMediaAction, IReduxRemoveMediaAction } from "../../store/types/media.types";
 import { Grid, Image, Container, Header, Dimmer, Loader, Segment, Button, Icon, Modal } from "semantic-ui-react";
 import React, { useEffect, Fragment, useRef, useState, useCallback, useMemo } from "react";
 import { ModalDialog } from "../ModalDialog";
 import { IMedia } from "../../models";
 import { isArray } from "lodash";
 
-interface IStateProps {
-	allMedia: IMedia[];
-	hasLoaded: boolean;
-	isAuthenticated: boolean;
-}
+type IStateProps = {
+	readonly isAuthenticated: boolean;
+	readonly media: IMedia[];
+	readonly isMediaLoading: boolean;
+};
 
-interface IDispatchProps {
-	onGetAllMedia(): Promise<IReduxGetAllMediaAction>;
-	onCreateMedia(mediaFormData: FormData): Promise<IReduxCreateMediaAction>;
-	onDeleteMediaById(id: string): Promise<IReduxDeleteMediaAction>;
-}
+type IDispatchProps = {
+	onListMedia(): Promise<IReduxListMediaAction>;
+	onAddMedia(mediaFormData: FormData): Promise<IReduxAddMediaAction>;
+	onRemoveMedia(id: string): Promise<IReduxRemoveMediaAction>;
+};
 
 let FILE_ID: string | undefined = undefined;
 let NAME: string | undefined = undefined;
 
 const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { allMedia, onGetAllMedia, onCreateMedia, onDeleteMediaById, hasLoaded, isAuthenticated } = props;
+	const { media, isAuthenticated, onListMedia, onAddMedia, onRemoveMedia, isMediaLoading } = props;
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 	const inputRef: any = useRef();
 
 	useEffect(() => {
-		onGetAllMedia();
+		onListMedia();
 	}, []);
 
 	const handleUploadAction = async (event: any) => {
@@ -43,7 +39,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 		mediaFormData.append("fileName", fileNameWithoutType!);
 		mediaFormData.append("isUserPicture", JSON.stringify(false));
 
-		onCreateMedia(mediaFormData);
+		onAddMedia(mediaFormData);
 	};
 
 	const addNewImageButton = isAuthenticated && (
@@ -92,7 +88,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 					icon="checkmark"
 					content="Löschen"
 					onClick={() => {
-						onDeleteMediaById(FILE_ID!);
+						onRemoveMedia(FILE_ID!);
 						setModalStaus({ modalOpen: false });
 					}}
 				/>
@@ -101,10 +97,8 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 	);
 
 	const renderAllPictures = (allMedia: IMedia[]) => {
-		if (!hasLoaded) {
+		if (!isMediaLoading) {
 			if (isArray(allMedia)) {
-				console.log("rerender gallery");
-
 				const filterByUserPicture = allMedia.filter((e) => !e.isUserPicture);
 				if (filterByUserPicture.length > 0) {
 					// const randomizedArray = filterByUserPicture.sort(() => Math.random() - 0.5);
@@ -158,7 +152,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 			</Container>
 			<Container textAlign="center">
 				<Grid doubling columns="three" textAlign="center">
-					{renderAllPictures(allMedia)}
+					{renderAllPictures(media)}
 				</Grid>
 			</Container>
 		</section>

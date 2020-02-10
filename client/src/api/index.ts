@@ -13,5 +13,6 @@ export const POST_USER_SIGN_IN_API = HOST_AND_PORT + "/api/user/signin";
 export const GET_ALL_MEDIA_API = HOST_AND_PORT + "/api/media/all";
 export const GET_MEDIA_BY_ID_API = HOST_AND_PORT + "/api/media/";
 export const CREATE_MEDIA_API = HOST_AND_PORT + "/api/media/create";
+export const UPDATE_MEDIA_API = HOST_AND_PORT + "/api/media/";
 export const DELETE_MEDIA_API = HOST_AND_PORT + "/api/media/";
 export const CREATE_CUSTOMER_API = HOST_AND_PORT + "/api/customer/create";

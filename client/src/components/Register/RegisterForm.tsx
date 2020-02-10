@@ -14,7 +14,7 @@ interface IStateProps {
 
 interface IDispatchProps {
 	onRegisterUser?(userFormData: FormData): Promise<ApplicationUserAction>;
-	onUpdateUserById?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
+	onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
 }
 
 const instrumentOption = [
@@ -49,7 +49,7 @@ const instrumentOption = [
 ];
 
 const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { user, onRegisterUser, onUpdateUserById } = props;
+	const { user, onRegisterUser, onUpdateUser } = props;
 
 	const [ firstName, setFirstName ] = useState<string>("");
 	const [ lastName, setLastName ] = useState<string>("");
@@ -128,7 +128,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		userFormData.append("comment", comment);
 
 		if (isUpdatedComponent) {
-			onUpdateUserById!(user!._id!, userFormData);
+			onUpdateUser!(user!._id!, userFormData);
 		} else {
 			onRegisterUser!(userFormData);
 		}

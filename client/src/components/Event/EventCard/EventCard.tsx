@@ -1,4 +1,4 @@
-import { ApplicationEventsAction } from "../../../store/types/event.types";
+import { ApplicationEventAction } from "../../../store/types/event.types";
 import { Card, Image, List, Label, Button, Icon, Grid, GridColumn, Accordion } from "semantic-ui-react";
 import { IEvent, IAddress } from "../../../models";
 import React, { Fragment, useState } from "react";
@@ -7,20 +7,18 @@ import { EventDeleteDialog } from "../";
 import { EventCardForm } from "../";
 import { EKindOfEventAction } from "../../../enums";
 
-interface IStateProps {
-	event: IEvent;
-	isAuthenticated: boolean;
-}
+type IStateProps = {
+	readonly event: IEvent;
+	readonly isAuthenticated: boolean;
+};
 
-interface IDispatchProps {
-	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
-	onGetEventById?(id: string): Promise<ApplicationEventsAction>;
-	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
-	onDeleteEventById?(id: string): Promise<ApplicationEventsAction>;
-}
+type IDispatchProps = {
+	updateEvent?(id: string, event: IEvent): Promise<ApplicationEventAction>;
+	onRemoveEvent?(id: string): Promise<ApplicationEventAction>;
+};
 
 const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { event, isAuthenticated, updateEventById, onDeleteEventById } = props;
+	const { event, isAuthenticated, updateEvent, onRemoveEvent } = props;
 	const address: IAddress | undefined = event.address;
 
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
@@ -46,7 +44,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const renderModalComponent: JSX.Element = deleteDialog ? (
 		<EventDeleteDialog
-			onDeleteEventById={onDeleteEventById}
+			onRemoveEvent={onRemoveEvent}
 			event={event}
 			handleCancelEvent={handleSpecialEvent}
 			headerText="Event Löschen"
@@ -54,7 +52,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 	) : (
 		<EventCardForm
 			showToggleHidden={true}
-			updateEventById={updateEventById}
+			updateEvent={updateEvent}
 			event={event}
 			handleCancelEvent={handleSpecialEvent}
 			kindOfAction={{ kind: EKindOfEventAction.UPDATE_EVENT }}

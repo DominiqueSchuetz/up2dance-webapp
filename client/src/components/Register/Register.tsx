@@ -12,12 +12,12 @@ interface IStateProps {
 
 interface IDispatchProps {
 	onRegisterUser?(userFormData: FormData): Promise<ApplicationUserAction>;
-	onUpdateUserById?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
+	onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
 	handleCancelUser(): any;
 }
 
 const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { user, headerText, onRegisterUser, onUpdateUserById } = props;
+	const { user, headerText, onRegisterUser, onUpdateUser } = props;
 	const [ updateForm, setUpdateForm ] = useState<boolean>(false);
 
 	useEffect(
@@ -50,7 +50,7 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
 			<Modal.Header>{headerText}</Modal.Header>
 			<Modal.Content>
 				<Modal.Description>
-					<RegisterForm user={user} onUpdateUserById={onUpdateUserById} />
+					<RegisterForm user={user} onUpdateUser={onUpdateUser} />
 				</Modal.Description>
 			</Modal.Content>
 		</Fragment>

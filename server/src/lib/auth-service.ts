@@ -1,6 +1,9 @@
+import { Next, Response } from "restify";
 import { verify, VerifyErrors } from "jsonwebtoken";
+import { IAuthUser } from "../models/interfaces/IAuth";
+import { unauthorizedResponse, internalServerErrorResponse, failedServerRespnose } from "../responses/Responses";
 
-export const checkAuth = (req, res, next) => {
+export const checkAuth = (req: any, res: Response, next: Next) => {
 	try {
 		// let splitedToken: string = req.headers.authorization.split(" ")[1];
 		let token = req.headers["x-access-token"] || req.headers["authorization"];
@@ -15,19 +18,27 @@ export const checkAuth = (req, res, next) => {
 					req.decoded = decoded;
 					next();
 				} else {
-					return res.send(401, {
-						success: false,
-						message: "Token is not valid"
-					});
+					unauthorizedResponse<IAuthUser>(
+						res,
+						{
+							isAuthenticated: false,
+							jwtToken: null,
+							authUser: null
+						},
+						null,
+						"⛔️️ ️Der JWT-Token ist nicht valide ⛔️"
+					);
 				}
 			});
 		} else {
-			return res.send(401, {
-				success: false,
-				message: "Token is not supplied"
-			});
+			failedServerRespnose<IAuthUser>(
+				res,
+				null,
+				null,
+				"Es trat ein Fehler beim der validierung des JWT-Tokens auf"
+			);
 		}
 	} catch (error) {
-		res.send(401, { message: "Auth failed" });
+		internalServerErrorResponse(res, null, null, "⛔️️ ️Du benutzt keine Authentifizierung ⛔️", error.message);
 	}
 };

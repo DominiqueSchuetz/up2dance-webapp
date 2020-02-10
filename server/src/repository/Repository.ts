@@ -65,7 +65,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
-	public async getByIdAndRefId(
+	public async getByIdAndRefId<T>(
 		id: Types.ObjectId,
 		populateBy: string = "refId",
 		callback?: (error: any, result: T) => void
@@ -176,7 +176,7 @@ export class Repository<T extends Document> implements IWrite<T>, IRead<T> {
      * @param id 
      * @param callback 
      */
-	public async delete(id: Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
+	public async delete<T>(id: Types.ObjectId, callback?: (error: any, result: T) => void): Promise<T> {
 		try {
 			const deletedItem = await this._model.findByIdAndDelete({ _id: id }).exec();
 			if (deletedItem) {

@@ -1,25 +1,20 @@
-import { getAllEvents, createEvent, updateEventById, deleteEventById } from "../store/effects/event.effects";
-import { isUserAuthenticated } from "../store/effects/user.effects";
-import { ApplicationReducerState } from "../store/reducers";
-import { AnyAction, bindActionCreators } from "redux";
+import { effectListEvents, effectAddEvent, effectUpdateEvent, effectRemoveEvent } from "../store/effects/event.effects";
+import { createStructuredSelector } from "reselect";
+import { selectEvents, selectEventsPayloadIsLoading, selectIsUserAuthenticated } from "../store/selectors";
 import { EventCardList } from "../components/Event";
 import { connect } from "react-redux";
-import { Dispatch } from "react";
 
-const mapStateToProps = (state: ApplicationReducerState) => ({
-	events: state.eventReducer.payload.items,
-	event: state.eventReducer.payload.item,
-	isAuthenticated: state.registerReducer.payload.success,
-	userPayload: state.userReducer.payload,
-	isLoaded: state.eventReducer.loading.isPayloadLoading
+const mapStateToProps = createStructuredSelector({
+	isAuthenticated: selectIsUserAuthenticated,
+	isLoading: selectEventsPayloadIsLoading,
+	events: selectEvents
 });
 
 export const mapDispatchToProps = {
-	onIsUserAuthenticated: isUserAuthenticated,
-	onGetAllEvents: getAllEvents,
-	onUpdateEventById: updateEventById,
-	onDeleteEventById: deleteEventById,
-	onCreateEvent: createEvent
+	onListEvents: effectListEvents,
+	onAddEvent: effectAddEvent,
+	onUpdateEvent: effectUpdateEvent,
+	onRemoveEvent: effectRemoveEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventCardList);

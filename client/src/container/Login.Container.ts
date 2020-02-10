@@ -1,15 +1,15 @@
-import { signInUser } from "../store/effects/user.effects";
-import { ApplicationReducerState } from "../store/reducers";
+import { effectSignIn } from "../store/effects/auth.effects";
 import { Login } from "../components/Login";
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectUserPayload } from "../store/selectors";
 
-const mapStateToProps = (state: ApplicationReducerState) => ({
-	userPayload: state.userReducer.payload,
-	isLoaded: state.userReducer
+const mapStateToProps = createStructuredSelector({
+	userPayload: selectUserPayload
 });
 
 export const mapDispatchToProps = {
-	onSignInUser: signInUser
+	onSignin: effectSignIn
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

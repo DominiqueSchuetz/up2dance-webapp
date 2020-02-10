@@ -3,21 +3,21 @@ import { Button, Header, Icon, Modal } from "semantic-ui-react";
 import React, { Fragment } from "react";
 import { IUser } from "../../../models";
 
-interface IStateProps {
-	headerText?: string;
-	handleCancelUser?: any;
-	user: IUser;
-}
+type IStateProps = {
+	readonly headerText?: string;
+	readonly handleCancelUser?: any;
+	readonly user: IUser;
+};
 
-interface IDispatchProps {
-	onDeleteUserById(id: string): Promise<ApplicationUserAction>;
-}
+type IDispatchProps = {
+	onDeleteUser(id: string): Promise<ApplicationUserAction>;
+};
 
 const UserDeleteDialog: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { user, handleCancelUser, headerText, onDeleteUserById } = props;
+	const { user, handleCancelUser, headerText, onDeleteUser } = props;
 
 	const handleDeleteUser = () => {
-		onDeleteUserById!(user!._id!);
+		onDeleteUser!(user!._id!);
 		handleCancelUser();
 	};
 

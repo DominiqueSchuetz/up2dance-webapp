@@ -1,4 +1,4 @@
-import { ApplicationEventsAction, IReduxGetEventsAction } from "../../../store/types/event.types";
+import { ApplicationEventAction, IReduxListEventsAction } from "../../../store/types/event.types";
 import { Segment, Card, Button, Dimmer, Loader, Header, Container, Grid, GridColumn } from "semantic-ui-react";
 import { IEvent, IReduxState, IUser } from "../../../models";
 import React, { useEffect, Fragment, useState } from "react";
@@ -9,38 +9,28 @@ import { EKindOfEventAction } from "../../../enums";
 import { filterByActualYear, parseToDateFormat, sortedArray } from "../../../lib";
 import moment from "moment";
 
-interface IStateProps {
-	events: IEvent[];
-	userPayload: IReduxState<IUser>;
-	isAuthenticated: boolean;
-	isLoaded: boolean;
-}
+type IStateProps = {
+	readonly isAuthenticated: boolean;
+	readonly isLoading: boolean;
+	readonly events: IEvent[];
+};
 
-interface IDispatchProps {
-	onIsUserAuthenticated(): Promise<boolean>;
-	onGetAllEvents(): Promise<IReduxGetEventsAction>;
-	onCreateEvent(event: IEvent): Promise<ApplicationEventsAction>;
-	onUpdateEventById(id: string, event: IEvent): Promise<ApplicationEventsAction>;
-	onDeleteEventById(id: string): Promise<ApplicationEventsAction>;
-}
+type IDispatchProps = {
+	onListEvents(): Promise<ApplicationEventAction>;
+	onAddEvent(event: IEvent): Promise<ApplicationEventAction>;
+	onUpdateEvent(id: string, event: IEvent): Promise<ApplicationEventAction>;
+	onRemoveEvent(id: string): Promise<ApplicationEventAction>;
+};
 
 const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const {
-		events,
-		isLoaded,
-		onGetAllEvents,
-		onCreateEvent,
-		onUpdateEventById,
-		onDeleteEventById,
-		isAuthenticated
-	} = props;
+	const { events, isLoading, isAuthenticated, onListEvents, onAddEvent, onUpdateEvent, onRemoveEvent } = props;
 	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(
 		() => {
-			onGetAllEvents();
+			onListEvents();
 		},
-		[ onGetAllEvents ]
+		[ onListEvents ]
 	);
 
 	const openModalDialogEditForm = (): void => {
@@ -71,7 +61,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	);
 
 	const renderEventCards = (events: IEvent[]) => {
-		if (!isLoaded) {
+		if (!isLoading) {
 			if (isArray(events) && events.length > 0) {
 				// Sort by Date
 				const sortedArray = events.slice().sort(function(a, b) {
@@ -89,8 +79,8 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 					<Fragment key={mapEvent._id}>
 						<Grid.Column stretched textAlign="center">
 							<EventCard
-								onDeleteEventById={onDeleteEventById}
-								updateEventById={onUpdateEventById}
+								onRemoveEvent={onRemoveEvent}
+								updateEvent={onUpdateEvent}
 								isAuthenticated={isAuthenticated}
 								event={mapEvent}
 								children={modalStatus}
@@ -130,9 +120,9 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 			</Container>
 			<ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
 				<EventCardForm
-					showToggleHidden={true}
+					showToggleHidden
 					headerText="Neues Event"
-					onCreateEvent={onCreateEvent}
+					onAddEvent={onAddEvent}
 					kindOfAction={{ kind: EKindOfEventAction.NEW_EVENT }}
 					handleCancelEvent={handleCancelEvent}
 				/>

@@ -1,72 +1,124 @@
 import { ApplicationMediaAction } from "../types/media.types";
-import { ApplicationState, IMedia } from "../../models";
+import { ApplicationState, INITIAL_STATE, IMedia } from "../../models";
 import { EReduxActionTypesMedia } from "../../enums";
 import produce from "immer";
 
-export const initialStateMedia: ApplicationState<IMedia> = {
-	loading: { isPayloadLoading: false },
-	payload: {
-		success: false,
-		message: "",
-		error_code: 0,
-		item: { _id: "", fileName: "", filePath: "", fileUrl: "", isUserPicture: false },
-		items: []
-	}
-};
-
-export const mediaReducer = (state: ApplicationState<IMedia> = initialStateMedia, action: ApplicationMediaAction) => {
+export const mediaReducer = produce((draft: ApplicationState<IMedia>, action: ApplicationMediaAction) => {
 	switch (action.type) {
-		case EReduxActionTypesMedia.LOAD_MEDIA:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = true;
-			});
-		case EReduxActionTypesMedia.GET_ALL_MEDIA:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.message = action.payload.message;
-				draft.payload.success = action.payload.success;
-				draft.payload.items = action.payload.data;
-			});
-		case EReduxActionTypesMedia.GET_MEDIA_BY_ID:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.message = action.payload.message;
-				draft.payload.success = action.payload.success;
-				draft.payload.item = initialStateMedia.payload.item;
-			});
-		// TODO UPDATE THE STATE
-		case EReduxActionTypesMedia.CREATE_MEDIA:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.message = action.payload.message;
-				draft.payload.success = action.payload.success;
-				draft.payload.item = initialStateMedia.payload.item;
-				draft.payload.items.push(action.payload.data);
-			});
-		case EReduxActionTypesMedia.DELETE_MEDIA:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.message = action.payload.message;
-				draft.payload.success = action.payload.success;
-				draft.payload.item = initialStateMedia.payload.item;
-				const filteredArray: IMedia[] = draft.payload.items.filter(
-					(item) => item._id !== action.payload.data._id
-				);
-				draft.payload.items = filteredArray;
-			});
-		case EReduxActionTypesMedia.ERROR_MEDIA:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.message = action.payload.message;
-				draft.payload.success = action.payload.success;
-				draft.payload.item = initialStateMedia.payload.item;
-			});
+		//
+		// ─────────────────────────────────────────────── LIST Media ─────
+		//
+		case EReduxActionTypesMedia.LIST_MEDIA_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesMedia.LIST_MEDIA_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesMedia.LIST_MEDIA_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesMedia.LIST_MEDIA_ENDED:
+			draft.isLoading = false;
+			break;
+		//
+		// ───────────────────────────────────────────────── ADD Media ─────
+		//
+		case EReduxActionTypesMedia.ADD_MEDIA_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesMedia.ADD_MEDIA_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = action.payload.item;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesMedia.ADD_MEDIA_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = null;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesMedia.ADD_MEDIA_ENDED:
+			draft.isLoading = false;
+			break;
+		//
+		// ────────────────────────────────────────────── UPDATE Media ─────
+		//
+		case EReduxActionTypesMedia.UPDATE_MEDIA_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesMedia.UPDATE_MEDIA_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = action.payload.item;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesMedia.UPDATE_MEDIA_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = null;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesMedia.UPDATE_MEDIA_FAILED:
+			draft.isLoading = false;
+			break;
+		//
+		// ────────────────────────────────────────────── REMOVE Media ─────
+		//
+		case EReduxActionTypesMedia.REMOVE_MEDIA_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesMedia.REMOVE_MEDIA_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = action.payload.item;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesMedia.REMOVE_MEDIA_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = null;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesMedia.REMOVE_MEDIA_ENDED:
+			draft.isLoading = false;
+			break;
 		default:
-			return state;
 	}
-};
+}, INITIAL_STATE<IMedia>());

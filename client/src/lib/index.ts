@@ -30,3 +30,13 @@ export const sortedArray = <T>(arrayOfDates: T[], key: string) => {
 export const removeString = (originalString: string, stringToRemove: string): string => {
 	return originalString.replace(new RegExp(stringToRemove, "g"), "").trim();
 };
+
+export const removeAndClearJwtTokenFromBrowser = (): void => {
+	localStorage.removeItem("token");
+	localStorage.clear();
+};
+
+export const addJwtTokenToApplication = (jwtToken: string): void => {
+	localStorage.clear();
+	localStorage.setItem("token", jwtToken);
+};

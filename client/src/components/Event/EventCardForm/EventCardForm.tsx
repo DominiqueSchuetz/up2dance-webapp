@@ -1,4 +1,4 @@
-import { ApplicationEventsAction } from "../../../store/types/event.types";
+import { ApplicationEventAction } from "../../../store/types/event.types";
 import { DateInput, TimeInput } from "semantic-ui-calendar-react";
 import React, { Fragment, useState, useEffect } from "react";
 import { EKindOfEventAction } from "../../../enums";
@@ -21,19 +21,19 @@ import {
 	InputOnChangeData
 } from "semantic-ui-react";
 
-interface IStateProps {
-	headerText?: string;
-	handleCancelEvent?: any;
-	event?: IEvent;
-	kindOfAction: IEventType;
-	getEventObjectFromForm?: any;
-	showToggleHidden?: boolean;
-}
-interface IDispatchProps {
-	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
-	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
+type IStateProps = {
+	readonly headerText?: string;
+	readonly handleCancelEvent?: any;
+	readonly event?: IEvent;
+	readonly kindOfAction: IEventType;
+	readonly getEventObjectFromForm?: any;
+	readonly showToggleHidden?: boolean;
+};
+type IDispatchProps = {
+	onAddEvent?(event: IEvent): Promise<ApplicationEventAction>;
+	updateEvent?(id: string, event: IEvent): Promise<ApplicationEventAction>;
 	// onCreateCustomerEvent?(event: IEvent): Promise<ApplicationEventsAction>;
-}
+};
 
 const eventTypeObject: any = [
 	{
@@ -71,8 +71,8 @@ const DURATION = 200;
 const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const {
 		handleCancelEvent,
-		onCreateEvent,
-		updateEventById,
+		onAddEvent,
+		updateEvent,
 		headerText,
 		event,
 		kindOfAction,
@@ -158,10 +158,10 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 		switch (kindOfAction.kind) {
 			case EKindOfEventAction.NEW_EVENT:
-				onCreateEvent!(newEvent);
+				onAddEvent!(newEvent);
 				break;
 			case EKindOfEventAction.UPDATE_EVENT:
-				updateEventById!(event!._id!, newEvent);
+				updateEvent!(event!._id!, newEvent);
 				break;
 			case EKindOfEventAction.CUSTOMER_EVENT:
 				getEventObjectFromForm(newEvent);

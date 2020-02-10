@@ -2,14 +2,12 @@ import { combineReducers } from "redux";
 import { eventReducer } from "./event.reducer";
 import { userReducer } from "./user.reducer";
 import { mediaReducer } from "./media.reducer";
-import { registerReducer } from "./register.reducer";
-import { customerReducer } from "./customer.reducer";
+import { authReducer } from "./auth.reducer";
 
 export const rootReducer = combineReducers({
+	authReducer,
 	userReducer,
 	eventReducer,
-	registerReducer,
-	mediaReducer,
-	customerReducer
+	mediaReducer
 });
 export type ApplicationReducerState = ReturnType<typeof rootReducer>;

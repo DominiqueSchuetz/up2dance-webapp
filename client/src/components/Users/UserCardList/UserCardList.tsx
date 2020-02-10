@@ -1,39 +1,31 @@
 import { Segment, Card, Dimmer, Loader, Header, Container } from "semantic-ui-react";
 import { ApplicationUserAction } from "../../../store/types/user.types";
-import { IReduxGetUsersAction } from "../../../store/types/user.types";
+import { IReduxListUsersAction } from "../../../store/types/user.types";
 import { IReduxState, IUser } from "../../../models";
 import React, { useEffect, Fragment } from "react";
 import { isArray } from "lodash";
 import { UserCard } from "..";
 
-interface IStateProps {
-	isUserPayloadLoading: boolean;
-	isAuthenticated: boolean;
-	userPayload: IReduxState<IUser>;
-}
+type IStateProps = {
+	readonly isUserPayloadLoading: boolean;
+	readonly isAuthenticated: boolean;
+	readonly users: IUser[];
+};
 
-interface IDispatchProps {
-	onGetAllUsers(): Promise<IReduxGetUsersAction>;
-	onUpdateUserById?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
-	onDeleteUserById(id: string): Promise<ApplicationUserAction>;
-}
+type IDispatchProps = {
+	onListUsers(): Promise<IReduxListUsersAction>;
+	onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
+	onDeleteUser(id: string): Promise<ApplicationUserAction>;
+};
 
 const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const {
-		isUserPayloadLoading,
-		isAuthenticated,
-		userPayload,
-		onGetAllUsers,
-		onUpdateUserById,
-		onDeleteUserById
-	} = props;
-	const users: IUser[] = userPayload.items;
+	const { isUserPayloadLoading, isAuthenticated, users, onListUsers, onUpdateUser, onDeleteUser } = props;
 
 	useEffect(
 		() => {
-			onGetAllUsers();
+			onListUsers();
 		},
-		[ onGetAllUsers ]
+		[ onListUsers ]
 	);
 
 	const renderUserCards = (users: IUser[]) => {
@@ -44,8 +36,8 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<UserCard
 							isAuthenticated={isAuthenticated}
 							user={mapUser}
-							onUpdateUserById={onUpdateUserById}
-							onDeleteUserById={onDeleteUserById}
+							onUpdateUser={onUpdateUser}
+							onDeleteUser={onDeleteUser}
 						/>
 					</div>
 				));

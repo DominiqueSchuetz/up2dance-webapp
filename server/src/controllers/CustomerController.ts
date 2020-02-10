@@ -6,40 +6,9 @@ import * as EventSchema from "../models/Event";
 import { badRequestResponse, internalServerErrorResponse, successResponse } from "../Responses/Responses";
 
 export class CustomerController extends BaseController<ICustomer> {
-	/**
-     * 
-     * @param req 
-     * @param res 
-     */
-	protected async list(req: Request, res: Response): Promise<void> {
-		try {
-			const result = await this._helpers.verfiyJwtToken(req.headers.authorization);
-			if (result) {
-				try {
-					const allItems = await this._repository.list();
-					if (allItems) {
-						let mapToNames = allItems.map((customer) => ({
-							firstName: customer.firstName,
-							lastName: customer.lastName,
-							email: customer.email
-						}));
-						mapToNames.length > 0
-							? successResponse(res, { Info: mapToNames })
-							: badRequestResponse(res, "No Users in database");
-					} else {
-						badRequestResponse(res, "Could not list items");
-					}
-				} catch (error) {
-					internalServerErrorResponse(res, error.message);
-				}
-			} else {
-				badRequestResponse(res, "Could not authorize by given jwt token");
-			}
-		} catch (error) {
-			internalServerErrorResponse(res, error.message);
-		}
-	}
-
+	//
+	//? ───────────────────────────────────────────────────────────── ADD CUSTOMER ─────
+	//
 	/**
      * 
      * @param req 

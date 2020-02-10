@@ -2,84 +2,119 @@ import { readFile, unlinkSync } from "fs";
 import { BaseController } from "./BaseController";
 import { Request, Response, Next } from "restify";
 import { IMedia } from "../models/interfaces/IMedia";
-import { badRequestResponse, internalServerErrorResponse, successResponse } from "../responses/Responses";
+import {
+	badRequestResponse,
+	internalServerErrorResponse,
+	successResponse,
+	failedServerRespnose
+} from "../responses/Responses";
+import { isEmpty } from "lodash/fp";
 
 export class MediaController extends BaseController<IMedia> {
+	//
+	// ──────────────────────────────────────────────────────────────── ADD MEDIA ─────
+	//
 	/**
-     * 
-     * @param req 
-     * @param res 
-     * @param next 
-     */
-	public async create(req: Request, res: Response, next?: Next): Promise<void> {
+	 * 
+	 * @param req 
+	 * @param res 
+	 */
+	public async create(req: Request, res: Response): Promise<void> {
 		try {
 			if (!req.files) {
-				badRequestResponse(res, "This is not a file, right?");
+				failedServerRespnose<IMedia>(res, null, null, "Es trat ein Fehler beim laden aller Bilder auf");
 			} else {
-				const result = await this._helpers.uploadFileToFolder(req);
+				const result: IMedia = await this._helpers.uploadFileToFolder(req);
+
 				if (result) {
-					if (Object(result).filePath) {
-						req.body.filePath = Object(result).filePath;
+					if (result.filePath) {
+						req.body.filePath = result.filePath;
 					} else {
-						req.body.fileUrl = Object(result).fileUrl;
+						req.body.fileUrl = result.fileUrl;
 					}
-					req.body.fileName = Object(result).fileName;
+					req.body.fileName = result.fileName;
+
 					try {
 						const result: IMedia = await this._repository.create(req.body);
-						if (result && result._id) {
-							successResponse(res, result);
-						} else {
-							badRequestResponse(res, "Cannot create item");
-						}
+						const results: IMedia[] = await this._repository.list();
+
+						isEmpty(result)
+							? successResponse<IMedia>(
+									res,
+									result,
+									results,
+									`Hey ${result.fileName}, wurde erfolgreich erstellt 🥳`
+								)
+							: failedServerRespnose<IMedia>(
+									res,
+									null,
+									null,
+									`Es trat ein Fehler beim der Erstellung des Bildes ${result.fileName} auf`
+								);
 					} catch (error) {
-						internalServerErrorResponse(res, error.message);
+						internalServerErrorResponse(
+							res,
+							null,
+							null,
+							"Es trat ein Fehler beim der Erstellung eines Bildes auf",
+							error.message
+						);
 					}
 				} else {
-					badRequestResponse(res, "Could not upoad file");
+					failedServerRespnose<IMedia>(
+						res,
+						null,
+						null,
+						`Es trat ein Fehler beim der Erstellung des Bildes ${result.fileName} auf`
+					);
 				}
 			}
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Es trat ein Fehler beim der Erstellung eines Bildes auf",
+				error.message
+			);
 		}
 	}
 
+	//
+	// ────────────────────────────────────────────────────────── GET MEDIA BY ID ─────
+	//
 	/**
      * 
      * @param req 
-     * @param res 
-     * @param next 
+     * @param res  
      */
-	protected async getById(req: Request, res: Response, next?: Next): Promise<void> {
+	protected async getById(req: Request, res: Response): Promise<void> {
 		try {
-			const result = await this._repository.getById(req.params.id);
-			if (result && result._id) {
-				if (result.filePath) {
-					readFile(result.filePath, (err: NodeJS.ErrnoException, data: Buffer) => {
+			const result: IMedia = await this._repository.getById(req.params.id);
+
+			readFile(result.filePath, (err: NodeJS.ErrnoException, data: Buffer) => {
+				if (!err && data) {
+					res.writeHead(200, { "Content-Type": "image/png" });
+					res.end(data);
+				} else {
+					readFile("./uploads/not-found/notFound.png", (err: NodeJS.ErrnoException, data: Buffer) => {
 						if (!err && data) {
 							res.writeHead(200, { "Content-Type": "image/png" });
 							res.end(data);
 						} else {
-							readFile("./uploads/not-found/notFound.png", (err: NodeJS.ErrnoException, data: Buffer) => {
-								if (!err && data) {
-									res.writeHead(200, { "Content-Type": "image/png" });
-									res.end(data);
-								} else {
-									badRequestResponse(res, "Could not show item by id");
-								}
-							});
+							badRequestResponse(res, "Could not show item by id");
 						}
 					});
-				} else {
-					successResponse(res, result.fileUrl);
 				}
-			} else {
-				badRequestResponse(res, "Could not get item by id");
-			}
+			});
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(res, null, null, "Es trat ein Fehler beim laden des Bildes auf", error.message);
 		}
 	}
 
+	//
+	// ─────────────────────────────────────────────────────── UPDATE MEDIA BY ID ─────
+	//
 	/**
      * 
      * @param req 
@@ -87,31 +122,37 @@ export class MediaController extends BaseController<IMedia> {
      */
 	protected async update(req: Request, res: Response): Promise<void> {
 		try {
-			const mediaObjectInDatabase = await this._repository.getById(req.params.id);
-			if (mediaObjectInDatabase._id) {
-				const fileuploadResult: IMedia = await this._helpers.uploadFileToFolder(req);
-				if (fileuploadResult) {
-					try {
-						const result: IMedia = await this._repository.update(req.params.id, fileuploadResult);
-						if (result && result._id) {
-							successResponse(res, result);
-						} else {
-							badRequestResponse(res, "Cannot create item");
-						}
-					} catch (error) {
-						internalServerErrorResponse(res, error.message);
-					}
-				} else {
-					badRequestResponse(res, "Could not upoad file");
-				}
-			} else {
-				badRequestResponse(res, "Could not get item by given id");
-			}
+			const newResult: IMedia = await this._helpers.uploadFileToFolder(req);
+			const result: IMedia = await this._repository.update(req.params.id, newResult);
+			const results: IMedia[] = await this._repository.list();
+
+			isEmpty(result)
+				? successResponse<IMedia>(
+						res,
+						result,
+						results,
+						`Das Bild ${result.fileName} wurde erfolgreich aktualisiert 🥳`
+					)
+				: failedServerRespnose<IMedia>(
+						res,
+						null,
+						null,
+						`Es trat ein Fehler beim der Aktualisierung des Bildes ${result.fileName} auf`
+					);
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Es trat ein Fehler beim der Aktualisierung eines Bildes auf",
+				error.message
+			);
 		}
 	}
 
+	//
+	// ───────────────────────────────────────────────────────────── REMOVE MEDIA ─────
+	//
 	/**
      * 
      * @param req 
@@ -119,21 +160,31 @@ export class MediaController extends BaseController<IMedia> {
      */
 	protected async remove(req: Request, res: Response): Promise<void> {
 		try {
-			const result = await this._repository.delete(req.params.id);
-			if (result && result._id) {
-				//delete file from public folder
-				const filePath = result.filePath;
-				try {
-					unlinkSync(filePath);
-				} catch (error) {
-					internalServerErrorResponse(res, error.message);
-				}
-				successResponse(res, result, "Delete item successfully");
-			} else {
-				badRequestResponse(res, "Could not get item by id");
-			}
+			const result: IMedia = await this._repository.delete(req.params.id);
+			const results: IMedia[] = await this._repository.list();
+			await this._helpers.deleteFileToFolder(result.filePath);
+
+			isEmpty(result)
+				? successResponse<IMedia>(
+						res,
+						result,
+						results,
+						`Bild ${result.fileName}, wurde erfolgreich gelöscht 🥳`
+					)
+				: failedServerRespnose<IMedia>(
+						res,
+						null,
+						null,
+						`Es trat ein Fehler beim löschen des Bildes ${result.fileName}`
+					);
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Es trat ein Fehler beim löschen eines Bildes auf",
+				error.message
+			);
 		}
 	}
 }

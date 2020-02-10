@@ -1,88 +1,146 @@
 import {
-	loadEventsRequest,
-	getEventsRequest,
-	loadEventsError,
-	creatEventsRequest,
-	updateEventByIdRequest,
-	deleteEventByIdRequest
+	doListEventsStarted,
+	doListEventsSucceeded,
+	doListEventsFailed,
+	doListEventsError,
+	doListEventsEnded,
+	doAddEventStarted,
+	doAddEventSucceeded,
+	doAddEventFailed,
+	doAddEventError,
+	doAddEventEnded,
+	doUpdateEventStarted,
+	doUpdateEventSucceeded,
+	doUpdateEventFailed,
+	doUpdateEventError,
+	doUpdateEventEnded,
+	doRemoveEventStarted,
+	doRemoveEventSucceeded,
+	doRemoveEventFailed,
+	doRemoveEventError,
+	doRemoveEventEnded
 } from "../actions/event.actions";
-import { getAllEventsService, creatEventService, updateEventService, deleteEventService } from "../../services";
+import { listEventsService, addEventService, updateEventService, deleteEventService } from "../../services";
 import { Effect, IEvent, IResponse } from "../../models";
 import { toast } from "react-toastify";
 
-// Get all events
-export const getAllEvents = (): Effect => async (dispatch, getState) => {
-	dispatch(loadEventsRequest());
+//
+// ────────────────────────────────────────────────────────────── LIST EVENTS ─────
+//
+export const effectListEvents = (): Effect => async (dispatch) => {
+	dispatch(doListEventsStarted());
 	try {
-		const payload: IResponse<IEvent[]> = await getAllEventsService();
-		return dispatch(getEventsRequest(payload));
-	} catch (e) {
-		return dispatch(loadEventsError(e));
-	}
-};
-
-// Create event
-export const createEvent = (event: IEvent): Effect => async (dispatch, getState) => {
-	dispatch(loadEventsRequest());
-	try {
-		const payload: IResponse<IEvent> = await creatEventService(event);
-		if (!!payload.success) {
-			toast.success(` 😻 ${payload.message}`);
-			return dispatch(creatEventsRequest(payload));
+		const payload: IResponse<IEvent> = await listEventsService();
+		if (payload.success && payload.errorCode === 0) {
+			dispatch(doListEventsSucceeded(payload));
 		} else {
-			localStorage.removeItem("token");
-			localStorage.clear();
-			toast.info(` 😾 ${payload.message}`);
-			return dispatch(loadEventsError(payload));
+			dispatch(doListEventsFailed(payload));
+			toast.warn(`😩${payload.message}`);
 		}
 	} catch (e) {
-		localStorage.removeItem("token");
-		localStorage.clear();
-		toast.error(` 🙀 ${e}`);
-		return dispatch(loadEventsError(e));
+		dispatch(
+			doListEventsError({
+				success: false,
+				errorCode: 5,
+				errorMessage: e,
+				message: "Ein Error trat beim laden der Events auf.",
+				items: null,
+				item: null
+			})
+		);
+		toast.error("🤮🤮🤮Ein Error trat beim laden der Events auf.🤮🤮🤮");
 	}
+	dispatch(doListEventsEnded());
 };
 
-// Update event by id
-export const updateEventById = (id: string, event: IEvent): Effect => async (dispatch, getState) => {
-	dispatch(loadEventsRequest());
+//
+// ──────────────────────────────────────────────────────────────── ADD EVENT ─────
+//
+export const effectAddEvent = (event: IEvent): Effect => async (dispatch) => {
+	dispatch(doAddEventStarted());
+	try {
+		const payload: IResponse<IEvent> = await addEventService(event);
+		if (payload.success && payload.errorCode === 0) {
+			dispatch(doAddEventSucceeded(payload));
+			toast.success(`🤩${payload.message}`);
+		} else {
+			dispatch(doAddEventFailed(payload));
+			toast.warn(`😩${payload.message}`);
+		}
+	} catch (e) {
+		dispatch(
+			doAddEventError({
+				success: false,
+				errorCode: 5,
+				errorMessage: e,
+				message: "Ein Error trat beim hinzufügen eines Events auf.",
+				items: null,
+				item: null
+			})
+		);
+		toast.error("🤮🤮🤮Ein Error trat beim hinzufügen eines Events auf.🤮🤮🤮");
+	}
+	dispatch(doAddEventEnded());
+};
+
+//
+// ──────────────────────────────────────────────────────────────── UPDATE EVENT ─────
+//
+export const effectUpdateEvent = (id: string, event: IEvent): Effect => async (dispatch) => {
+	dispatch(doUpdateEventStarted());
 	try {
 		const payload: IResponse<IEvent> = await updateEventService(id, event);
-		if (!!payload.success) {
-			toast.success(` 😻 ${payload.message}`);
-			return dispatch(updateEventByIdRequest(payload));
+		if (payload.success && payload.errorCode === 0) {
+			dispatch(doUpdateEventSucceeded(payload));
+			console.log("UPDATE => ", payload);
+
+			toast.success(`🤩${payload.message}`);
 		} else {
-			localStorage.removeItem("token");
-			localStorage.clear();
-			toast.info(` 😾 ${payload.message}`);
-			return dispatch(loadEventsError(payload));
+			dispatch(doUpdateEventFailed(payload));
+			toast.warn(`😩${payload.message}`);
 		}
 	} catch (e) {
-		localStorage.removeItem("token");
-		localStorage.clear();
-		toast.error(` 🙀 ${e}`);
-		return dispatch(loadEventsError(e));
+		dispatch(
+			doUpdateEventError({
+				success: false,
+				errorCode: 5,
+				errorMessage: e,
+				message: "Ein Error trat beim aktualisieren eines Events auf.",
+				items: null,
+				item: null
+			})
+		);
+		toast.error("🤮🤮🤮Ein Error trat beim aktualisieren eines Events auf.🤮🤮🤮");
 	}
+	dispatch(doUpdateEventEnded());
 };
 
-// Update event by id
-export const deleteEventById = (id: string): Effect => async (dispatch, getState) => {
-	dispatch(loadEventsRequest());
+//
+// ──────────────────────────────────────────────────────────────── REMOVE EVENT ─────
+//
+export const effectRemoveEvent = (id: string): Effect => async (dispatch) => {
+	dispatch(doRemoveEventStarted());
 	try {
 		const payload: IResponse<IEvent> = await deleteEventService(id);
-		if (!!payload.success) {
-			toast.success(` 😻 ${payload.message}`);
-			return dispatch(deleteEventByIdRequest(payload));
+		if (payload.success && payload.errorCode === 0) {
+			dispatch(doRemoveEventSucceeded(payload));
+			toast.success(`🤩${payload.message}`);
 		} else {
-			localStorage.removeItem("token");
-			localStorage.clear();
-			toast.info(` 😾 ${payload.message}`);
-			return dispatch(loadEventsError(payload));
+			dispatch(doRemoveEventFailed(payload));
+			toast.warn(`😩${payload.message}`);
 		}
 	} catch (e) {
-		localStorage.removeItem("token");
-		localStorage.clear();
-		toast.error(` 🙀 ${e}`);
-		return dispatch(loadEventsError(e));
+		dispatch(
+			doRemoveEventError({
+				success: false,
+				errorCode: 5,
+				errorMessage: e,
+				message: "Ein Error trat beim entfernen eines Events auf.",
+				items: null,
+				item: null
+			})
+		);
+		toast.error("🤮🤮🤮Ein Error trat beim entfernen eines Events auf.🤮🤮🤮");
 	}
+	dispatch(doRemoveEventEnded());
 };

@@ -16,18 +16,21 @@ class UserSchema extends Schema {
 					required: true,
 					lowercase: true,
 					type: String,
-					trim: true
+					trim: true,
+					minlength: 2
 				},
 				lastName: {
 					required: true,
 					lowercase: true,
 					type: String,
-					trim: true
+					trim: true,
+					minlength: 2
 				},
 				email: {
 					required: true,
 					lowercase: true,
 					match: [ /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ],
+					minlength: 5,
 					maxlength: 30,
 					unique: true,
 					type: String,
@@ -36,7 +39,8 @@ class UserSchema extends Schema {
 				password: {
 					required: true,
 					type: String,
-					trim: true
+					trim: true,
+					minlength: 5
 				},
 				instrument: {
 					type: String,
