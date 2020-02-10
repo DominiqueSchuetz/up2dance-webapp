@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { IMedia } from "./IMedia";
 
 export interface IUser extends Document {
 	firstName: string;
@@ -7,5 +8,5 @@ export interface IUser extends Document {
 	password: string;
 	instrument: string;
 	comment: string;
-	refId?: string;
+	refId?: string & IMedia;
 }

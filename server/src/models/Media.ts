@@ -25,6 +25,10 @@ class MediaSchema extends Schema {
 					required: false,
 					type: String,
 					trim: true
+				},
+				isUserPicture: {
+					required: false,
+					type: Boolean
 				}
 			},
 			{ minimize: false }

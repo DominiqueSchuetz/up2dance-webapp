@@ -1,58 +1,124 @@
 import { ApplicationUserAction } from "../types/user.types";
-import { ApplicationState, IUser } from "../../models";
+import { ApplicationState, IUser, INITIAL_STATE } from "../../models";
 import { EReduxActionTypesUser } from "../../enums";
 import produce from "immer";
 
-export const initialStateUser: ApplicationState<IUser> = {
-	loading: { isPayloadLoading: false },
-	payload: {
-		success: false,
-		message: "",
-		error_code: 0,
-		item: { _id: "", firstName: "", lastName: "", email: "", password: "" },
-		items: []
-	}
-};
-
-export const userReducer = (state: ApplicationState<IUser> = initialStateUser, action: ApplicationUserAction) => {
+export const userReducer = produce((draft: ApplicationState<IUser>, action: ApplicationUserAction) => {
 	switch (action.type) {
-		case EReduxActionTypesUser.LOAD_USERS:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = true;
-			});
-		case EReduxActionTypesUser.SIGNIN_USER:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.message = "You are logged in successfully";
-				draft.payload.error_code = 0;
-				draft.payload.success = true;
-				draft.payload.item = Object(action.payload).result;
-			});
-		case EReduxActionTypesUser.ERROR_USERS:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.message = action.payload.message;
-				draft.payload.success = action.payload.success;
-				draft.payload.item = initialStateUser.payload.item;
-			});
-		case EReduxActionTypesUser.IS_USER_AUTHENTICATED:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = action.payload.error_code;
-				draft.payload.message = action.payload.message;
-				draft.payload.success = action.payload.success;
-				draft.payload.item = Object(action.payload).data.result;
-			});
-		case EReduxActionTypesUser.LOG_OUT_USER:
-			return produce(state, (draft) => {
-				draft.loading.isPayloadLoading = false;
-				draft.payload.error_code = initialStateUser.payload.error_code;
-				draft.payload.message = initialStateUser.payload.message;
-				draft.payload.success = initialStateUser.payload.success;
-				draft.payload.item = initialStateUser.payload.item;
-			});
+		//
+		// ─────────────────────────────────────────────── LIST Users ─────
+		//
+		case EReduxActionTypesUser.LIST_USERS_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesUser.LIST_USERS_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesUser.LIST_USERS_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesUser.LIST_USERS_ENDED:
+			draft.isLoading = false;
+			break;
+		//
+		// ───────────────────────────────────────────────── ADD User ─────
+		//
+		case EReduxActionTypesUser.ADD_USER_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesUser.ADD_USER_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = action.payload.item;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesUser.ADD_USER_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = null;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesUser.ADD_USER_ENDED:
+			draft.isLoading = false;
+			break;
+		//
+		// ────────────────────────────────────────────── UPDATE User ─────
+		//
+		case EReduxActionTypesUser.UPDATE_USER_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesUser.UPDATE_USER_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = action.payload.item;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesUser.UPDATE_USER_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = null;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesUser.UPDATE_USER_FAILED:
+			draft.isLoading = false;
+			break;
+		//
+		// ────────────────────────────────────────────── REMOVE User ─────
+		//
+		case EReduxActionTypesUser.REMOVE_USER_STARTED:
+			draft.isLoading = true;
+			break;
+
+		case EReduxActionTypesUser.REMOVE_USER_SUCCEEDED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = action.payload.item;
+			draft.payload.items = action.payload.items;
+			draft.payload.errorCode = null;
+			draft.payload.errorMessage = null;
+			break;
+
+		case EReduxActionTypesUser.REMOVE_USER_FAILED:
+			draft.isLoading = false;
+			draft.payload.success = action.payload.success;
+			draft.payload.message = action.payload.message;
+			draft.payload.item = null;
+			draft.payload.errorCode = action.payload.errorCode;
+			draft.payload.errorMessage = action.payload.errorMessage;
+			break;
+
+		case EReduxActionTypesUser.REMOVE_USER_ENDED:
+			draft.isLoading = false;
+			break;
 		default:
-			return state;
 	}
-};
+}, INITIAL_STATE<IUser>());

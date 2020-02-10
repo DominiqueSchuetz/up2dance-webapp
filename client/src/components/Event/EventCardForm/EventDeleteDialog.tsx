@@ -1,23 +1,23 @@
 import React, { Fragment } from "react";
 import { Button, Header, Icon, Modal } from "semantic-ui-react";
-import { ApplicationEventsAction } from "../../../store/types/event.types";
+import { ApplicationEventAction } from "../../../store/types/event.types";
 import { IEvent } from "../../../models";
 
-interface IStateProps {
-	headerText?: string;
-	handleCancelEvent?: any;
-	event: IEvent;
-}
+type IStateProps = {
+	readonly headerText?: string;
+	readonly handleCancelEvent?: any;
+	readonly event: IEvent;
+};
 
-interface IDispatchProps {
-	onDeleteEventById?(id: string): Promise<ApplicationEventsAction>;
-}
+type IDispatchProps = {
+	onRemoveEvent?(id: string): Promise<ApplicationEventAction>;
+};
 
 const EventDeleteDialog: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { event, handleCancelEvent, headerText, onDeleteEventById } = props;
+	const { event, handleCancelEvent, headerText, onRemoveEvent } = props;
 
 	const handleDeleteEvent = () => {
-		onDeleteEventById!(event!._id!);
+		onRemoveEvent!(event!._id!);
 		handleCancelEvent();
 	};
 

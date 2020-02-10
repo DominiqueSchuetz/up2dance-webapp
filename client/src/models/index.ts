@@ -1,30 +1,35 @@
 import { ThunkAction } from "redux-thunk";
 import { ApplicationReducerState } from "../store/reducers";
-import { ApplicationEventsAction } from "../store/types/event.types";
+import { ApplicationEventAction } from "../store/types/event.types";
 import { ApplicationUserAction } from "../store/types/user.types";
+import { ApplicationMediaAction } from "../store/types/media.types";
+import { ApplicationCustomersAction } from "../store/types/customer.types";
+import { ApplicationAuthAction } from "../store/types/auth.types";
+import { string } from "prop-types";
 
-export interface ILoadingState {
-	isPayloadLoading: boolean;
+export interface ApplicationState<T, S = null> {
+	isLoading: boolean;
+	payload: IReduxState<T, S>;
 }
 
-export interface ApplicationState<T> {
-	loading: ILoadingState;
-	payload: IReduxState<T>;
-}
-
-export interface IReduxState<T> {
+export interface IReduxState<T, S = null> {
 	success: boolean;
-	error_code: number;
-	message: string;
-	items: T[];
-	item: T;
+	errorCode: number | undefined | null;
+	errorMessage: string | undefined | null;
+	message: string | undefined | null;
+	authPayload?: S | {} | undefined | null;
+	items: T[] | undefined | null;
+	item: T | {} | undefined | null;
 }
 
-export interface IResponse<T> {
+export interface IResponse<T, S = null> {
 	success: boolean;
-	error_code: number;
-	message: string;
-	data: T[] & T;
+	errorCode: number | undefined | null;
+	errorMessage: string | undefined | null;
+	authPayload?: S | {} | undefined | null;
+	message: string | undefined | null;
+	items: T[] | undefined | null;
+	item: T | {} | undefined | null;
 }
 
 export interface IAddress {
@@ -50,6 +55,14 @@ export interface IEvent {
 	hidden?: boolean | undefined;
 }
 
+export interface IMedia {
+	_id?: string | undefined;
+	fileName?: string;
+	filePath?: string;
+	fileUrl?: string;
+	isUserPicture?: boolean;
+}
+
 export interface IUser {
 	_id?: string | undefined;
 	firstName: string;
@@ -59,6 +72,17 @@ export interface IUser {
 	email: string;
 	password?: string | undefined;
 	comment?: string | undefined;
+}
+
+export interface ICustomer {
+	_id?: string | undefined;
+	firstName: string;
+	lastName: string;
+	companyName: string;
+	phone: string;
+	email: string;
+	comment: string;
+	event?: IEvent;
 }
 
 export interface ISignInUserData {
@@ -71,8 +95,7 @@ export interface IRegisterUserData {
 	firstName: string;
 	lastName: string;
 	refId?: string | undefined;
-	filePath?: FileList | File | undefined;
-	fileName?: string | undefined;
+	media?: IMedia;
 	instrument?: string | undefined;
 	email: string;
 	password: string;
@@ -80,4 +103,31 @@ export interface IRegisterUserData {
 	comment?: string | undefined;
 }
 
-export type Effect = ThunkAction<any, ApplicationReducerState, any, ApplicationEventsAction | ApplicationUserAction>;
+export interface IAuthUser {
+	isAuthenticated: boolean;
+	jwtToken: string | undefined;
+	authUser: IUser | undefined;
+}
+
+export const INITIAL_STATE = <T, S = null>(): ApplicationState<T> => ({
+	isLoading: false,
+	payload: {
+		success: false,
+		errorCode: 0,
+		errorMessage: undefined,
+		message: undefined,
+		items: undefined,
+		item: undefined
+	}
+});
+
+export type Effect = ThunkAction<
+	any,
+	ApplicationReducerState,
+	any,
+	| ApplicationEventAction
+	| ApplicationUserAction
+	| ApplicationMediaAction
+	| ApplicationCustomersAction
+	| ApplicationAuthAction
+>;

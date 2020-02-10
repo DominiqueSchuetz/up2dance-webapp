@@ -1,12 +1,18 @@
-import { Document, Model } from "mongoose";
-import { Helpers } from "../lib/helpers";
-import * as MediaSchema from "../models/Media";
 import { Request, Response, Next } from "restify";
-import { checkAuth } from "../lib/auth-service";
+import { Document, Model, Types } from "mongoose";
+import * as MediaSchema from "../models/Media";
 import { IHttpServer } from "../routes/IHttpServer";
-import { IController } from "./interfaces/IController";
 import { Repository } from "../repository/repository";
-import { badRequestResponse, internalServerErrorResponse, successResponse } from "../responses/Responses";
+import { IController } from "./interfaces/IController";
+import { checkAuth } from "../lib/auth-service";
+import { Helpers } from "../lib/helpers";
+import {
+	badRequestResponse,
+	internalServerErrorResponse,
+	successResponse,
+	failedServerRespnose
+} from "../responses/Responses";
+import { isNil, isEmpty } from "lodash/fp";
 require("dotenv").config();
 
 export abstract class BaseController<T extends Document> implements IController {
@@ -66,102 +72,176 @@ export abstract class BaseController<T extends Document> implements IController 
 		}
 	}
 
+	//
+	//? ─────────────────────────────────────────────────────────────── LIST ITEMS ─────
+	//
 	/**
-     * GET all items
+	 * 
+	 * @param req 
      * @param req 
+	 * @param req 
+     * @param req 
+	 * @param req 
+     * @param req 
+	 * @param req 
+	 * @param res 
      * @param res
-     * @param next 
-     */
-	protected async list(req: Request, res: Response, next?: Next): Promise<void> {
+	 * @param res 
+     * @param res
+	 * @param res 
+     * @param res
+	 * @param res 
+	 */
+	protected async list(req: Request, res: Response): Promise<T[]> {
 		try {
-			const allItems: T[] = await this._repository.list();
-			allItems.length > 0
-				? successResponse(res, allItems)
-				: badRequestResponse(res, "No items in database so far");
+			const results: T[] = await this._repository.list();
+
+			if (!results) {
+				failedServerRespnose<T>(res, null, null, "Es trat ein Fehler beim laden der Items auf");
+				return null;
+			}
+
+			results.length > 0
+				? successResponse<T>(res, null, results)
+				: successResponse<T>(res, null, [], "Es gibt derzeit keine Items");
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Error beim laden der Items",
+				error.message || "Internal Server Error"
+			);
 		}
 	}
 
+	//
+	//? ─────────────────────────────────────────────────────────── GET ITEM BY ID ─────
+	//
 	/**
-     * GET item by id
+     *
      * @param req 
      * @param res 
      */
 	protected async getById(req: Request, res: Response): Promise<void> {
 		try {
 			const result: T = await this._repository.getById(req.params.id);
-			result && result._id
+
+			!isEmpty(result)
 				? successResponse(res, result)
-				: badRequestResponse(res, "Could not get item by given id");
+				: badRequestResponse(res, "Konnte das angeforderte Item nicht finden.");
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Error beim finden eines Items",
+				error.message || "Internal Server Error"
+			);
 		}
 	}
 
+	//
+	//? ───────────────────────────────────────────────────────────────── ADD ITEM ─────
+	//
 	/**
-     * CREATE item
+     * 
      * @param req 
      * @param res 
      */
-	protected async create(req: Request, res: Response): Promise<void | string> {
+	protected async create(req: Request, res: Response): Promise<void> {
 		try {
 			const result: T = await this._repository.create(req.body);
-			result && result._id
-				? successResponse(res, result, "You created a new item successfully")
-				: badRequestResponse(res, "Could not create item");
+			const results: T[] = await this._repository.list();
+
+			!isEmpty(result) && !isEmpty(results)
+				? successResponse<T>(res, result, results, "Neues Item erfolgreich hinzugefügt")
+				: badRequestResponse(res, "Fehler beim erstellen eines neues Items");
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Error beim erstellen eines Items",
+				error.message || "Internal Server Error"
+			);
 		}
 	}
 
+	//
+	//? ────────────────────────────────────────────────────────────── UPDATE ITEM ─────
+	//
 	/**
-     * UPDATE item by id
+     * 
      * @param req 
      * @param res 
      */
 	protected async update(req: Request, res: Response): Promise<void> {
 		try {
 			const result: T = await this._repository.update(req.params.id, req.body);
-			result && result._id
-				? successResponse(res, result, "You updated a item successfully")
-				: badRequestResponse(res, "Could not update item by id");
+			const results: T[] = await this._repository.list();
+
+			!isEmpty(result) && !isEmpty(results)
+				? successResponse(res, result, results, "Item erfolgreich aktualisiert")
+				: badRequestResponse(res, "Fehler beim aktualisieren eines Items");
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Error beim erstellen eines Items",
+				error.message || "Internal Server Error"
+			);
 		}
 	}
 
+	//
+	//? ────────────────────────────────────────────────────────────── DELETE ITEM ─────
+	//
 	/**
-     * DELETE item by id
+     * 
      * @param req 
      * @param res 
      */
 	protected async remove(req: Request, res: Response): Promise<void> {
 		try {
-			const result: T = await this._repository.delete(req.params.id);
-			result && result._id
-				? successResponse(res, result, "Delete item successfully")
-				: badRequestResponse(res, "Could not delete item by id");
+			const result: T = await this._repository.delete<T>(req.params.id);
+			const results: T[] = await this._repository.list();
+
+			!isEmpty(result) && !isEmpty(results)
+				? successResponse(res, result, results, "Item erfolgreich gelöscht")
+				: badRequestResponse(res, "Fehler beim löschen eines Items");
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Error beim löschen eines Items",
+				error.message || "Internal Server Error"
+			);
 		}
 	}
 
+	//
+	//? ───────────────────────────────────────────── CREATE ITEM WITH MEDIA REFID ─────
+	//
 	/**
      * 
      * @param req 
      * @param res 
      * @param next 
      */
-	protected async createByFileReference(req: Request, res: Response): Promise<any> {
+	protected async createByFileReference(req: Request, res: Response): Promise<T> {
 		if (typeof req.files === "object" || typeof req.body.fileUrl === "string") {
 			try {
 				const result = await this._helpers.uploadFileToFolder(req);
+
 				if (Object.keys(result)!.length != 0 && result!.constructor === Object) {
 					let newFileReqObject = {
 						fileName: Object(result)!.fileName,
 						filePath: Object(result)!.filePath ? Object(result)!.filePath : null,
-						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null
+						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null,
+						isUserPicture: req.body.isUserPicture || false
 					};
 					try {
 						return await this._repository.createWithCallback(
@@ -172,6 +252,59 @@ export abstract class BaseController<T extends Document> implements IController 
 								req.body.refId = respondedMediaObject._id;
 								try {
 									const finalResult = await this._repository.create(req.body);
+
+									if (finalResult && finalResult._id) {
+										return finalResult;
+									} else {
+										return new Error(Object(finalResult).message);
+									}
+								} catch (error) {
+									return error;
+								}
+							}
+						);
+					} catch (error) {
+						return error;
+					}
+				}
+			} catch (error) {
+				return error;
+			}
+		} else {
+			badRequestResponse(res, "Invalid image");
+		}
+	}
+
+	//
+	//? ───────────────────────────────────────────── UPDATE ITEM WITH MEDIA REFID ─────
+	//
+	/**
+     * 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
+	protected async updateByFileReference(req: Request, res: Response, id: Types.ObjectId): Promise<T> {
+		if (typeof req.files === "object" || typeof req.body.fileUrl === "string") {
+			try {
+				const result = await this._helpers.uploadFileToFolder(req);
+
+				if (Object.keys(result)!.length != 0 && result!.constructor === Object) {
+					let newFileReqObject = {
+						fileName: Object(result)!.fileName,
+						filePath: Object(result)!.filePath ? Object(result)!.filePath : null,
+						fileUrl: Object(result)!.fileUrl ? Object(result)!.fileUrl : null,
+						isUserPicture: req.body.isUserPicture || false
+					};
+					try {
+						return await this._repository.createWithCallback(
+							newFileReqObject,
+							MediaSchema,
+							async (error, respondedMediaObject) => {
+								if (error) throw new Error(error);
+								req.body.refId = respondedMediaObject._id;
+								try {
+									const finalResult = await this._repository.update(id, req.body);
 									if (finalResult && finalResult._id) {
 										return finalResult;
 									} else {
@@ -226,25 +359,3 @@ export abstract class BaseController<T extends Document> implements IController 
      */
 	protected async isUserAuthenticated(req: Request, res: Response, next?: Next): Promise<void> {}
 }
-
-// /**
-//  * GET files by filename
-//  * @param req
-//  * @param res
-//  */
-// protected async getByFilePath(req: Request, res: Response, next?: Next): Promise<void> {
-//     try {
-//         console.log(req.params);
-
-//         readFile('./uploads/' + req.params.filepath, (err: NodeJS.ErrnoException, data: Buffer) => {
-//             if (!err && data) {
-//                 res.writeHead(201, { 'Content-Type': 'image/png' });
-//                 res.end(data);
-//             } else {
-//                 res.send(501, err);
-//             };
-//         });
-//     } catch (error) {
-//         res.send(404, error);
-//     }
-// };

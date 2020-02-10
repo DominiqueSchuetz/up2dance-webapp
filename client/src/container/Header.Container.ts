@@ -1,16 +1,17 @@
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { effetIsUserAuthenticated, effectSignIn, effectSignOut } from "../store/effects/auth.effects";
 import { Header } from "../components/Header";
-import { ApplicationReducerState } from "../store/reducers";
-import { logOutUserRequest } from "../store/actions/user.action";
-import { isUserAuthenticated } from "../store/effects/user.effects";
+import { selectAuthenticatedUser, selectIsUserAuthenticated } from "../store/selectors";
 
-const mapStateToProps = (state: ApplicationReducerState) => ({
-	userPayload: state.userReducer.payload
+const mapStateToProps = createStructuredSelector({
+	user: selectAuthenticatedUser,
+	isAuthenticated: selectIsUserAuthenticated
 });
 
 export const mapDispatchToProps = {
-	onIsUserAuthenticated: isUserAuthenticated,
-	onLogOutUser: logOutUserRequest
+	onIsUserAuthenticated: effetIsUserAuthenticated,
+	onSignOut: effectSignOut
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

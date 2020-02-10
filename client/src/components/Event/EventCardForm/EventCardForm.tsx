@@ -1,6 +1,9 @@
-import React, { Fragment, useState, useEffect } from "react";
+import { ApplicationEventAction } from "../../../store/types/event.types";
 import { DateInput, TimeInput } from "semantic-ui-calendar-react";
+import React, { Fragment, useState, useEffect } from "react";
+import { EKindOfEventAction } from "../../../enums";
 import { IAddress, IEvent } from "../../../models";
+import { IEventType } from "../../../interfaces";
 import { GoogleMaps } from "../../GoogleMaps";
 import { isNil } from "lodash";
 import moment from "moment";
@@ -17,17 +20,20 @@ import {
 	DropdownProps,
 	InputOnChangeData
 } from "semantic-ui-react";
-import { ApplicationEventsAction } from "../../../store/types/event.types";
 
-interface IStateProps {
-	headerText?: string;
-	handleCancelEvent?: any;
-	event?: IEvent;
-}
-interface IDispatchProps {
-	onCreateEvent?(event: IEvent): Promise<ApplicationEventsAction>;
-	updateEventById?(id: string, event: IEvent): Promise<ApplicationEventsAction>;
-}
+type IStateProps = {
+	readonly headerText?: string;
+	readonly handleCancelEvent?: any;
+	readonly event?: IEvent;
+	readonly kindOfAction: IEventType;
+	readonly getEventObjectFromForm?: any;
+	readonly showToggleHidden?: boolean;
+};
+type IDispatchProps = {
+	onAddEvent?(event: IEvent): Promise<ApplicationEventAction>;
+	updateEvent?(id: string, event: IEvent): Promise<ApplicationEventAction>;
+	// onCreateCustomerEvent?(event: IEvent): Promise<ApplicationEventsAction>;
+};
 
 const eventTypeObject: any = [
 	{
@@ -63,7 +69,16 @@ const admissionChargeObject: any = [
 const DURATION = 200;
 
 const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { handleCancelEvent, onCreateEvent, updateEventById, headerText, event } = props;
+	const {
+		handleCancelEvent,
+		onAddEvent,
+		updateEvent,
+		headerText,
+		event,
+		kindOfAction,
+		getEventObjectFromForm,
+		showToggleHidden
+	} = props;
 	const [ eventName, setEventName ] = useState<string>("");
 	const [ eventType, setEventType ] = useState<string | undefined>(undefined);
 	const [ eventDate, setEventDate ] = useState<string>("");
@@ -74,13 +89,18 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const [ admissionCharge, setAdmissionCharge ] = useState<string | undefined>("nicht bekannt");
 	const [ actualDate, setActualDate ] = useState<string>("");
 	const [ switchState, setSwitchState ] = useState<boolean>(false);
-	const [ updateForm, setUpdateForm ] = useState<boolean>(false);
+	// const [ kindOfEvent, setkindOfEvent ] = useState<IEventType>();
 	const [ address, setAddress ] = useState<IAddress | undefined>(undefined);
 
 	useEffect(
 		() => {
 			const date = moment(Date.now()).locale("de").format("LL");
 			setActualDate(date);
+
+			if (!showToggleHidden) {
+				setHiddenFlag(true);
+			}
+
 			if (!isNil(event)) {
 				setEventName(event.eventName);
 				setEventType(event.eventType);
@@ -88,10 +108,8 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 				setTimeStart(event.timeStart);
 				setTimeEnd(event.timeEnd);
 				setAdmissionCharge(event.entry);
+				setHiddenFlag(event.hidden!);
 				setAddress(event.address);
-				setUpdateForm(true);
-			} else {
-				setUpdateForm(false);
 			}
 		},
 		[ event ]
@@ -121,6 +139,12 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 		const entry = money.length > 0 && !switchState ? money : admissionCharge;
 
+		// if (!showToggleHidden) {
+		// 	console.log("war hier !!!");
+
+		// 	setHiddenFlag(true);
+		// }
+
 		const newEvent: IEvent = {
 			eventName,
 			eventType,
@@ -131,15 +155,19 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 			address,
 			hidden
 		};
-		//TODO Decide wich method
-		updateForm ? updateEventById!(event!._id!, newEvent) : onCreateEvent!(newEvent);
 
-		setEventName("");
-		setEventType("");
-		setEventDate("");
-		setTimeStart("");
-		setTimeEnd("");
-		setMoney("");
+		switch (kindOfAction.kind) {
+			case EKindOfEventAction.NEW_EVENT:
+				onAddEvent!(newEvent);
+				break;
+			case EKindOfEventAction.UPDATE_EVENT:
+				updateEvent!(event!._id!, newEvent);
+				break;
+			case EKindOfEventAction.CUSTOMER_EVENT:
+				getEventObjectFromForm(newEvent);
+				break;
+		}
+
 		handleCancelEvent();
 	};
 
@@ -147,6 +175,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		event.preventDefault();
 		return false;
 	};
+
 	const handleOnKeyDownAdmissionCharge = (event: React.KeyboardEvent) => {
 		const regExpr = new RegExp("^[0-9]+$");
 		if (!regExpr.test(event.key)) {
@@ -318,20 +347,27 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<Segment.Group>
 							<Form.Field>
 								<Segment>
-									<GoogleMaps storedAddress={address!} getAddress={onGetAddress} />
+									<GoogleMaps
+										hasSearchBox={true}
+										storedAddress={address!}
+										getAddress={onGetAddress}
+									/>
 								</Segment>
 							</Form.Field>
 						</Segment.Group>
-						<Segment.Group>
-							<Segment>
-								<Radio
-									type="radio"
-									onChange={handleOnChangeHidden}
-									toggle
-									label="Nicht auf der Website anzeigen"
-								/>
-							</Segment>
-						</Segment.Group>
+						{showToggleHidden && (
+							<Segment.Group>
+								<Segment>
+									<Radio
+										type="radio"
+										onChange={handleOnChangeHidden}
+										toggle
+										checked={hidden}
+										label="Nicht auf der Website anzeigen"
+									/>
+								</Segment>
+							</Segment.Group>
+						)}
 					</Form>
 				</Modal.Description>
 			</Modal.Content>

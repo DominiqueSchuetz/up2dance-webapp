@@ -1,7 +1,7 @@
 import { ISignInUserData, IUser, IReduxState } from "../../models";
 import { Grid, Header, Segment, Button, Image, Form, Message } from "semantic-ui-react";
-import { IReduxSignInUserAction } from "../../store/types/user.types";
-import React, { useState, useEffect } from "react";
+import { IReduxSignInUserAction } from "../../store/types/auth.types";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 interface IStateProps {
@@ -9,12 +9,11 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-	onSignInUser(userData: ISignInUserData): Promise<IReduxSignInUserAction>;
+	onSignin(userData: ISignInUserData): Promise<IReduxSignInUserAction>;
 }
 
 const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { onSignInUser } = props;
-	const { message, success } = props.userPayload;
+	const { onSignin } = props;
 	const [ email, setEmail ] = useState<string>("");
 	const [ password, setPassword ] = useState<string>("");
 
@@ -23,7 +22,7 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const handleLogin = () => {
-		onSignInUser({ email, password });
+		onSignin({ email, password });
 	};
 
 	return (

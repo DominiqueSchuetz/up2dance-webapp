@@ -3,8 +3,20 @@ import { hash, compare } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 import { environments } from "../../config";
 import { IMedia } from "../models/interfaces/IMedia";
-import { renameSync, unlink, existsSync, mkdirSync } from "fs";
+import {
+	renameSync,
+	createWriteStream,
+	write,
+	unlink,
+	existsSync,
+	mkdirSync,
+	writeFile,
+	appendFileSync,
+	writeFileSync,
+	unlinkSync
+} from "fs";
 import { IUser } from "../models/interfaces/IUser";
+import { Request } from "restify";
 require("dotenv").config();
 
 export class Helpers<T extends Document> {
@@ -51,13 +63,14 @@ export class Helpers<T extends Document> {
      * 
      * @param jwttoken which was sent by the client
      */
-	public verfiyJwtToken(jwtToken: string): Promise<string | object> {
+	public verfiyJwtToken(jwtToken: string): Promise<IUser> {
 		return new Promise((resolve, reject) => {
 			if (jwtToken) {
 				const splitedToken: string = jwtToken!.split(" ")[1];
 				const verifiedObject: string | object = verify(splitedToken, "process.env.JWT_KEY");
 				if (typeof verifiedObject === "object" && Object(verifiedObject).result._id) {
-					resolve(verifiedObject);
+					const authorizedUser: IUser = Object(verifiedObject).result;
+					resolve(authorizedUser);
 				} else {
 					reject(new Error("Info: Could not verify the jwt token"));
 				}
@@ -90,10 +103,9 @@ export class Helpers<T extends Document> {
      * @param req 
      */
 	public uploadFileToFolder(req: any): Promise<IMedia> {
-		let newFileObject;
 		return new Promise((resolve, reject) => {
 			if (req.files.hasOwnProperty("filePath")) {
-				for (var key in req.files) {
+				for (const key in req.files) {
 					const sizeMax = 1024 * 1024 * 5 >= req.files[key].size ? true : false;
 					const availableTypes = [ "image/png", "image/jpeg", "application/pdf" ];
 					if (req.files && availableTypes.indexOf(req.files[key].type) > -1 && sizeMax) {
@@ -103,33 +115,43 @@ export class Helpers<T extends Document> {
 							if (!existsSync(pathToFileUploadFolderProd) || !existsSync(pathToFileUploadFolderDev)) {
 								mkdirSync(pathToFileUploadFolderProd);
 							}
-							const pathToDisk: string = `./uploads/${req.files[key].name}`;
+							const pathToDisk: string = `./uploads/${Date.now()}_${req.files[key].name}`;
 							renameSync(req.files[key].path, pathToDisk);
 							unlink(req.files[key].path, (err) => {
 								if (!err) reject("Error in uploading a file");
 							});
-							newFileObject = {
+							resolve({
 								fileName: req.body.fileName,
 								filePath: pathToDisk,
 								fileUrl: null
-							};
-							resolve(newFileObject);
+							} as IMedia);
 						}
 					} else {
 						reject("Sorry, we only support ==> png, jpeg and pdf with a maximum filesize of 5 Mb");
 					}
 				}
 			} else if (req.body.hasOwnProperty("fileUrl")) {
-				newFileObject = {
+				resolve({
 					fileName: req.body.fileName,
 					fileUrl: req.body.fileUrl,
 					filePath: null
-				};
-				resolve(newFileObject);
+				} as IMedia);
 			} else {
 				reject("No valid key value ==> need either a fileUrl or a filePath");
 			}
 		});
+	}
+
+	/**
+	 * 
+	 * @param filePath 
+	 */
+	public deleteFileToFolder(filePath: string) {
+		try {
+			unlinkSync(filePath);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	/**

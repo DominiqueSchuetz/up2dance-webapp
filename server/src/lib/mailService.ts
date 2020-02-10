@@ -34,9 +34,14 @@ export class MailService<T extends Document> {
 		return new Promise(async (resolve, reject) => {
 			const transporter = nodemailer.createTransport({
 				service: "gmail",
+				secure: false,
+				port: 25,
 				auth: {
 					user: process.env.MAIL_ADDRESS_GMAIL,
 					pass: process.env.MAIL_PASSWORD_GMAIL
+				},
+				tls: {
+					rejectUnauthorized: false
 				}
 			});
 

@@ -6,6 +6,6 @@ export interface ICustomer extends Document {
 	companyName: string;
 	phone: string;
 	email: string;
-	commentCustomer: string;
+	comment: string;
 	refId?: string;
 }

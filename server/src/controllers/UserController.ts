@@ -1,20 +1,26 @@
+import { Request, Response } from "restify";
+import { isEmpty } from "lodash/fp";
+import { IUser } from "../models/interfaces/IUser";
+import { IAuthUser } from "../models/interfaces/IAuth";
 import {
 	successResponse,
 	badRequestResponse,
 	internalServerErrorResponse,
+	failedServerRespnose,
 	unauthorizedResponse
 } from "../responses/responses";
-import { Request, Response, Next } from "restify";
 import { BaseController } from "./BaseController";
-import { IUser } from "../models/interfaces/IUser";
-import { Types } from "mongoose";
-import { pick, isEmpty, isString } from "lodash";
 import { Helpers } from "../lib/helpers";
+import { IMedia } from "../models/interfaces/IMedia";
+import { Types } from "mongoose";
 require("dotenv").config();
 
 export class UserController extends BaseController<IUser> {
 	protected _helpers = new Helpers();
 
+	//
+	//? ──────────────────────────────────────────────────────── AUTHENTICATE USER ─────
+	//
 	/**
 	 * 
 	 * @param req 
@@ -22,268 +28,333 @@ export class UserController extends BaseController<IUser> {
 	 */
 	protected async isUserAuthenticated(req: Request, res: Response): Promise<void> {
 		try {
-			const verifiedUser = await this._helpers.verfiyJwtToken(req.headers.authorization);
-			if (verifiedUser) {
-				successResponse(res, verifiedUser, "User is verified");
-			} else {
-				badRequestResponse(res, "User is not verified");
-			}
+			const verifiedUser: IUser = await this._helpers.verfiyJwtToken(req.headers.authorization);
+			verifiedUser
+				? successResponse<null, IAuthUser>(
+						res,
+						null,
+						null,
+						`User ${Object(verifiedUser).firstName} ist erfolgreich authentifiziert`,
+						{ authUser: verifiedUser, isAuthenticated: true, jwtToken: req.headers.authorization }
+					)
+				: badRequestResponse(res, `Fehler beim authentifizieren des Users ${Object(verifiedUser).firstName}`);
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(res, null, null, "Fehler beim authentifizieren des Users", error.message);
 		}
 	}
 
+	//
+	//? ─────────────────────────────────────────────────────────────── LIST USERS ─────
+	//
 	/**
      * 
      * @param req 
      * @param res 
      */
-	protected async list(req: Request, res: Response): Promise<void> {
+	protected async list(req: Request, res: Response): Promise<IUser[]> {
 		try {
-			const allItems = await this._repository.list();
-			if (allItems) {
-				let mapToNames = allItems.map((user) => ({
-					firstName: user.firstName,
-					lastName: user.lastName,
-					email: user.email,
-					instrument: user.instrument,
-					comment: user.comment
-				}));
-				mapToNames.length > 0
-					? successResponse(res, { Info: mapToNames })
-					: badRequestResponse(res, "No Users in database");
-			} else {
-				badRequestResponse(res, "Could not list items");
+			const results: IUser[] = await this._repository.list();
+
+			if (!results) {
+				failedServerRespnose<IUser>(res, null, null, "Es trat ein Fehler beim laden aller User auf");
+				return null;
 			}
+
+			const mapToNames = mapUserSpecificProps(results);
+
+			results.length > 0
+				? successResponse<IUser>(res, null, mapToNames as IUser[])
+				: successResponse<IUser>(res, null, [], "Es gibt derzeit keine User");
 		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+			internalServerErrorResponse(res, null, null, "Error beim laden aller User", error.message);
 		}
 	}
 
+	//
+	//? ──────────────────────────────────────────────────────────── REGISTER USER ─────
+	//
 	/**
      * 
      * @param req 
      * @param res 
      */
-	protected async register(req: Request, res: Response, next: Next): Promise<void> {
-		console.log("req => ", req);
-
-		const firstName =
-			typeof req.body.firstName == "string" && req.body.firstName.trim().length > 1
-				? req.body.firstName.trim()
-				: false;
-		const lastName =
-			typeof req.body.lastName == "string" && req.body.lastName.trim().length > 1
-				? req.body.lastName.trim()
-				: false;
-		const email =
-			typeof req.body.email == "string" && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
-		const password =
-			typeof req.body.password == "string" && req.body.password.trim().length > 5
-				? req.body.password.trim()
-				: false;
-		const secretKey =
-			typeof req.body.secretKey == "string" &&
-			req.body.secretKey.trim().length === 18 &&
-			req.body.secretKey.trim() === process.env.SECRET_KEY
-				? true
-				: false;
+	protected async register(req: Request, res: Response): Promise<void> {
 		const files = Object.keys(req.files).length ? true : false;
 		const fileUrl = typeof req.body.fileUrl == "string" ? true : false;
 
-		try {
-			if (firstName && lastName && email && password && secretKey) {
-				req.body.password = await this._helpers.encrypt(password);
-				if (!files && !fileUrl) {
-					try {
-						const createUser = await this._repository.create(req.body);
-						if (createUser!._id) {
-							successResponse(
+		if (req.body.secretKey.trim() === process.env.SECRET_KEY) {
+			req.body.password = await this._helpers.encrypt(req.body.password);
+			if (!files && !fileUrl) {
+				try {
+					const result: IUser = await this._repository.create(req.body);
+					const results: IUser[] = await this._repository.list();
+					!isEmpty(result)
+						? successResponse<IUser>(
+								res,
+								result,
+								results,
+								`Hey ${result.firstName}, du wurdest erfolgreich registriert 🥳`
+							)
+						: failedServerRespnose<IUser>(
 								res,
 								null,
-								"Hey " + createUser.firstName + ", you are successfully registered"
+								null,
+								`Es trat ein Fehler beim der Resgistrierung des Users ${result.firstName}`
 							);
-						} else {
-							badRequestResponse(res, "Could not register user", 3, Object(createUser).message);
-						}
-					} catch (error) {
-						internalServerErrorResponse(res, error.message);
-					}
-				} else {
-					try {
-						const result = await this.createByFileReference(req, res);
-						if (result!._id) {
-							successResponse(res, result);
-						} else {
-							badRequestResponse(res, "Could not register user with file", 3, result);
-						}
-					} catch (error) {
-						internalServerErrorResponse(res, error.message);
-					}
+				} catch (error) {
+					internalServerErrorResponse(
+						res,
+						null,
+						null,
+						"Es trat ein Fehler beim der Resgistrierung eines Users auf",
+						error.message
+					);
 				}
 			} else {
-				badRequestResponse(res, "No valid user", 3);
+				try {
+					const result = await this.createByFileReference(req, res);
+					const results: IUser[] = await this._repository.list();
+					!isEmpty(result)
+						? successResponse<IUser>(
+								res,
+								result,
+								results,
+								`Hey ${result.firstName}, du wurdest erfolgreich registriert 🥳`
+							)
+						: failedServerRespnose<IUser>(
+								res,
+								null,
+								null,
+								`Es trat ein Fehler beim der Resgistrierung des Users ${result.firstName}`
+							);
+				} catch (error) {
+					internalServerErrorResponse(
+						res,
+						null,
+						null,
+						"Es trat ein Fehler beim der Resgistrierung eines Users auf",
+						error.message
+					);
+				}
 			}
-		} catch (error) {
-			internalServerErrorResponse(res, error.message);
+		} else {
+			badRequestResponse(res, "Du bist kein valider User");
 		}
 	}
 
+	//
+	//? ───────────────────────────────────────────────────────────── SIGN IN USER ─────
+	//
 	/**
      * 
      * @param req 
      * @param res 
      */
 	protected async signIn(req: Request, res: Response): Promise<void> {
-		const { email, password } = req.body;
-		if (email && password) {
-			try {
-				const result = await this._repository.searchForItem(email);
-				const auth = await this._helpers.comparingPasswords(password, result.password);
-				if (auth && result) {
-					const jwtToken: string = await this._helpers.createJwtToken(mapToUserObject(result));
-					!isEmpty(jwtToken) && isString(jwtToken)
-						? successResponse(
-								res,
-								{
-									jwt_token: jwtToken,
-									isLoggedIn: true
-								},
-								`Hey ${result.firstName}, you're logged in successfully`
-							)
-						: badRequestResponse(res, "Could not create jwt-token");
-				} else {
-					unauthorizedResponse(res, `No valid username or password`, 3, {
-						JWT_Token: null,
-						isLoggedIn: false
-					});
-				}
-			} catch (error) {
-				unauthorizedResponse(res, `No valid username or password`, 3, {
-					JWT_Token: null,
-					isLoggedIn: false
-				});
+		try {
+			const result: IUser = await this._repository.searchForItem(req.body.email);
+			const isPasswordEqual: boolean = await this._helpers.comparingPasswords(req.body.password, result.password);
+
+			if (isPasswordEqual && !isEmpty(result)) {
+				const jwtToken = await this.getJwtTokenFromUser(result);
+				jwtToken
+					? successResponse<
+							null,
+							IAuthUser
+						>(res, null, null, `Hey ${result.firstName}, du bist erfolgreich eingeloggt`, {
+							isAuthenticated: true,
+							jwtToken: jwtToken,
+							authUser: result
+						})
+					: failedServerRespnose<IAuthUser>(
+							res,
+							null,
+							null,
+							"Es trat ein Fehler beim einloggen des Users auf"
+						);
+			} else {
+				unauthorizedResponse<IAuthUser>(
+					res,
+					{
+						isAuthenticated: false,
+						jwtToken: null,
+						authUser: null
+					},
+					null,
+					"Die Nutzerdaten stimmen nicht überein"
+				);
 			}
-		} else {
-			unauthorizedResponse(res, `No valid username or password`, 3, {
-				JWT_Token: null,
-				isLoggedIn: false
-			});
+		} catch (error) {
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Es trat ein Fehler beim login eines Users auf",
+				error.message
+			);
 		}
 	}
 
+	//
+	//? ────────────────────────────────────────────────────────────── UPDATE USER ─────
+	//
 	/**
      * 
      * @param req 
      * @param res 
      */
 	protected async update(req: Request, res: Response): Promise<void> {
-		const id: Types.ObjectId = typeof req.params.id == "string" && req.params.id != null ? req.params.id : false;
-		const jwtToken: string | boolean =
-			typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
-		const firstName =
-			typeof req.body.firstName == "string" && req.body.firstName.trim().length > 1
-				? req.body.firstName.trim()
-				: false;
-		const lastName =
-			typeof req.body.lastName == "string" && req.body.lastName.trim().length > 1
-				? req.body.lastName.trim()
-				: false;
-		const email =
-			typeof req.body.email == "string" && req.body.email.trim().length > 4 ? req.body.email.trim() : false;
-		const password =
-			typeof req.body.password == "string" && req.body.password.trim().length > 5
-				? req.body.password.trim()
-				: false;
-		const instrument = typeof req.body.instrument == "string" ? req.body.instrument.trim() : false;
+		//! Optional chaining
+		const { id } = req.params;
+		const { authorization } = req.headers;
+		const { password } = req.body;
 
-		if (id && jwtToken) {
-			try {
-				const authResult = await this._helpers.authorizeItem(id, jwtToken);
-				if (
-					typeof authResult === "boolean" &&
-					authResult === true &&
-					((firstName && lastName && email && password) || instrument)
-				) {
+		const hasMedia = req.files.length ? true : false;
+		const fileUrl = typeof req.body.fileUrl == "string" ? true : false;
+
+		try {
+			const authResult: boolean = await this._helpers.authorizeItem(id, authorization);
+			const passwordEnc: string = await this._helpers.encrypt(password);
+			if (passwordEnc && authResult) {
+				req.body.password = passwordEnc;
+
+				if (!hasMedia && !fileUrl) {
 					try {
-						const passwordEnc = await this._helpers.encrypt(password);
-						if (passwordEnc) {
-							req.body.password = passwordEnc;
-							try {
-								const result = await this._repository.update(id, req.body);
-								if (result && result._id) {
-									try {
-										const jwtToken = await this._helpers.createJwtToken(result);
-										typeof jwtToken === "string"
-											? successResponse(res, {
-													Info: "Hey " + result.firstName + ", you are updated successfully",
-													JWT_Token: jwtToken
-												})
-											: badRequestResponse(res, "Could not create jwt-token");
-									} catch (error) {
-										internalServerErrorResponse(res, error.message);
-									}
-								} else {
-									badRequestResponse(
-										res,
-										"Could not update item with given id",
-										3,
-										Object(result).message
-									);
-								}
-							} catch (error) {
-								internalServerErrorResponse(res, error.message);
-							}
-						}
+						const result: IUser = await this._repository.update(id, req.body);
+						const results: IUser[] = await this._repository.list();
+						const jwtToken = await this.getJwtTokenFromUser(result);
+
+						successResponse<
+							IUser,
+							IAuthUser
+						>(res, result, results, `User ${result.firstName} wurde erfolgreich aktualisiert`, {
+							authUser: result,
+							jwtToken,
+							isAuthenticated: true
+						});
 					} catch (error) {
-						internalServerErrorResponse(res, error.message);
+						internalServerErrorResponse(
+							res,
+							null,
+							null,
+							"Es trat ein Fehler beim aktualisieren eines Users auf",
+							error.message
+						);
 					}
 				} else {
-					badRequestResponse(res, "Could not authorized by given parameters");
+					try {
+						await this.removeMediaFromDiscAndDatabase(id);
+						const result: IUser = await this.updateByFileReference(req, res, id);
+						const jwtToken = await this.getJwtTokenFromUser(result);
+						const results: IUser[] = await this._repository.list();
+						if (result && results && jwtToken) {
+							successResponse<
+								IUser,
+								IAuthUser
+							>(res, result, results, `User ${result.firstName} wurde erfolgreich aktualisiert`, {
+								authUser: result,
+								jwtToken,
+								isAuthenticated: true
+							});
+						} else {
+							failedServerRespnose(
+								res,
+								null,
+								null,
+								"Es trat ein Fehler beim aktualisieren des Users auf"
+							);
+						}
+					} catch (error) {
+						internalServerErrorResponse(
+							res,
+							null,
+							null,
+							"Es trat ein Fehler beim aktualisieren eines Users auf",
+							error.message
+						);
+					}
 				}
-			} catch (error) {
-				internalServerErrorResponse(res, error);
+			} else {
+				failedServerRespnose(res, null, null, "Es trat ein Fehler beim der Authentifizierung des Users auf");
 			}
-		} else {
-			badRequestResponse(res, "No valid id or token");
+		} catch (error) {
+			internalServerErrorResponse(
+				res,
+				null,
+				null,
+				"Es trat ein Fehler beim der Authentifizierung eines Users auf",
+				error.message
+			);
 		}
 	}
 
+	//
+	//? ─────────────────────────────────────────────────────────────── DELTE USER ─────
+	//
 	/**
      * 
      * @param req 
      * @param res 
      */
 	protected async remove(req: Request, res: Response): Promise<void> {
-		const id: Types.ObjectId = typeof req.params.id == "string" && req.params.id != null ? req.params.id : false;
-		const jwtToken: string | boolean =
-			typeof req.headers.authorization !== null ? req.headers.authorization.trim() : false;
-
-		if (id && jwtToken) {
+		try {
 			try {
-				const authResult = await this._helpers.authorizeItem(id, jwtToken);
-				if (typeof authResult === "boolean" && authResult === true) {
-					try {
-						const result = await this._repository.delete(id);
-						if (result && Object(result).n == 1 && Object(result).ok == 1) {
-							successResponse(res, null, "Delete item successfully");
-						} else {
-							badRequestResponse(res, "Could not found any item by given id", 3, Object(result).message);
-						}
-					} catch (error) {
-						internalServerErrorResponse(res, error.message);
-					}
-				} else {
-					badRequestResponse(res, "Could not authorized by given parameters", 3, Object(authResult).message);
-				}
+				const result: IUser = await this._repository.delete<IUser>(req.params.id);
+				await this.removeMediaFromDiscAndDatabase(result.id);
+				const results: IUser[] = await this._repository.list();
+				!isEmpty(result)
+					? successResponse<IUser>(
+							res,
+							result,
+							results,
+							`User ${result.firstName}, wurde erfolgreich gelöscht 🥳`
+						)
+					: failedServerRespnose<IUser>(
+							res,
+							null,
+							null,
+							`Es trat ein Fehler beim löschen des Users ${result.firstName}`
+						);
 			} catch (error) {
 				internalServerErrorResponse(res, error.message);
 			}
-		} else {
-			badRequestResponse(res, "No valid id or token");
+		} catch (error) {
+			internalServerErrorResponse(res, error.message);
 		}
 	}
+
+	private async removeMediaFromDiscAndDatabase(id: Types.ObjectId) {
+		const populateMediaFromUser: IMedia = await this._repository.getByIdAndRefId<IMedia>(id, "refId");
+		if (populateMediaFromUser) {
+			const filePath = populateMediaFromUser.filePath;
+			await this._helpers.deleteFileToFolder(filePath);
+			await this._repository.delete<IMedia>(populateMediaFromUser.id);
+		}
+	}
+
+	private async getJwtTokenFromUser(result: IUser) {
+		const { _id, firstName, lastName, email, instrument, refId, comment } = result;
+		const jwtToken = await this._helpers.createJwtToken({
+			_id,
+			firstName,
+			lastName,
+			email,
+			instrument,
+			refId,
+			comment
+		});
+		return jwtToken;
+	}
 }
-const mapToUserObject = (data: IUser) => {
-	return pick(data, [ "_id", "firstName", "lastName", "email", "instrument", "refId", "comment" ]);
-};
+
+function mapUserSpecificProps(results: IUser[]) {
+	return results.map((user: IUser) => ({
+		_id: user._id,
+		firstName: user.firstName,
+		lastName: user.lastName,
+		email: user.email,
+		instrument: user.instrument,
+		refId: user.refId,
+		comment: user.comment
+	}));
+}

@@ -29,9 +29,9 @@ class CustomerSchema extends Schema {
 					trim: true
 				},
 				phone: {
-					required: true,
+					required: false,
 					type: String,
-					trim: true
+					trim: false
 				},
 				email: {
 					required: true,
@@ -39,7 +39,7 @@ class CustomerSchema extends Schema {
 					type: String,
 					trim: true
 				},
-				commentCustomer: {
+				comment: {
 					required: false,
 					type: String,
 					trim: true

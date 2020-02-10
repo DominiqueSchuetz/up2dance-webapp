@@ -1,4 +1,4 @@
-import { IUser, IResponse, IRegisterUserData } from "../../models";
+import { IUser, IResponse, IAuthUser } from "../../models";
 import { EReduxActionTypesUser } from "../../enums";
 import { Action } from "redux";
 
@@ -6,60 +6,174 @@ export interface IReduxBaseAction extends Action {
 	type: EReduxActionTypesUser;
 }
 
-export interface IReduxLoadUsersAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.LOAD_USERS;
+//
+// ────────────────────────────────────────────────────────────── LIST USERS ─────
+//
+export interface IReduxListUsersStartedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.LIST_USERS_STARTED;
 }
-
-export interface IReduxErrorUsersAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.ERROR_USERS;
+export interface IReduxListUsersAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.LIST_USERS;
+}
+export interface IReduxListUsersSucceededAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.LIST_USERS_SUCCEEDED;
 	payload: IResponse<IUser>;
 }
 
-export interface IReduxGetUsersAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.GET_USERS;
+export interface IReduxListUsersFailedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.LIST_USERS_FAILED;
 	payload: IResponse<IUser>;
 }
-export interface IReduxGetUserByIdAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.GET_USER_BY_ID;
+
+export interface IReduxListUsersErrorAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.LIST_USERS_ERROR;
 	payload: IResponse<IUser>;
+}
+
+export interface IReduxListUsersEndedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.LIST_USERS_ENDED;
+}
+
+//
+// ──────────────────────────────────────────────────────────────── ADD USER ─────
+//
+export interface IReduxAddUserStartedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.ADD_USER_STARTED;
+}
+export interface IReduxAddUserAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.ADD_USER;
+}
+export interface IReduxAddUserSucceededAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.ADD_USER_SUCCEEDED;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxAddUserFailedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.ADD_USER_FAILED;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxAddUserErrorAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.ADD_USER_ERROR;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxAddUserEndedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.ADD_USER_ENDED;
+}
+
+//
+// ─────────────────────────────────────────────────────────────────── UPDATE USER ─────
+//
+export interface IReduxUpdateUserStartedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.UPDATE_USER_STARTED;
+}
+export interface IReduxUpdateUserAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.UPDATE_USER;
+}
+export interface IReduxUpdateUserSucceededAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.UPDATE_USER_SUCCEEDED;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxUpdateUserFailedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.UPDATE_USER_FAILED;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxUpdateUserErrorAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.UPDATE_USER_ERROR;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxUpdateUserEndedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.UPDATE_USER_ENDED;
+}
+
+//
+// ──────────────────────────────────────────────────────────── REMOVED USER ─────
+//
+export interface IReduxRemoveUserStartedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REMOVE_USER_STARTED;
+}
+export interface IReduxRemoveUserAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REMOVE_USER;
+}
+export interface IReduxRemoveUserSucceededAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REMOVE_USER_SUCCEEDED;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxRemoveUserFailedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REMOVE_USER_FAILED;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxRemoveUserErrorAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REMOVE_USER_ERROR;
+	payload: IResponse<IUser>;
+}
+
+export interface IReduxRemoveUserEndedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REMOVE_USER_ENDED;
+}
+
+//
+// ──────────────────────────────────────────────────────────── REGISTER USER ─────
+//
+export interface IReduxRegisterUserStartedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REGISTER_USER_STARTED;
 }
 export interface IReduxRegisterUserAction extends IReduxBaseAction {
 	type: EReduxActionTypesUser.REGISTER_USER;
-	payload: IResponse<IRegisterUserData>;
 }
-
-export interface IReduxIsUserAuthenticatedAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.IS_USER_AUTHENTICATED;
+export interface IReduxRegisterUserSucceededAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REGISTER_USER_SUCCEEDED;
 	payload: IResponse<IUser>;
 }
 
-export interface IReduxLogOutUserAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.LOG_OUT_USER;
-}
-
-export interface IReduxSignInUserAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.SIGNIN_USER;
+export interface IReduxRegisterUserFailedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REGISTER_USER_FAILED;
 	payload: IResponse<IUser>;
 }
 
-export interface IReduxUpdateUserAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.UPDATE_USER;
+export interface IReduxRegisterUserErrorAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REGISTER_USER_ERROR;
 	payload: IResponse<IUser>;
 }
 
-export interface IReduxDeleteUserAction extends IReduxBaseAction {
-	type: EReduxActionTypesUser.DELETE_USER;
-	payload: IResponse<IUser>;
+export interface IReduxRegisterUserEndedAction extends IReduxBaseAction {
+	type: EReduxActionTypesUser.REGISTER_USER_ENDED;
 }
 
 export type ApplicationUserAction =
-	| IReduxLoadUsersAction
-	| IReduxErrorUsersAction
-	| IReduxGetUsersAction
-	| IReduxGetUserByIdAction
-	| IReduxRegisterUserAction
-	| IReduxSignInUserAction
+	| IReduxListUsersStartedAction
+	| IReduxListUsersAction
+	| IReduxListUsersSucceededAction
+	| IReduxListUsersFailedAction
+	| IReduxListUsersErrorAction
+	| IReduxListUsersEndedAction
+	| IReduxAddUserStartedAction
+	| IReduxAddUserAction
+	| IReduxAddUserSucceededAction
+	| IReduxAddUserFailedAction
+	| IReduxAddUserErrorAction
+	| IReduxAddUserEndedAction
+	| IReduxUpdateUserStartedAction
 	| IReduxUpdateUserAction
-	| IReduxDeleteUserAction
-	| IReduxLogOutUserAction
-	| IReduxIsUserAuthenticatedAction;
+	| IReduxUpdateUserSucceededAction
+	| IReduxUpdateUserFailedAction
+	| IReduxUpdateUserErrorAction
+	| IReduxUpdateUserEndedAction
+	| IReduxRemoveUserStartedAction
+	| IReduxRemoveUserAction
+	| IReduxRemoveUserSucceededAction
+	| IReduxRemoveUserFailedAction
+	| IReduxRemoveUserErrorAction
+	| IReduxRemoveUserEndedAction
+	| IReduxRegisterUserStartedAction
+	| IReduxRegisterUserAction
+	| IReduxRegisterUserSucceededAction
+	| IReduxRegisterUserFailedAction
+	| IReduxRegisterUserErrorAction
+	| IReduxRegisterUserEndedAction;

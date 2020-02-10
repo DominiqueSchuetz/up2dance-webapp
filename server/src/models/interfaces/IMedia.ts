@@ -4,4 +4,5 @@ export interface IMedia extends Document {
 	fileUrl?: string;
 	filePath?: string;
 	fileName: string;
+	isUserPicture?: boolean;
 }
