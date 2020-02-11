@@ -38,7 +38,7 @@ export class MediaController extends BaseController<IMedia> {
 						const result: IMedia = await this._repository.create(req.body);
 						const results: IMedia[] = await this._repository.list();
 
-						isEmpty(result)
+						!isEmpty(result)
 							? successResponse<IMedia>(
 									res,
 									result,
@@ -126,7 +126,7 @@ export class MediaController extends BaseController<IMedia> {
 			const result: IMedia = await this._repository.update(req.params.id, newResult);
 			const results: IMedia[] = await this._repository.list();
 
-			isEmpty(result)
+			!isEmpty(result)
 				? successResponse<IMedia>(
 						res,
 						result,
@@ -164,7 +164,7 @@ export class MediaController extends BaseController<IMedia> {
 			const results: IMedia[] = await this._repository.list();
 			await this._helpers.deleteFileToFolder(result.filePath);
 
-			isEmpty(result)
+			!isEmpty(result)
 				? successResponse<IMedia>(
 						res,
 						result,

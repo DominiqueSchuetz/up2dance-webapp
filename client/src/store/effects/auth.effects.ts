@@ -3,7 +3,6 @@ import { isUserAuthenticatedService, signInUserService } from "../../services";
 import {
 	doIsUserAuthenticatedStartedAction,
 	doIsUserAuthenticatedSucceededAction,
-	doIsUserAuthenticatedAction,
 	doIsUserAuthenticatedFailedAction,
 	doIsUserAuthenticatedErrorAction,
 	doSignOutUserSucceeded
@@ -18,7 +17,6 @@ import {
 import { toast } from "react-toastify";
 import { removeAndClearJwtTokenFromBrowser, addJwtTokenToApplication } from "../../lib";
 import { isEmpty } from "lodash/fp";
-import { selectAuthenticatedUser } from "../selectors";
 
 export const effetIsUserAuthenticated = (): Effect => async (dispatch, getState) => {
 	dispatch(doIsUserAuthenticatedStartedAction());
@@ -42,7 +40,7 @@ export const effetIsUserAuthenticated = (): Effect => async (dispatch, getState)
 			})
 		);
 		removeAndClearJwtTokenFromBrowser();
-		toast.error("🤮Ein Error trat bei der Authentifizierung von einem Benutzer auf");
+		toast.error("Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮");
 	}
 };
 
@@ -57,13 +55,13 @@ export const effectSignIn = (authData: ISignInUserData): Effect => async (dispat
 
 		if (isAuthenticated && !isEmpty(authUser)) {
 			dispatch(doSignInUserSucceeded(payload));
-			toast.success(`🤩${payload.message}`);
+			toast.success(`${payload.message}`);
 			addJwtTokenToApplication(jwtToken!);
 			dispatch(doSignInUserEnded());
 		} else {
 			dispatch(doSignInUserFailed(payload));
 			removeAndClearJwtTokenFromBrowser();
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 			dispatch(doSignInUserEnded());
 		}
 	} catch (error) {
@@ -72,14 +70,14 @@ export const effectSignIn = (authData: ISignInUserData): Effect => async (dispat
 				success: false,
 				errorCode: 5,
 				errorMessage: error,
-				message: "Ein Error trat bei der Authentifizierung von einem Benutzer auf",
+				message: "Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮",
 				items: null,
 				item: null
 			})
 		);
 		dispatch(doSignInUserEnded());
 		removeAndClearJwtTokenFromBrowser();
-		toast.error("🤮Ein Error trat bei der Authentifizierung von einem Benutzer auf");
+		toast.error("Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮");
 	}
 };
 
@@ -91,9 +89,9 @@ export const effectSignOut = (): Effect => async (dispatch, getState) => {
 	try {
 		dispatch(doSignOutUserSucceeded());
 		removeAndClearJwtTokenFromBrowser();
-		toast.success(`🤩 ${firstName}, du bist erfolgreich ausgeloggt`);
+		toast.success(`${firstName}, du bist erfolgreich ausgeloggt`);
 	} catch (error) {
 		dispatch(doSignInUserError(error));
-		toast.error("🤮 Ein Error trat beim ausloggen eines Benutzer auf");
+		toast.error("Ein Error trat beim ausloggen eines Benutzer auf 🤮");
 	}
 };

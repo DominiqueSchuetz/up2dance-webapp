@@ -25,9 +25,12 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const [ modalStatus, setModalStaus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 	const inputRef: any = useRef();
 
-	useEffect(() => {
-		onListMedia();
-	}, []);
+	useEffect(
+		() => {
+			onListMedia();
+		},
+		[ onListMedia ]
+	);
 
 	const handleUploadAction = async (event: any) => {
 		const naiveFileName: string = Object(event.target.files)[0].name;

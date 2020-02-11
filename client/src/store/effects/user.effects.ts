@@ -37,7 +37,7 @@ export const effectListUsers = (): Effect => async (dispatch) => {
 			dispatch(doListUsersSucceeded(payload));
 		} else {
 			dispatch(doListUsersFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -45,12 +45,12 @@ export const effectListUsers = (): Effect => async (dispatch) => {
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim laden der Users auf.",
+				message: "Ein Error trat beim laden der Users auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim laden der Users auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim laden der Users auf 🤮");
 	}
 	dispatch(doListUsersEnded());
 };
@@ -64,10 +64,10 @@ export const effectRegisterUser = (userFormData: FormData): Effect => async (dis
 		const payload: IResponse<IUser> = await registerUserService(userFormData);
 		if (payload.success && payload.errorCode === 0) {
 			dispatch(doAddUserSucceeded(payload));
-			toast.success(`🤩${payload.message}`);
+			toast.success(`${payload.message}`);
 		} else {
 			dispatch(doAddUserFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -75,12 +75,12 @@ export const effectRegisterUser = (userFormData: FormData): Effect => async (dis
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim hinzufügen eines Users auf.",
+				message: "Ein Error trat beim hinzufügen eines Users auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim hinzufügen eines Users auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim hinzufügen eines Users auf 🤮");
 	}
 	dispatch(doAddUserEnded());
 };
@@ -97,10 +97,10 @@ export const effectUpdateUser = (id: string, userFormData: FormData): Effect => 
 			dispatch(doUpdateUserSucceeded(payload));
 			removeAndClearJwtTokenFromBrowser();
 			addJwtTokenToApplication((payload.authPayload as IAuthUser).jwtToken!);
-			toast.success(`🤩${payload.message}`);
+			toast.success(`${payload.message}`);
 		} else {
 			dispatch(doUpdateUserFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -108,12 +108,12 @@ export const effectUpdateUser = (id: string, userFormData: FormData): Effect => 
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim aktualisieren eines Users auf.",
+				message: "Ein Error trat beim aktualisieren eines Users auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim aktualisieren eines Users auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim aktualisieren eines Users auf 🤮");
 	}
 	dispatch(doUpdateUserEnded());
 };
@@ -127,10 +127,10 @@ export const effectRemoveUser = (id: string): Effect => async (dispatch) => {
 		const payload: IResponse<IUser> = await deleteUserService(id);
 		if (payload.success && payload.errorCode === 0) {
 			dispatch(doRemoveUserSucceeded(payload));
-			toast.success(`🤩${payload.message}`);
+			toast.success(`${payload.message}`);
 		} else {
 			dispatch(doRemoveUserFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -138,12 +138,12 @@ export const effectRemoveUser = (id: string): Effect => async (dispatch) => {
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim entfernen eines Users auf.",
+				message: "Ein Error trat beim entfernen eines Users auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim entfernen eines Users auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim entfernen eines Users auf 🤮");
 	}
 	dispatch(doRemoveUserEnded());
 };

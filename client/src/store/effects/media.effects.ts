@@ -35,7 +35,7 @@ export const effectListMedia = (): Effect => async (dispatch) => {
 			dispatch(doListMediaSucceeded(payload));
 		} else {
 			dispatch(doListMediaFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -43,12 +43,12 @@ export const effectListMedia = (): Effect => async (dispatch) => {
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim laden der Bilder auf.",
+				message: "Ein Error trat beim laden der Bilder auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim laden der Bilder auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim laden der Bilder auf.🤮");
 	}
 	dispatch(doListMediaEnded());
 };
@@ -62,10 +62,10 @@ export const effectAddMedia = (mediaFormData: FormData): Effect => async (dispat
 		const payload: IResponse<IMedia> = await addMediaService(mediaFormData);
 		if (payload.success && payload.errorCode === 0) {
 			dispatch(doAddMediaSucceeded(payload));
-			toast.success(`🤩${payload.message}`);
+			toast.success(`${payload.message}`);
 		} else {
 			dispatch(doAddMediaFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -73,12 +73,12 @@ export const effectAddMedia = (mediaFormData: FormData): Effect => async (dispat
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim hinzufügen eines Bildes auf.",
+				message: "Ein Error trat beim hinzufügen eines Bildes auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim hinzufügen eines Bildes auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim hinzufügen eines Bildes auf.🤮");
 	}
 	dispatch(doAddMediaEnded());
 };
@@ -92,10 +92,10 @@ export const effectUpdateMedia = (id: string, mediaFormData: FormData): Effect =
 		const payload: IResponse<IMedia> = await updateMediaService(id, mediaFormData);
 		if (payload.success && payload.errorCode === 0) {
 			dispatch(doUpdateMediaSucceeded(payload));
-			toast.success(`🤩${payload.message}`);
+			toast.success(`${payload.message}`);
 		} else {
 			dispatch(doUpdateMediaFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -103,12 +103,12 @@ export const effectUpdateMedia = (id: string, mediaFormData: FormData): Effect =
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim aktualisieren eines Bildes auf.",
+				message: "Ein Error trat beim aktualisieren eines Bildes auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim aktualisieren eines Bildes auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim aktualisieren eines Bildes auf.🤮");
 	}
 	dispatch(doUpdateMediaEnded());
 };
@@ -122,10 +122,10 @@ export const effectRemoveMedia = (id: string): Effect => async (dispatch) => {
 		const payload: IResponse<IMedia> = await deleteMediaService(id);
 		if (payload.success && payload.errorCode === 0) {
 			dispatch(doRemoveMediaSucceeded(payload));
-			toast.success(`🤩${payload.message}`);
+			toast.success(`${payload.message}`);
 		} else {
 			dispatch(doRemoveMediaFailed(payload));
-			toast.warn(`😩${payload.message}`);
+			toast.warn(`${payload.message}`);
 		}
 	} catch (e) {
 		dispatch(
@@ -133,12 +133,12 @@ export const effectRemoveMedia = (id: string): Effect => async (dispatch) => {
 				success: false,
 				errorCode: 5,
 				errorMessage: e,
-				message: "Ein Error trat beim entfernen eines Bildes auf.",
+				message: "Ein Error trat beim entfernen eines Bildes auf 😩",
 				items: null,
 				item: null
 			})
 		);
-		toast.error("🤮🤮🤮Ein Error trat beim entfernen eines Bildes auf.🤮🤮🤮");
+		toast.error("Ein Error trat beim entfernen eines Bildes auf.🤮");
 	}
 	dispatch(doRemoveMediaEnded());
 };

@@ -15,6 +15,8 @@ import { HeaderContainer } from "../container";
 import { rootReducer } from "../store/reducers";
 import { ToastContainer } from "react-toastify";
 import { Footer } from "./Footer";
+import { effetIsUserAuthenticated } from "../store/effects/auth.effects";
+import { doIsUserAuthenticatedSucceededAction } from "../store/actions/auth.action";
 import "react-toastify/dist/ReactToastify.css";
 
 import "semantic-ui-css/semantic.min.css";

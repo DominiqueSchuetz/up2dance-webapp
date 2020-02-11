@@ -20,7 +20,7 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
 	useEffect(() => {
-		onIsUserAuthenticated();
+		// onIsUserAuthenticated();
 	}, []);
 
 	return (
