@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "semantic-ui-css/semantic.min.css";
 import React, { lazy, Suspense, useEffect } from "react";
 import { Provider } from "react-redux";
+import { Container } from "semantic-ui-react";
 
 const composeEnhancer = composeWithDevTools({});
 const reduxStore: any = createStore(rootReducer, {}, composeEnhancer(applyMiddleware(thunk as ThunkMiddleware)));
@@ -34,20 +35,22 @@ const App: React.FC = () => {
 			<Router>
 				<ToastContainer autoClose={5000} />
 				<HeaderContainer />
-				<main>
-					<Switch>
-						<Suspense fallback={<div>Loading...</div>}>
-							<Route path="/login" exact strict component={LoginContainer} />
-							<Route path="/register" exact strict component={RegisterContainer} />
-							<Route path="/" exact component={CounterContainer} />
-							<Route path="/" exact strict component={EventContainer} />
-							<Route path="/" exact strict component={UserContainer} />
-							<Route path="/" exact strict component={GalleryContainer} />
-							<Route path="/" exact strict component={CustomerContainer} />
-							<Route path="/" exact strict component={Footer} />
-						</Suspense>
-					</Switch>
-				</main>
+				<Container>
+					<main>
+						<Switch>
+							<Suspense fallback={<div>Loading...</div>}>
+								<Route path="/login" exact strict component={LoginContainer} />
+								<Route path="/register" exact strict component={RegisterContainer} />
+								<Route path="/" exact component={CounterContainer} />
+								<Route path="/" exact strict component={EventContainer} />
+								<Route path="/" exact strict component={UserContainer} />
+								<Route path="/" exact strict component={GalleryContainer} />
+								<Route path="/" exact strict component={CustomerContainer} />
+							</Suspense>
+						</Switch>
+					</main>
+				</Container>
+				<Route path="/" exact strict component={Footer} />
 			</Router>
 		</Provider>
 	);

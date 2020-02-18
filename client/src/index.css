@@ -1,13 +1,57 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+:root {
+  box-sizing: border-box;
+  font-size: 1em;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --main-font: Helvetica, Arial, sans-serif;
+  --headline-color: #515151;
+  --card-content-color: #424242;
+  --main-color: #336699;
+  --color: #333;
+  --break-width: 600px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@media (min-width: 1200px) {
+  :root {
+    font-size: calc(1em);
+  }
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+
+.ui.container {
+  width: 110em;
+}
+
+.ui.input {
+  padding-bottom: 1.2em;
+}
+
+.customer-form-modal {
+  padding: 2.4em 0;
+}
+
+
+.headline {
+  color: var(--headline-color, black) !important;
+  /* background-color: beige; */
+  margin-top: 5.5em !important;
+  margin-bottom: 1.5em !important;
+  font-size: 2rem !important;
+  text-align: center;
+
+}
+
+.card-content>* {
+  color: var(--card-content-color, red) !important;
+  margin: 0.9em 0 !important;
+  /* font-size: 0.9rem !important; */
 }

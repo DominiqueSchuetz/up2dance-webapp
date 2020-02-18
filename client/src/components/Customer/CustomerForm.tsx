@@ -114,7 +114,7 @@ const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const eventTriggerButton = (
 		<Form.Button
-			style={{ marginBottom: "50px", marginTop: "50px" }}
+			className="customer-form-modal"
 			fluid
 			color={address ? "green" : "black"}
 			circular
@@ -184,7 +184,7 @@ const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 				/>
 				<Message
 					warning
-					header="Could you check something!"
+					header="Could you check something   !"
 					list={[
 						"That e-mail has been subscribed, but you have not yet clicked the verification link in your e-mail."
 					]}
@@ -235,13 +235,11 @@ const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<section>
-			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
-				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
-					KONTAKT
-				</Header>
-			</Container>
+			<Header className="headline" textAlign="center">
+				ANFRAGE SENDEN
+			</Header>
 
-			<Container textAlign="center">{CustomerForm()}</Container>
+			<Container>{CustomerForm()}</Container>
 		</section>
 	);
 };

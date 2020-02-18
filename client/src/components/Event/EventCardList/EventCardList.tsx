@@ -46,7 +46,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const modalTriggerButton = (
-		<Container textAlign="center" style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
+		<Fragment>
 			{isAuthenticated && (
 				<Button
 					circular
@@ -57,7 +57,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 					onClick={openModalDialogEditForm}
 				/>
 			)}
-		</Container>
+		</Fragment>
 	);
 
 	const renderEventCards = (events: IEvent[]) => {
@@ -76,29 +76,25 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 				const toogleVisibility = isAuthenticated ? sortedArray : filteredArray.filter((e) => e.hidden !== true);
 				return toogleVisibility.map((mapEvent: IEvent) => (
-					<Fragment key={mapEvent._id}>
-						<Grid.Column stretched textAlign="center">
-							<EventCard
-								onRemoveEvent={onRemoveEvent}
-								updateEvent={onUpdateEvent}
-								isAuthenticated={isAuthenticated}
-								event={mapEvent}
-								children={modalStatus}
-							/>
-						</Grid.Column>
-					</Fragment>
+					<Grid.Column largeScreen="5" computer="5" tablet="6" mobile="16">
+						<EventCard
+							onRemoveEvent={onRemoveEvent}
+							updateEvent={onUpdateEvent}
+							isAuthenticated={isAuthenticated}
+							event={mapEvent}
+							children={modalStatus}
+						/>
+					</Grid.Column>
 				));
 			} else {
 				return (
 					<Fragment>
-						<Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
-							<Header as="h2">
-								Es gibt derzeit keine Events...{" "}
-								<span role="img" aria-label="sleeping-emoji">
-									😴
-								</span>
-							</Header>
-						</Segment>
+						<Header as="h2">
+							Es gibt derzeit keine Events...{" "}
+							<span role="img" aria-label="sleeping-emoji">
+								😴
+							</span>
+						</Header>
 					</Fragment>
 				);
 			}
@@ -113,11 +109,9 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<section>
-			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
-				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
-					KONZERTE
-				</Header>
-			</Container>
+			<Header className="headline" textAlign="center">
+				KONZERTE
+			</Header>
 			<ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
 				<EventCardForm
 					showToggleHidden
@@ -127,14 +121,8 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 					handleCancelEvent={handleCancelEvent}
 				/>
 			</ModalDialog>
-			<Grid
-				container
-				columns={3}
-				textAlign="center"
-				doubling
-				style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}
-			>
-				{renderEventCards(events)}
+			<Grid stackable columns={4} stretched doubling centered>
+				<Grid.Row>{renderEventCards(events)}</Grid.Row>
 			</Grid>
 		</section>
 	);

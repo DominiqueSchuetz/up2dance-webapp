@@ -1,4 +1,4 @@
-import { Segment, Card, Dimmer, Loader, Header, Container } from "semantic-ui-react";
+import { Segment, Card, Dimmer, Loader, Header, Container, Grid } from "semantic-ui-react";
 import { ApplicationUserAction } from "../../../store/types/user.types";
 import { IReduxListUsersAction } from "../../../store/types/user.types";
 import { IReduxState, IUser } from "../../../models";
@@ -32,14 +32,14 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		if (!isUserPayloadLoading) {
 			if (isArray(users) && users.length > 0) {
 				return users.map((mapUser: IUser) => (
-					<div key={mapUser._id} style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
+					<Grid.Column>
 						<UserCard
 							isAuthenticated={isAuthenticated}
 							user={mapUser}
 							onUpdateUser={onUpdateUser}
 							onDeleteUser={onDeleteUser}
 						/>
-					</div>
+					</Grid.Column>
 				));
 			} else {
 				return (
@@ -66,14 +66,12 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<section>
-			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
-				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
-					MITGLIEDER
-				</Header>
-			</Container>
-			<Card.Group itemsPerRow="4" centered stackable>
-				{renderUserCards(users)}
-			</Card.Group>
+			<Header className="headline" textAlign="center">
+				MITGLIEDER
+			</Header>
+			<Grid stackable columns={4} stretched doubling centered>
+				<Grid.Row>{renderUserCards(users)}</Grid.Row>
+			</Grid>
 		</section>
 	);
 };

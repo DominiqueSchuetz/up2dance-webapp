@@ -46,7 +46,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 	};
 
 	const addNewImageButton = isAuthenticated && (
-		<Container textAlign="center" style={{ marginTop: 90, marginBottom: 0, marginRight: 40 }}>
+		<Container textAlign="center">
 			<Button
 				circular
 				content="Neues Foto"
@@ -111,6 +111,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 						<Grid.Column key={mapMedia._id}>
 							<Image
 								size="large"
+								centered
 								src={`http://localhost:8080/api/media/${mapMedia._id}`}
 								label={isAuthenticated ? deleteImage(mapMedia, setModalStaus) : undefined}
 							/>
@@ -147,17 +148,15 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 				children={renderDeleteMessage}
 				onClose={() => setModalStaus({ modalOpen: false })}
 			/>
-			<Container text style={{ marginTop: "100px", marginBottom: "100px" }}>
-				<Header as="h1" style={{ fontSize: "3em" }} textAlign="center">
-					GALLERIE
-				</Header>
-				{addNewImageButton}
-			</Container>
-			<Container textAlign="center">
-				<Grid doubling columns="three" textAlign="center">
-					{renderAllPictures(media)}
-				</Grid>
-			</Container>
+
+			<Header className="headline" textAlign="center">
+				GALLERIE
+			</Header>
+			{addNewImageButton}
+
+			<Grid stackable columns={4} stretched doubling centered>
+				<Grid.Row>{renderAllPictures(media)}</Grid.Row>
+			</Grid>
 		</section>
 	);
 };

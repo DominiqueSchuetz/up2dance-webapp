@@ -1,4 +1,4 @@
-import { Image, Button, Icon, Container, Segment, Header } from "semantic-ui-react";
+import { Image, Button, Icon, Container, Header } from "semantic-ui-react";
 import { ApplicationUserAction } from "../../../store/types/user.types";
 import React, { Fragment, useState } from "react";
 import { ModalDialog } from "../../ModalDialog";
@@ -86,18 +86,16 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 			>
 				{renderModalComponent}
 			</ModalDialog>
-			<Container textAlign="center">
-				<Image
-					centered
-					bordered
-					circular
-					src={refId ? "http://localhost:8080/api/media/" + refId : ""}
-					size="medium"
-				/>
-			</Container>
-			<Header as="h1" textAlign="center">
-				<Header.Content>{user.firstName}</Header.Content>
-			</Header>
+			<Image
+				fluid
+				centered
+				bordered
+				circular
+				src={refId ? "http://localhost:8080/api/media/" + refId : ""}
+				size="medium"
+			/>
+
+			<Header textAlign="center">{user.firstName}</Header>
 			<Container text>
 				<p>{user.comment}</p>
 			</Container>
