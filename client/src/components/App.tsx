@@ -34,23 +34,24 @@ const App: React.FC = () => {
 		<Provider store={reduxStore}>
 			<Router>
 				<ToastContainer autoClose={5000} />
-				<HeaderContainer />
-				<Container>
-					<main>
-						<Switch>
-							<Suspense fallback={<div>Loading...</div>}>
-								<Route path="/login" exact strict component={LoginContainer} />
-								<Route path="/register" exact strict component={RegisterContainer} />
-								<Route path="/" exact component={CounterContainer} />
-								<Route path="/" exact strict component={EventContainer} />
-								<Route path="/" exact strict component={UserContainer} />
-								<Route path="/" exact strict component={GalleryContainer} />
-								<Route path="/" exact strict component={CustomerContainer} />
-							</Suspense>
-						</Switch>
-					</main>
-				</Container>
-				<Route path="/" exact strict component={Footer} />
+				<HeaderContainer>
+					<Container>
+						<main>
+							<Switch>
+								<Suspense fallback={<div>Loading...</div>}>
+									<Route path="/login" exact strict component={LoginContainer} />
+									<Route path="/register" exact strict component={RegisterContainer} />
+									{/* <Route path="/" exact component={CounterContainer} /> */}
+									<Route path="/" exact strict component={EventContainer} />
+									<Route path="/" exact strict component={UserContainer} />
+									<Route path="/" exact strict component={GalleryContainer} />
+									<Route path="/" exact strict component={CustomerContainer} />
+								</Suspense>
+							</Switch>
+						</main>
+					</Container>
+					<Route path="/" exact strict component={Footer} />
+				</HeaderContainer>
 			</Router>
 		</Provider>
 	);

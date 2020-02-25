@@ -14,7 +14,7 @@ type IDispatchProps = {
 };
 
 const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { isAuthenticated, user, onSignOut, onIsUserAuthenticated } = props;
+	const { isAuthenticated, user, onSignOut, onIsUserAuthenticated, children } = props;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
 	const [ fixedState, setFixedState ] = useState<{ sidebarOpened: boolean }>({ sidebarOpened: false });
@@ -59,8 +59,7 @@ const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
 					</Container>
 					{/* <HomepageHeading mobile /> */}
 				</Segment>
-
-				{/* {children} */}
+				{children}
 			</Sidebar.Pusher>
 		</Responsive>
 	);

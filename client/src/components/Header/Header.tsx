@@ -14,7 +14,7 @@ type IDispatchProps = {
 };
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { onIsUserAuthenticated } = props;
+	const { onIsUserAuthenticated, children } = props;
 
 	useEffect(() => {
 		onIsUserAuthenticated();
@@ -22,8 +22,8 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<div>
-			<NavbarDesktop>{props}</NavbarDesktop>
-			<NavbarMobile>{props}</NavbarMobile>
+			<NavbarDesktop>{children}</NavbarDesktop>
+			<NavbarMobile>{children}</NavbarMobile>
 		</div>
 	);
 };

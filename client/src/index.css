@@ -9,7 +9,6 @@
   --card-content-color: #424242;
   --main-color: #336699;
   --color: #333;
-  --break-width: 600px;
 }
 
 @media (min-width: 1200px) {
@@ -42,8 +41,7 @@
 
 .headline {
   color: var(--headline-color, black) !important;
-  /* background-color: beige; */
-  margin-top: 5.5em !important;
+  margin-top: 3.5em !important;
   margin-bottom: 1.5em !important;
   font-size: 2rem !important;
   text-align: center;

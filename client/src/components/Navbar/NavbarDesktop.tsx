@@ -31,7 +31,7 @@ type IDispatchProps = {
 };
 
 const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { isAuthenticated, user, onSignOut } = props;
+	const { isAuthenticated, user, onSignOut, children } = props;
 	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
 
 	const [ fixedState, setFixedState ] = useState<{ fixed: boolean }>({ fixed: false });
@@ -74,8 +74,7 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
 					{/* <HomepageHeading /> */}
 				</Segment>
 			</Visibility>
-
-			{/* {children} */}
+			{children}
 		</Responsive>
 	);
 };
