@@ -24,13 +24,13 @@ type IDispatchProps = {
 
 const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { events, isLoading, isAuthenticated, onListEvents, onAddEvent, onUpdateEvent, onRemoveEvent } = props;
-	const [ modalStatus, setModalStatus ] = useState<{ modalOpen: boolean }>({ modalOpen: false });
+	const [modalStatus, setModalStatus] = useState<{ modalOpen: boolean }>({ modalOpen: false });
 
 	useEffect(
 		() => {
 			onListEvents();
 		},
-		[ onListEvents ]
+		[onListEvents]
 	);
 
 	const openModalDialogEditForm = (): void => {
@@ -64,7 +64,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 		if (!isLoading) {
 			if (isArray(events) && events.length > 0) {
 				// Sort by Date
-				const sortedArray = events.slice().sort(function(a, b) {
+				const sortedArray = events.slice().sort(function (a, b) {
 					const c = new Date(parseToDateFormat(a.eventDate));
 					const d = new Date(parseToDateFormat(b.eventDate));
 					return +c - +d;
@@ -112,15 +112,17 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 			<Header className="headline" textAlign="center">
 				KONZERTE
 			</Header>
-			<ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
-				<EventCardForm
-					showToggleHidden
-					headerText="Neues Event"
-					onAddEvent={onAddEvent}
-					kindOfAction={{ kind: EKindOfEventAction.NEW_EVENT }}
-					handleCancelEvent={handleCancelEvent}
-				/>
-			</ModalDialog>
+			<Container textAlign="center">
+				<ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
+					<EventCardForm
+						showToggleHidden
+						headerText="Neues Event"
+						onAddEvent={onAddEvent}
+						kindOfAction={{ kind: EKindOfEventAction.NEW_EVENT }}
+						handleCancelEvent={handleCancelEvent}
+					/>
+				</ModalDialog>
+			</Container>
 			<Grid stackable columns={4} stretched doubling centered>
 				<Grid.Row>{renderEventCards(events)}</Grid.Row>
 			</Grid>

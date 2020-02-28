@@ -228,8 +228,8 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<Fragment>
-			<Modal.Header>{headerText}</Modal.Header>
-			<Modal.Content>
+			<Modal.Header >{headerText}</Modal.Header>
+			<Modal.Content scrolling>
 				<Modal.Description>
 					<Form autoComplete="off" onSubmit={handleOnSubmit}>
 						<Form.Group widths="equal">

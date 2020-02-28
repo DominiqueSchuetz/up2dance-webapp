@@ -13,9 +13,9 @@ const ModalDialog: React.FC<IStateProps> = memo((props) => {
 	console.log("Modal gets rendered!");
 
 	return (
-		<Fragment>
 			<Modal
 				dimmer="blurring"
+				centered
 				closeOnDimmerClick={false}
 				closeIcon
 				trigger={trigger}
@@ -24,7 +24,6 @@ const ModalDialog: React.FC<IStateProps> = memo((props) => {
 			>
 				{children}
 			</Modal>
-		</Fragment>
 	);
 });
 

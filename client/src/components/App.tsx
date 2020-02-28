@@ -39,13 +39,13 @@ const App: React.FC = () => {
 						<main>
 							<Switch>
 								<Suspense fallback={<div>Loading...</div>}>
-									<Route path="/login" exact strict component={LoginContainer} />
-									<Route path="/register" exact strict component={RegisterContainer} />
 									{/* <Route path="/" exact component={CounterContainer} /> */}
 									<Route path="/" exact strict component={EventContainer} />
 									<Route path="/" exact strict component={UserContainer} />
 									<Route path="/" exact strict component={GalleryContainer} />
 									<Route path="/" exact strict component={CustomerContainer} />
+									<Route path="/login" exact strict component={LoginContainer} />
+									<Route path="/register" exact strict component={RegisterContainer} />
 								</Suspense>
 							</Switch>
 						</main>

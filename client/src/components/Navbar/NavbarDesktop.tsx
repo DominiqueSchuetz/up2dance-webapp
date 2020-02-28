@@ -32,9 +32,9 @@ type IDispatchProps = {
 
 const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { isAuthenticated, user, onSignOut, children } = props;
-	const [ instrumentSymbol, setInstrumentSymbol ] = useState<string>("🌞");
+	const [instrumentSymbol, setInstrumentSymbol] = useState<string>("🌞");
 
-	const [ fixedState, setFixedState ] = useState<{ fixed: boolean }>({ fixed: false });
+	const [fixedState, setFixedState] = useState<{ fixed: boolean }>({ fixed: false });
 
 	const hideFixedMenu = () => setFixedState({ fixed: false });
 	const showFixedMenu = () => setFixedState({ fixed: true });
@@ -55,17 +55,33 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
 						size="large"
 					>
 						<Container>
-							<Menu.Item as="a" active>
+							<Menu.Item as={NavLink} to="/">
 								Home
 							</Menu.Item>
 							<Menu.Item as="a">Work</Menu.Item>
 							<Menu.Item as="a">Company</Menu.Item>
 							<Menu.Item as="a">Careers</Menu.Item>
 							<Menu.Item position="right">
-								<Button as="a" inverted={!fixed}>
+								<Menu.Item>
+									{isAuthenticated &&
+										user!.refId && (
+											<Image
+												size="mini"
+												circular
+												src={"http://localhost:8080/api/media/" + user!.refId}
+											/>
+										)}
+									{isAuthenticated &&
+										user!.firstName && (
+											<span>
+												{user!.firstName ? `Hey, ${user!.firstName} ` + ` ${instrumentSymbol}` : ""}
+											</span>
+										)}
+								</Menu.Item>
+								<Button as={NavLink} to="/login" inverted={!fixed} primary>
 									Log in
 								</Button>
-								<Button as="a" inverted={!fixed} primary={fixed} style={{ marginLeft: "0.5em" }}>
+								<Button as={NavLink} to="/register" inverted={!fixed} primary={fixed} style={{ marginLeft: "0.5em" }}>
 									Sign Up
 								</Button>
 							</Menu.Item>
@@ -80,60 +96,3 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
 };
 
 export default NavbarDesktop;
-
-// <Fragment>
-// 		<header>
-// 			<nav>
-// 				<Menu size="large" inverted>
-// 					<Menu.Item as={NavLink} to="/" name="home" />
-// 					<Menu.Item as={NavLink} to="#" name="events" />
-// 					<Menu.Item as={NavLink} to="#" name="band members" />
-// 					<Menu.Item as={NavLink} to="#" name="pictures" />
-// 					<Menu.Item as={NavLink} to="#" name="contact" />
-// 					<Menu.Menu position="right">
-// 						<Menu.Item>
-// 							{isAuthenticated &&
-// 							user.refId && (
-// 								<Image
-// 									style={{ marginRight: 20 }}
-// 									size="mini"
-// 									circular
-// 									src={"http://localhost:8080/api/media/" + user.refId}
-// 								/>
-// 							)}
-// 							{isAuthenticated &&
-// 							user.firstName && (
-// 								<span>
-// 									{user.firstName ? `Hey, ${user.firstName} ` + ` ${instrumentSymbol}` : ""}
-// 								</span>
-// 							)}
-// 						</Menu.Item>
-// 						<Menu.Item>
-// 							<Button as={NavLink} to="/login" primary>
-// 								Login
-// 							</Button>
-// 						</Menu.Item>
-// 						<Dropdown item text="Mehr">
-// 							<Dropdown.Menu>
-// 								<Dropdown.Item as={NavLink} to="/register">
-// 									Registrieren
-// 								</Dropdown.Item>
-// 								<Dropdown.Item as={NavLink} to="/" onClick={() => onSignOut()}>
-// 									Abmelden
-// 								</Dropdown.Item>
-// 							</Dropdown.Menu>
-// 						</Dropdown>
-// 					</Menu.Menu>
-// 				</Menu>
-// 			</nav>
-// 			<section
-// 				className="section"
-// 				style={{
-// 					backgroundImage: `url(${car})`,
-// 					backgroundSize: "cover",
-// 					backgroundAttachment: "fixed"
-// 				}}
-// 			/>
-// 			<div className="pattern-overlay" />
-// 		</header>
-// 	</Fragment>
