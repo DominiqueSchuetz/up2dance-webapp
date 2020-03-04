@@ -1,12 +1,14 @@
+/* eslint-disable import/first */
 import { Segment, Form, Dimmer, Loader } from "semantic-ui-react";
 import React, { useState, useEffect, Fragment } from "react";
 import {
 	GoogleMap,
 	useLoadScript,
 	StandaloneSearchBox,
-	StandaloneSearchBoxProps,
 	Marker
 } from "@react-google-maps/api";
+// const ScriptLoaded = require("../../../node_modules/@react-google-maps/api/src/docs/ScriptLoaded").default;
+// import ScriptLoaded from "@react-google-maps/api/src/docs/ScriptLoaded";
 import mapStylesDarkMode from "./darkMode.json";
 import { IAddress } from "../../models";
 import { isNil, isEmpty } from "lodash";
@@ -14,20 +16,13 @@ import { getTimes } from "suncalc";
 import moment from "moment";
 import "moment/locale/de";
 
-interface IAddressComponent {
-	long_name: string;
-	short_name: string;
-	types: [""];
-}
-
 interface IStateProps {
 	hasSearchBox?: boolean;
 	getAddress?: any;
 	storedAddress: IAddress;
 }
 
-const GOOGLE_MAPS_LIBARIES = [ "places" ];
-
+const GOOGLE_MAPS_LIBARIES = ["places"];
 const GoogleMaps: React.FC<IStateProps> = (props) => {
 	const { getAddress, storedAddress, hasSearchBox } = props;
 	const { isLoaded, loadError } = useLoadScript({
@@ -40,11 +35,11 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		libraries: GOOGLE_MAPS_LIBARIES
 	});
 
-	const [ zoom, setZoom ] = useState(14);
-	const [ searchBox, setStandaloneSearchBox ] = useState();
-	const [ postion, setPosition ] = useState({ lat: 51.48217, lng: 11.9658 });
-	const [ formatted_address, setFormatted_address ] = useState<string>("");
-	const [ address, setAddress ] = useState<IAddress>({
+	const [zoom, setZoom] = useState(14);
+	const [searchBox, setStandaloneSearchBox] = useState<google.maps.places.SearchBox>();
+	const [postion, setPosition] = useState({ lat: 51.48217, lng: 11.9658 });
+	const [formatted_address, setFormatted_address] = useState<string>("");
+	const [address, setAddress] = useState<IAddress>({
 		streetName: "",
 		streetNumber: "",
 		zipCode: "",
@@ -63,20 +58,11 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 				setZoom(17);
 			}
 		},
-		[ storedAddress ]
+		[storedAddress]
 	);
 
-	console.log("GoogleMaps gets rendered!");
-
-	const handleOnloadSearchBox = (ref: StandaloneSearchBoxProps) => {
-		setStandaloneSearchBox(ref);
-	};
-
 	const handleOnChangeSearchbox = (event: React.ChangeEvent<HTMLInputElement>) => {
-		console.log("handleSearchbox ", event.target.value.length);
-
 		if (event.target.value.length === 0) {
-			console.log("handleSearchbox if true ");
 			setAddress({
 				streetName: "",
 				streetNumber: "",
@@ -95,7 +81,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	};
 
 	const mapGetPlacesToAddress = (
-		address_components: IAddressComponent[] | any,
+		address_components: google.maps.GeocoderAddressComponent[],
 		newPostion: { lng: number; lat: number },
 		formatted_address: string
 	) => {
@@ -105,7 +91,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					city: address_components[0].long_name,
 					state: address_components[1].long_name,
 					formatted_address,
-					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
+					location: { coordinates: [newPostion.lng, newPostion.lat] }
 				});
 				setZoom(14);
 				break;
@@ -116,7 +102,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					state: address_components[2].long_name,
 					zipCode: address_components[3].long_name,
 					formatted_address,
-					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
+					location: { coordinates: [newPostion.lng, newPostion.lat] }
 				});
 				setZoom(17);
 				break;
@@ -128,7 +114,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 					state: address_components[3].long_name,
 					zipCode: address_components[4].long_name,
 					formatted_address,
-					location: { coordinates: [ newPostion.lng, newPostion.lat ] }
+					location: { coordinates: [newPostion.lng, newPostion.lat] }
 				});
 				setZoom(18);
 				break;
@@ -138,29 +124,30 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	};
 
 	const handleOnPlaceChanged = () => {
-		if (!isEmpty(searchBox.getPlaces()[0]) && !isNil(searchBox.getPlaces()[0])) {
-			const addressComponents: [] = searchBox!.getPlaces()[0]!.address_components;
-			const formatted_address = searchBox!.getPlaces()[0]!.formatted_address;
+		if (!isEmpty(searchBox!.getPlaces()[0]) && !isNil(searchBox!.getPlaces()[0])) {
+			const addressComponents: google.maps.GeocoderAddressComponent[] | undefined = searchBox!.getPlaces()[0].address_components;
+			const formatted_address: string | undefined = searchBox!.getPlaces()[0].formatted_address;
 
-			const lngLat = searchBox.getPlaces()[0].geometry.location;
+			const lngLat = searchBox!.getPlaces()[0].geometry!.location;
 			const newPostion: { lng: number; lat: number } = {
 				lng: lngLat.lng(),
 				lat: lngLat.lat()
 			};
 			if (addressComponents) {
-				const types = [ "street_number", "route", "locality", "administrative_area_level_1", "postal_code" ];
-				const filterByMapTypes: IAddressComponent[] = [];
+				const types = ["street_number", "route", "locality", "administrative_area_level_1", "postal_code"];
+				const filterByMapTypes: google.maps.GeocoderAddressComponent[] = [];
 
 				// Filter map types
-				addressComponents.forEach((o: IAddressComponent) => {
+				addressComponents.forEach((o: google.maps.GeocoderAddressComponent) => {
 					o.types.forEach((e: string) => {
 						if (types.includes(e)) {
 							filterByMapTypes.push(o);
 						}
 					});
 				});
-				mapGetPlacesToAddress(filterByMapTypes, newPostion, formatted_address);
+				mapGetPlacesToAddress(filterByMapTypes, newPostion, formatted_address!);
 				setPosition(newPostion);
+				getAddress(address);
 			} else {
 				return;
 			}
@@ -174,45 +161,43 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 		}
 	};
 
-	getAddress(address);
-
 	const renderMap = () => (
-		<Fragment>
-			{hasSearchBox && (
-				<Segment.Group>
-					<Segment>
-						<StandaloneSearchBox
-							options={{ componentRestrictions: { country: "de" } }}
-							onLoad={handleOnloadSearchBox}
-							onPlacesChanged={handleOnPlaceChanged}
-						>
-							<Form.Input
-								onKeyDown={handleOnKeyDown}
-								error={address.city.length > 0 ? false : true}
-								fluid
-								type="text"
-								iconPosition="left"
-								icon="map"
-								placeholder="Adresse"
-								value={formatted_address}
-								onChange={handleOnChangeSearchbox}
-							/>
-						</StandaloneSearchBox>
-					</Segment>
-				</Segment.Group>
-			)}
+		// <ScriptLoaded>
+			<Fragment>
+				{hasSearchBox && (
+					<Segment.Group>
+						<Segment>
+							<StandaloneSearchBox
+								onLoad={(searchbox: google.maps.places.SearchBox) => setStandaloneSearchBox(searchbox)}
+								onPlacesChanged={handleOnPlaceChanged}
+							>
+								<Form.Input
+									onKeyDown={handleOnKeyDown}
+									error={address.city.length > 0 ? false : true}
+									type="text"
+									iconPosition="left"
+									icon="map"
+									placeholder="Adresse"
+									value={formatted_address}
+									onChange={handleOnChangeSearchbox}
+								/>
+							</StandaloneSearchBox>
+						</Segment>
+					</Segment.Group>
+				)}
 
-			<GoogleMap
-				id="google-maps"
-				options={checkDarkMode() ? { styles: mapStylesDarkMode } : {}}
-				zoom={zoom}
-				center={postion}
-				mapContainerStyle={{ height: "30em", width: "100%" }}
-				mapContainerClassName="google-maps-container"
-			>
-				{true && <Marker position={postion} />}
-			</GoogleMap>
-		</Fragment>
+				<GoogleMap
+					id="google-maps"
+					// options={checkDarkMode() ? { styles: mapStylesDarkMode } : {}}
+					zoom={zoom}
+					center={postion}
+					mapContainerStyle={{ height: "30em", width: "100%" }}
+					mapContainerClassName="google-maps-container"
+				>
+					{true && <Marker position={postion} />}
+				</GoogleMap>
+			</Fragment>
+		// </ScriptLoaded>
 	);
 
 	if (loadError) {
@@ -221,10 +206,10 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 	return isLoaded ? (
 		renderMap()
 	) : (
-		<Dimmer active inverted page>
-			<Loader inline />
-		</Dimmer>
-	);
+			<Dimmer active inverted page>
+				<Loader inline />
+			</Dimmer>
+		);
 };
 
 export default GoogleMaps;

@@ -79,18 +79,18 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 		getEventObjectFromForm,
 		showToggleHidden
 	} = props;
-	const [ eventName, setEventName ] = useState<string>("");
-	const [ eventType, setEventType ] = useState<string | undefined>(undefined);
-	const [ eventDate, setEventDate ] = useState<string>("");
-	const [ timeStart, setTimeStart ] = useState<string | undefined>("");
-	const [ timeEnd, setTimeEnd ] = useState<string | undefined>("");
-	const [ hidden, setHiddenFlag ] = useState<boolean>(false);
-	const [ money, setMoney ] = useState<string>("");
-	const [ admissionCharge, setAdmissionCharge ] = useState<string | undefined>("nicht bekannt");
-	const [ actualDate, setActualDate ] = useState<string>("");
-	const [ switchState, setSwitchState ] = useState<boolean>(false);
+	const [eventName, setEventName] = useState<string>("");
+	const [eventType, setEventType] = useState<string | undefined>(undefined);
+	const [eventDate, setEventDate] = useState<string>("");
+	const [timeStart, setTimeStart] = useState<string | undefined>("");
+	const [timeEnd, setTimeEnd] = useState<string | undefined>("");
+	const [hidden, setHiddenFlag] = useState<boolean>(false);
+	const [money, setMoney] = useState<string>("");
+	const [admissionCharge, setAdmissionCharge] = useState<string | undefined>("nicht bekannt");
+	const [actualDate, setActualDate] = useState<string>("");
+	const [switchState, setSwitchState] = useState<boolean>(false);
 	// const [ kindOfEvent, setkindOfEvent ] = useState<IEventType>();
-	const [ address, setAddress ] = useState<IAddress | undefined>(undefined);
+	const [address, setAddress] = useState<IAddress | undefined>(undefined);
 
 	useEffect(
 		() => {
@@ -112,7 +112,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 				setAddress(event.address);
 			}
 		},
-		[ event ]
+		[event]
 	);
 
 	const handleOnChangeAdmissionCharge = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
@@ -130,7 +130,6 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	const onGetAddress = (address: IAddress) => {
 		console.log("onAddress ", address);
-
 		address.city.length > 3 ? setAddress(address) : setAddress(undefined);
 	};
 
@@ -348,7 +347,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 							<Form.Field>
 								<Segment>
 									<GoogleMaps
-										hasSearchBox={true}
+										hasSearchBox
 										storedAddress={address!}
 										getAddress={onGetAddress}
 									/>

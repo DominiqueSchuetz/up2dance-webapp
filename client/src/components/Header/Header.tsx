@@ -2,6 +2,7 @@ import React, { useEffect, useState, Children } from "react";
 import { IReduxSignOutUserAction } from "../../store/types/auth.types";
 import { NavbarDesktop, NavbarMobile } from "../Navbar";
 import { IUser } from "../../models";
+import { useLocation } from "react-router-dom";
 
 type IStateProps = {
 	readonly user: IUser;
@@ -15,6 +16,7 @@ type IDispatchProps = {
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 	const { onIsUserAuthenticated, children } = props;
+	const myCurrentLocation = useLocation();
 
 	useEffect(() => {
 		onIsUserAuthenticated();
@@ -22,8 +24,8 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 
 	return (
 		<div>
-			<NavbarDesktop>{children}</NavbarDesktop>
-			<NavbarMobile>{children}</NavbarMobile>
+			<NavbarDesktop pathName={myCurrentLocation.pathname}>{children}</NavbarDesktop>
+			<NavbarMobile pathName={myCurrentLocation.pathname}>{children}</NavbarMobile>
 		</div>
 	);
 };

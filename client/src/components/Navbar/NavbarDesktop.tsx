@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import PropTypes, { InferType } from "prop-types";
 import { IUser } from "../../models";
 import {
@@ -24,6 +24,7 @@ import car from "../../images/background-1.jpg";
 type IStateProps = {
 	readonly user?: IUser;
 	readonly isAuthenticated?: boolean | undefined;
+	readonly pathName?: string;
 };
 
 type IDispatchProps = {
@@ -31,7 +32,7 @@ type IDispatchProps = {
 };
 
 const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
-	const { isAuthenticated, user, onSignOut, children } = props;
+	const { isAuthenticated, user, onSignOut, children, pathName } = props;
 	const [instrumentSymbol, setInstrumentSymbol] = useState<string>("🌞");
 
 	const [fixedState, setFixedState] = useState<{ fixed: boolean }>({ fixed: false });
@@ -45,7 +46,7 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
 			getWidth={() => window.innerWidth || (Responsive.onlyTablet.minWidth as number)}
 			minWidth={Responsive.onlyTablet.minWidth}
 		>
-			<Visibility once={false} onBottomPassed={showFixedMenu} onBottomPassedReverse={hideFixedMenu}>
+			{ pathName === "/" &&  <Visibility once={false} onBottomPassed={showFixedMenu} onBottomPassedReverse={hideFixedMenu}>
 				<Segment inverted textAlign="center" style={{ minHeight: 700, padding: "1em 0em" }} vertical>
 					<Menu
 						fixed={fixed ? "top" : undefined}
@@ -87,9 +88,8 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
 							</Menu.Item>
 						</Container>
 					</Menu>
-					{/* <HomepageHeading /> */}
 				</Segment>
-			</Visibility>
+			</Visibility>}
 			{children}
 		</Responsive>
 	);

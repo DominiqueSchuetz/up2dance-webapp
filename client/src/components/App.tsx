@@ -7,7 +7,7 @@ import {
 	CustomerContainer,
 	EventContainer
 } from "../container";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, useLocation } from "react-router-dom";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { applyMiddleware, createStore } from "redux";
 import thunk, { ThunkMiddleware } from "redux-thunk";
@@ -30,6 +30,10 @@ reduxStore.subscribe(() => console.log("redux store", reduxStore.getState()));
 //const lazyEventContainer = lazy(() => import("../container/Event.Container"));
 
 const App: React.FC = () => {
+
+	
+	
+
 	return (
 		<Provider store={reduxStore}>
 			<Router>
