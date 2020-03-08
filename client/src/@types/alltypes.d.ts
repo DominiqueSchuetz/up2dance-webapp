@@ -1,1 +1,1 @@
-declare module "react-materialize";
+declare module 'react-materialize';

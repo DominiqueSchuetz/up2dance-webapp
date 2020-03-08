@@ -1,7 +1,7 @@
 :root {
   box-sizing: border-box;
-  font-size: 1em;
-  overflow-x: hidden;
+  /* font-size: 1em; */
+  /* overflow-x: hidden; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --main-font: Helvetica, Arial, sans-serif;
@@ -13,7 +13,7 @@
 
 @media (min-width: 1200px) {
   :root {
-    font-size: calc(1em);
+    /* font-size: calc(1em); */
   }
 }
 
@@ -25,19 +25,17 @@
   padding: 0;
 }
 
-
 .ui.container {
   width: 70vw;
 }
 
 .ui.input {
-  padding-bottom: 1.2em;
+  /* padding-bottom: 1.2em; */
 }
 
 .customer-form-modal {
   padding: 2.4em 0;
 }
-
 
 .headline {
   color: var(--headline-color, black) !important;
@@ -45,11 +43,9 @@
   margin-bottom: 1.5em !important;
   font-size: 2rem !important;
   text-align: center;
-
 }
 
-.card-content>* {
+.card-content > * {
   color: var(--card-content-color, red) !important;
   margin: 0.9em 0 !important;
-  /* font-size: 0.9rem !important; */
 }

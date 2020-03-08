@@ -1,64 +1,79 @@
 import {
-	CounterContainer,
-	LoginContainer,
-	RegisterContainer,
-	UserContainer,
-	GalleryContainer,
-	CustomerContainer,
-	EventContainer
-} from "../container";
-import { BrowserRouter as Router, Route, Switch, useLocation } from "react-router-dom";
-import { composeWithDevTools } from "redux-devtools-extension";
-import { applyMiddleware, createStore } from "redux";
-import thunk, { ThunkMiddleware } from "redux-thunk";
-import { HeaderContainer } from "../container";
-import { rootReducer } from "../store/reducers";
-import { ToastContainer } from "react-toastify";
-import { Footer } from "./Footer";
-import { effetIsUserAuthenticated } from "../store/effects/auth.effects";
-import { doIsUserAuthenticatedSucceededAction } from "../store/actions/auth.action";
-import "react-toastify/dist/ReactToastify.css";
+  CounterContainer,
+  LoginContainer,
+  RegisterContainer,
+  UserContainer,
+  GalleryContainer,
+  CustomerContainer,
+  EventContainer
+} from '../container';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useLocation
+} from 'react-router-dom';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { applyMiddleware, createStore } from 'redux';
+import thunk, { ThunkMiddleware } from 'redux-thunk';
+import { HeaderContainer } from '../container';
+import { rootReducer } from '../store/reducers';
+import { ToastContainer } from 'react-toastify';
+import { Footer } from './Footer';
+import { effetIsUserAuthenticated } from '../store/effects/auth.effects';
+import { doIsUserAuthenticatedSucceededAction } from '../store/actions/auth.action';
+import 'react-toastify/dist/ReactToastify.css';
 
-import "semantic-ui-css/semantic.min.css";
-import React, { lazy, Suspense, useEffect } from "react";
-import { Provider } from "react-redux";
-import { Container } from "semantic-ui-react";
+import 'semantic-ui-css/semantic.min.css';
+import React, { lazy, Suspense, useEffect } from 'react';
+import { Provider } from 'react-redux';
+import { Container } from 'semantic-ui-react';
 
 const composeEnhancer = composeWithDevTools({});
-const reduxStore: any = createStore(rootReducer, {}, composeEnhancer(applyMiddleware(thunk as ThunkMiddleware)));
-reduxStore.subscribe(() => console.log("redux store", reduxStore.getState()));
+const reduxStore: any = createStore(
+  rootReducer,
+  {},
+  composeEnhancer(applyMiddleware(thunk as ThunkMiddleware))
+);
+reduxStore.subscribe(() => console.log('redux store', reduxStore.getState()));
 //const lazyEventContainer = lazy(() => import("../container/Event.Container"));
 
 const App: React.FC = () => {
-
-	
-	
-
-	return (
-		<Provider store={reduxStore}>
-			<Router>
-				<ToastContainer autoClose={5000} />
-				<HeaderContainer>
-					<Container>
-						<main>
-							<Switch>
-								<Suspense fallback={<div>Loading...</div>}>
-									{/* <Route path="/" exact component={CounterContainer} /> */}
-									<Route path="/" exact strict component={EventContainer} />
-									<Route path="/" exact strict component={UserContainer} />
-									<Route path="/" exact strict component={GalleryContainer} />
-									<Route path="/" exact strict component={CustomerContainer} />
-									<Route path="/login" exact strict component={LoginContainer} />
-									<Route path="/register" exact strict component={RegisterContainer} />
-								</Suspense>
-							</Switch>
-						</main>
-					</Container>
-					<Route path="/" exact strict component={Footer} />
-				</HeaderContainer>
-			</Router>
-		</Provider>
-	);
+  return (
+    <Provider store={reduxStore}>
+      <Router>
+        <ToastContainer autoClose={5000} />
+        <HeaderContainer>
+          <Container>
+            <main>
+              <Switch>
+                <Suspense fallback={<div>Loading...</div>}>
+                  {/* <Route path="/" exact component={CounterContainer} /> */}
+                  <Route path="/" exact strict component={EventContainer} />
+                  <Route path="/" exact strict component={UserContainer} />
+                  <Route path="/" exact strict component={GalleryContainer} />
+                  <Route path="/" exact strict component={CustomerContainer} />
+                  <Route
+                    path="/login"
+                    exact
+                    strict
+                    component={LoginContainer}
+                  />
+                  <Route
+                    path="/register"
+                    exact
+                    strict
+                    component={RegisterContainer}
+                  />
+                </Suspense>
+              </Switch>
+            </main>
+          </Container>
+          <Route path="/" exact strict component={Footer} />
+        </HeaderContainer>
+      </Router>
+    </Provider>
+  );
 };
 
 export default App;
