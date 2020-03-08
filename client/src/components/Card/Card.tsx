@@ -37,28 +37,30 @@ const Card: React.FC<StateProps> = (props) => {
           <div>
             <ul>
               <li>
-                <button className="icons">
+                <button type="button" className="icons">
                   <i className="ion-logo-twitter" />
                 </button>
               </li>
               <li>
-                <button className="icons">
+                <button type="button" className="icons">
                   <i className="ion-logo-facebook" />
                 </button>
               </li>
               <li>
-                <button className="icons">
+                <button type="button" className="icons">
                   <i className="ion-logo-instagram" />
                 </button>
               </li>
               <li>
-                <button className="icons">
+                <button type="button" className="icons">
                   <i className="ion-logo-linkedin" />
                 </button>
               </li>
             </ul>
           </div>
-          <button className="btn-portfolio">Portfolio</button>
+          <button type="button" className="btn-portfolio">
+            Portfolio
+          </button>
         </div>
       </div>
 

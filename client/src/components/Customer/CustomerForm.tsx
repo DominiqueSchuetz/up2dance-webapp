@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Input,
   Button,
@@ -12,28 +13,23 @@ import {
 } from 'semantic-ui-react';
 import { ApplicationCustomersAction } from '../../store/types/customer.types';
 import { IAddress, IEvent, ICustomer } from '../../models';
-import React, { useEffect, useState } from 'react';
 import { EKindOfEventAction } from '../../enums';
 import { isEmailValid } from '../../lib';
 import { ModalDialog } from '../ModalDialog';
 import { EventCardForm } from '../Event';
 import { GoogleMaps } from '../GoogleMaps';
 
-interface IStateProps {}
-
 interface IDispatchProps {
   onCreateCustomer(customer: ICustomer): Promise<ApplicationCustomersAction>;
 }
 
-const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
+const CustomerForm: React.FC<IDispatchProps> = (props) => {
   const { onCreateCustomer } = props;
-
   const [modalStatus, setModalStatus] = useState<{ modalOpen: boolean }>({
     modalOpen: false
   });
   const [event, setEvent] = useState<IEvent | undefined>(undefined);
   const [address, setAddress] = useState<IAddress | undefined>(undefined);
-
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
@@ -41,13 +37,9 @@ const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   const [companyName, setCompanyName] = useState<string>('');
   const [comment, setComment] = useState<string>('');
 
-  useEffect(() => {}, []);
-
   const getEventObjectFromForm = (event: IEvent) => {
-    console.log('onAddress 345 ', event);
     setEvent(event);
     setAddress(event.address);
-    //address.city.length > 3 ? setAddress(address) : setAddress(undefined);
   };
 
   const openModalDialog = (): void => {
@@ -63,8 +55,8 @@ const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   };
 
   const handleOnChange = (
-    event: React.ChangeEvent<HTMLInputElement> | any,
-    data: DropdownProps | InputOnChangeData | any
+    event: React.ChangeEvent<HTMLInputElement>,
+    data: DropdownProps | InputOnChangeData
   ) => {
     switch (event.target.name || data.name) {
       case 'firstName':
@@ -250,7 +242,6 @@ const CustomerForm: React.FC<IStateProps & IDispatchProps> = (props) => {
       <Header className="headline" textAlign="center">
         ANFRAGE SENDEN
       </Header>
-
       <Container>{CustomerForm()}</Container>
     </>
   );

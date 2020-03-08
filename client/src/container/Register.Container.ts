@@ -1,9 +1,7 @@
+import { connect } from 'react-redux';
 import { effectRemoveMedia } from '../store/effects/media.effects';
 import { effectRegisterUser } from '../store/effects/user.effects';
 import { Register } from '../components/Register';
-import { connect } from 'react-redux';
-
-const test = '';
 
 export const mapDispatchToProps = {
   onRegisterUser: effectRegisterUser,

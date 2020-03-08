@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Embed } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 
 const Counter: React.FC = () => {
   return (

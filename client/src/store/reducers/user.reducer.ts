@@ -1,7 +1,9 @@
+import produce from 'immer';
 import { ApplicationUserAction } from '../types/user.types';
 import { ApplicationState, IUser, INITIAL_STATE } from '../../models';
 import { EReduxActionTypesUser } from '../../enums';
-import produce from 'immer';
+
+const etst = '';
 
 export const userReducer = produce(
   (draft: ApplicationState<IUser>, action: ApplicationUserAction) => {
