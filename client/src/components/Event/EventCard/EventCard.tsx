@@ -1,21 +1,9 @@
+import React, { useState } from 'react';
+import { Card, Button, Icon, Container } from 'semantic-ui-react';
 import { ApplicationEventAction } from '../../../store/types/event.types';
-import {
-  Card,
-  Image,
-  List,
-  Label,
-  Button,
-  Icon,
-  Grid,
-  GridColumn,
-  Header,
-  Container
-} from 'semantic-ui-react';
-import { IEvent, IAddress } from '../../../models';
-import React, { Fragment, useState } from 'react';
+import { IEvent } from '../../../models';
 import { ModalDialog } from '../../ModalDialog';
-import { EventDeleteDialog } from '../';
-import { EventCardForm } from '../';
+import { EventDeleteDialog, EventCardForm } from '..';
 import { EKindOfEventAction } from '../../../enums';
 
 type IStateProps = {
@@ -30,7 +18,7 @@ type IDispatchProps = {
 
 const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
   const { event, isAuthenticated, updateEvent, onRemoveEvent } = props;
-  const address: IAddress | undefined = event.address;
+  const { address } = event;
 
   const [modalStatus, setModalStaus] = useState<{ modalOpen: boolean }>({
     modalOpen: false
@@ -56,12 +44,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
   };
 
   const renderModalComponent: JSX.Element = deleteDialog ? (
-    <EventDeleteDialog
-      onRemoveEvent={onRemoveEvent}
-      event={event}
-      handleCancelEvent={handleSpecialEvent}
-      headerText="Event Löschen"
-    />
+    <EventDeleteDialog onRemoveEvent={onRemoveEvent} event={event} handleCancelEvent={handleSpecialEvent} headerText="Event Löschen" />
   ) : (
     <EventCardForm
       showToggleHidden={true}
@@ -82,12 +65,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
         </Button.Content>
       </Button>
       <Button.Or />
-      <Button
-        name="delete"
-        animated
-        color="grey"
-        onClick={openModalDialogDeleteForm}
-      >
+      <Button name="delete" animated color="grey" onClick={openModalDialogDeleteForm}>
         <Button.Content visible>Löschen</Button.Content>
         <Button.Content hidden>
           <Icon name="trash alternate outline" />
@@ -98,14 +76,10 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <Container textAlign="center">
-      <ModalDialog
-        trigger={isAuthenticated ? cardButtonGroup : null}
-        modalStatus={modalStatus.modalOpen}
-        onClose={onCloseEvent}
-      >
+      <ModalDialog trigger={isAuthenticated ? cardButtonGroup : null} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
         {renderModalComponent}
       </ModalDialog>
-      <Card centered raised header="de">
+      <Card centered raised>
         <Card.Content className="card-content" textAlign="center">
           <Icon name="chess rock" size="small" color="orange" />
           <Card.Meta>Am</Card.Meta>

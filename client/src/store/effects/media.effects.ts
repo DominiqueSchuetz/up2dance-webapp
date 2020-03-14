@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import {
   doListMediaStarted,
   doListMediaSucceeded,
@@ -20,14 +21,8 @@ import {
   doRemoveMediaError,
   doRemoveMediaEnded
 } from '../actions/media.action';
-import {
-  listMediaService,
-  addMediaService,
-  deleteMediaService,
-  updateMediaService
-} from '../../services';
+import { listMediaService, addMediaService, deleteMediaService, updateMediaService } from '../../services';
 import { Effect, IMedia, IResponse } from '../../models';
-import { toast } from 'react-toastify';
 
 //
 // ────────────────────────────────────────────────────────────── LIST MEDIA ─────
@@ -61,9 +56,7 @@ export const effectListMedia = (): Effect => async (dispatch) => {
 //
 // ──────────────────────────────────────────────────────────────── ADD MEDIA ─────
 //
-export const effectAddMedia = (mediaFormData: FormData): Effect => async (
-  dispatch
-) => {
+export const effectAddMedia = (mediaFormData: FormData): Effect => async (dispatch) => {
   dispatch(doAddMediaStarted());
   try {
     const payload: IResponse<IMedia> = await addMediaService(mediaFormData);
@@ -93,16 +86,10 @@ export const effectAddMedia = (mediaFormData: FormData): Effect => async (
 //
 // ──────────────────────────────────────────────────────────────── UPDATE MEDIA ─────
 //
-export const effectUpdateMedia = (
-  id: string,
-  mediaFormData: FormData
-): Effect => async (dispatch) => {
+export const effectUpdateMedia = (id: string, mediaFormData: FormData): Effect => async (dispatch) => {
   dispatch(doUpdateMediaStarted());
   try {
-    const payload: IResponse<IMedia> = await updateMediaService(
-      id,
-      mediaFormData
-    );
+    const payload: IResponse<IMedia> = await updateMediaService(id, mediaFormData);
     if (payload.success && payload.errorCode === 0) {
       dispatch(doUpdateMediaSucceeded(payload));
       toast.success(`${payload.message}`);

@@ -1,31 +1,11 @@
-import {
-  IReduxListMediaAction,
-  IReduxAddMediaAction,
-  IReduxRemoveMediaAction
-} from '../../store/types/media.types';
-import {
-  Grid,
-  Image,
-  Container,
-  Header,
-  Dimmer,
-  Loader,
-  Segment,
-  Button,
-  Icon,
-  Modal
-} from 'semantic-ui-react';
-import React, {
-  useEffect,
-  Fragment,
-  useRef,
-  useState,
-  useCallback,
-  useMemo
-} from 'react';
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/indent */
+import React, { useEffect, useRef, useState } from 'react';
+import { isArray } from 'lodash';
+import { Grid, Image, Container, Header, Dimmer, Loader, Segment, Button, Icon, Modal } from 'semantic-ui-react';
+import { IReduxListMediaAction, IReduxAddMediaAction, IReduxRemoveMediaAction } from '../../store/types/media.types';
 import { ModalDialog } from '../ModalDialog';
 import { IMedia } from '../../models';
-import { isArray } from 'lodash';
 
 type IStateProps = {
   readonly isAuthenticated: boolean;
@@ -39,22 +19,15 @@ type IDispatchProps = {
   onRemoveMedia(id: string): Promise<IReduxRemoveMediaAction>;
 };
 
-let FILE_ID: string | undefined = undefined;
-let NAME: string | undefined = undefined;
+let FILE_ID: string | undefined;
+let NAME: string | undefined;
 
 const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const {
-    media,
-    isAuthenticated,
-    onListMedia,
-    onAddMedia,
-    onRemoveMedia,
-    isMediaLoading
-  } = props;
+  const { media, isAuthenticated, onListMedia, onAddMedia, onRemoveMedia, isMediaLoading } = props;
   const [modalStatus, setModalStaus] = useState<{ modalOpen: boolean }>({
     modalOpen: false
   });
-  const inputRef: any = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     onListMedia();
@@ -62,13 +35,10 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   const handleUploadAction = async (event: any) => {
     const naiveFileName: string = Object(event.target.files)[0].name;
-    const fileNameWithoutType = naiveFileName.substring(
-      0,
-      naiveFileName.lastIndexOf('.')
-    );
+    const fileNameWithoutType = naiveFileName.substring(0, naiveFileName.lastIndexOf('.'));
     const file: File = event.target.files[0];
 
-    let mediaFormData: FormData = new FormData();
+    const mediaFormData: FormData = new FormData();
     mediaFormData.append('filePath', file);
     mediaFormData.append('fileName', fileNameWithoutType!);
     mediaFormData.append('isUserPicture', JSON.stringify(false));
@@ -78,14 +48,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   const addNewImageButton = isAuthenticated && (
     <Container textAlign="center">
-      <Button
-        circular
-        content="Neues Foto"
-        icon="add"
-        labelPosition="right"
-        color="blue"
-        onClick={() => inputRef.current.click()}
-      />
+      <Button circular content="Neues Foto" icon="add" labelPosition="right" color="blue" onClick={() => inputRef!.current!.click()} />
       <input
         id="add-new-image-to-gallery"
         type="file"
@@ -99,25 +62,21 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
   );
 
   const renderDeleteMessage = (
-    <Fragment>
-      <Modal.Header>{'Delete'}</Modal.Header>
+    <>
+      <Modal.Header>Delete</Modal.Header>
       <Modal.Content image>
         <Modal.Description>
           <Header as="h2">
             <Header.Content>
               Du möchtest wirklich <Icon color="pink" name="hand point right" />
-              <i style={{ color: 'pink' }}>{NAME}</i>{' '}
-              <Icon color="pink" name="hand point left" />
+              <i style={{ color: 'pink' }}>{NAME}</i> <Icon color="pink" name="hand point left" />
               löschen?
             </Header.Content>
           </Header>
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
-        <Button
-          color="black"
-          onClick={() => setModalStaus({ modalOpen: false })}
-        >
+        <Button color="black" onClick={() => setModalStaus({ modalOpen: false })}>
           Abbrechen
         </Button>
         <Button
@@ -131,7 +90,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
           }}
         />
       </Modal.Actions>
-    </Fragment>
+    </>
   );
 
   const renderAllPictures = (allMedia: IMedia[]) => {
@@ -148,31 +107,23 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
                 size="large"
                 centered
                 src={`http://localhost:8080/api/media/${mapMedia._id}`}
-                label={
-                  isAuthenticated
-                    ? deleteImage(mapMedia, setModalStaus)
-                    : undefined
-                }
+                label={isAuthenticated ? deleteImage(mapMedia, setModalStaus) : undefined}
               />
             </Grid.Column>
           ));
-        } else {
-          return (
-            <Fragment>
-              <Segment
-                raised
-                style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}
-              >
-                <Header as="h2">
-                  Es gibt derzeit keine Bilder...{' '}
-                  <span role="img" aria-label="sleeping-emoji">
-                    😴
-                  </span>
-                </Header>
-              </Segment>
-            </Fragment>
-          );
         }
+        return (
+          <>
+            <Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
+              <Header as="h2">
+                Es gibt derzeit keine Bilder...{' '}
+                <span role="img" aria-label="sleeping-emoji">
+                  😴
+                </span>
+              </Header>
+            </Segment>
+          </>
+        );
       }
     } else {
       return (
@@ -185,11 +136,9 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <section>
-      <ModalDialog
-        modalStatus={modalStatus.modalOpen}
-        children={renderDeleteMessage}
-        onClose={() => setModalStaus({ modalOpen: false })}
-      />
+      <ModalDialog modalStatus={modalStatus.modalOpen} onClose={() => setModalStaus({ modalOpen: false })}>
+        {renderDeleteMessage}
+      </ModalDialog>
 
       <Header className="headline" textAlign="center">
         GALLERIE

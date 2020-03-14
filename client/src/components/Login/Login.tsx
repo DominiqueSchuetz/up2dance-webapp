@@ -1,17 +1,8 @@
-import { ISignInUserData, IUser, IReduxState } from '../../models';
-import {
-  Grid,
-  Header,
-  Segment,
-  Button,
-  Image,
-  Form,
-  Message,
-  Container
-} from 'semantic-ui-react';
-import { IReduxSignInUserAction } from '../../store/types/auth.types';
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Grid, Header, Segment, Button, Image, Form, Message, Container } from 'semantic-ui-react';
+import { ISignInUserData, IUser, IReduxState } from '../../models';
+import { IReduxSignInUserAction } from '../../store/types/auth.types';
 
 interface IStateProps {
   userPayload: IReduxState<IUser>;
@@ -26,10 +17,8 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleOnChange = (e: any) => {
-    e.target.name === 'email'
-      ? setEmail(e.target.value)
-      : setPassword(e.target.value);
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.name === 'email' ? setEmail(e.target.value) : setPassword(e.target.value);
   };
 
   const handleLogin = () => {
@@ -65,15 +54,7 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
                 placeholder="Password"
                 onChange={handleOnChange}
               />
-              <Button
-                as={NavLink}
-                to="/"
-                primary
-                color="teal"
-                fluid
-                size="large"
-                onClick={handleLogin}
-              >
+              <Button as={NavLink} to="/" primary color="teal" fluid size="large" onClick={handleLogin}>
                 Login
               </Button>
             </Segment>

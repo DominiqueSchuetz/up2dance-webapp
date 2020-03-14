@@ -1,27 +1,11 @@
-import {
-  Grid,
-  Header,
-  Image,
-  Segment,
-  Sidebar,
-  StrictSidebarProps
-} from 'semantic-ui-react';
-import React, { Fragment } from 'react';
+import React from 'react';
+import { Grid, Header, Image, Segment, Sidebar, StrictSidebarProps } from 'semantic-ui-react';
 
-interface IStateProps extends StrictSidebarProps {}
-
-interface IDispatchProps {}
-
-const SideBar: React.FC<IStateProps & IDispatchProps> = (props) => {
+const SideBar: React.FC<StrictSidebarProps> = (props) => {
   const { animation, direction, visible } = props;
   return (
-    <Fragment>
-      <Sidebar
-        as={Segment}
-        animation={animation}
-        direction={direction}
-        visible={visible}
-      >
+    <>
+      <Sidebar as={Segment} animation={animation} direction={direction} visible={visible}>
         <Grid textAlign="center">
           <Grid.Row columns={1}>
             <Grid.Column>
@@ -41,7 +25,7 @@ const SideBar: React.FC<IStateProps & IDispatchProps> = (props) => {
           </Grid>
         </Grid>
       </Sidebar>
-    </Fragment>
+    </>
   );
 };
 

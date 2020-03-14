@@ -1,18 +1,9 @@
-import {
-  Segment,
-  Card,
-  Dimmer,
-  Loader,
-  Header,
-  Container,
-  Grid
-} from 'semantic-ui-react';
-import { ApplicationUserAction } from '../../../store/types/user.types';
-import { IReduxListUsersAction } from '../../../store/types/user.types';
-import { IReduxState, IUser } from '../../../models';
-import { Card as NewCard } from '../../Card';
-import React, { useEffect, Fragment } from 'react';
+/* eslint-disable no-shadow */
 import { isArray } from 'lodash';
+import React, { useEffect } from 'react';
+import { Segment, Dimmer, Loader, Header, Grid } from 'semantic-ui-react';
+import { ApplicationUserAction, IReduxListUsersAction } from '../../../store/types/user.types';
+import { IUser } from '../../../models';
 import { UserCard } from '..';
 
 type IStateProps = {
@@ -23,65 +14,43 @@ type IStateProps = {
 
 type IDispatchProps = {
   onListUsers(): Promise<IReduxListUsersAction>;
-  onUpdateUser?(
-    id: string,
-    userFormData: FormData
-  ): Promise<ApplicationUserAction>;
+  onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
   onDeleteUser(id: string): Promise<ApplicationUserAction>;
 };
 
 const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const {
-    isUserPayloadLoading,
-    isAuthenticated,
-    users,
-    onListUsers,
-    onUpdateUser,
-    onDeleteUser
-  } = props;
+  const { isUserPayloadLoading, isAuthenticated, users, onListUsers, onUpdateUser, onDeleteUser } = props;
 
   useEffect(() => {
     onListUsers();
   }, [onListUsers]);
 
+  // tslint:disable-next-line: no-shadowed-variable
   const renderUserCards = (users: IUser[]) => {
     if (!isUserPayloadLoading) {
       if (isArray(users) && users.length > 0) {
         return users.map((mapUser: IUser) => (
-          <Grid.Column>
-            {/* <NewCard user={mapUser} /> */}
-            <UserCard
-              isAuthenticated={isAuthenticated}
-              user={mapUser}
-              onUpdateUser={onUpdateUser}
-              onDeleteUser={onDeleteUser}
-            />
+          <Grid.Column key={mapUser?._id}>
+            <UserCard isAuthenticated={isAuthenticated} user={mapUser} onUpdateUser={onUpdateUser} onDeleteUser={onDeleteUser} />
           </Grid.Column>
         ));
-      } else {
-        return (
-          <Fragment>
-            <Segment
-              raised
-              style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}
-            >
-              <Header as="h2">
-                Es gibt derzeit keine Benutzer...{' '}
-                <span role="img" aria-label="sleeping-emoji">
-                  😴
-                </span>
-              </Header>
-            </Segment>
-          </Fragment>
-        );
       }
-    } else {
       return (
-        <Dimmer active inverted page>
-          <Loader inline />
-        </Dimmer>
+        <Segment raised style={{ marginTop: 50, marginBottom: 0, marginRight: 40 }}>
+          <Header as="h2">
+            Es gibt derzeit keine Benutzer...{' '}
+            <span role="img" aria-label="sleeping-emoji">
+              😴
+            </span>
+          </Header>
+        </Segment>
       );
     }
+    return (
+      <Dimmer active inverted page>
+        <Loader inline />
+      </Dimmer>
+    );
   };
 
   return (

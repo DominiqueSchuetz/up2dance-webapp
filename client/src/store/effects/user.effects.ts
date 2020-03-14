@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import {
   doListUsersStarted,
   doListUsersSucceeded,
@@ -21,18 +22,9 @@ import {
   doRemoveUserEnded
 } from '../actions/user.actions';
 import { doUpdateAuthUserSucceeded } from '../actions/auth.action';
-import {
-  listUsersService,
-  registerUserService,
-  updateUserService,
-  deleteUserService
-} from '../../services';
+import { listUsersService, registerUserService, updateUserService, deleteUserService } from '../../services';
 import { Effect, IUser, IResponse, IAuthUser } from '../../models';
-import { toast } from 'react-toastify';
-import {
-  removeAndClearJwtTokenFromBrowser,
-  addJwtTokenToApplication
-} from '../../lib';
+import { removeAndClearJwtTokenFromBrowser, addJwtTokenToApplication } from '../../lib';
 
 //
 // ────────────────────────────────────────────────────────────── LIST Users ─────
@@ -66,9 +58,7 @@ export const effectListUsers = (): Effect => async (dispatch) => {
 //
 // ──────────────────────────────────────────────────────────────── ADD User ─────
 //
-export const effectRegisterUser = (userFormData: FormData): Effect => async (
-  dispatch
-) => {
+export const effectRegisterUser = (userFormData: FormData): Effect => async (dispatch) => {
   dispatch(doAddUserStarted());
   try {
     const payload: IResponse<IUser> = await registerUserService(userFormData);
@@ -98,16 +88,10 @@ export const effectRegisterUser = (userFormData: FormData): Effect => async (
 //
 // ──────────────────────────────────────────────────────────────── UPDATE User ─────
 //
-export const effectUpdateUser = (
-  id: string,
-  userFormData: FormData
-): Effect => async (dispatch) => {
+export const effectUpdateUser = (id: string, userFormData: FormData): Effect => async (dispatch) => {
   dispatch(doUpdateUserStarted());
   try {
-    const payload: IResponse<IUser, IAuthUser> = await updateUserService(
-      id,
-      userFormData
-    );
+    const payload: IResponse<IUser, IAuthUser> = await updateUserService(id, userFormData);
     if (payload.success && payload.errorCode === 0) {
       dispatch(doUpdateAuthUserSucceeded(payload));
       dispatch(doUpdateUserSucceeded(payload));

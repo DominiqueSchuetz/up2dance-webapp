@@ -1,21 +1,9 @@
-import React, { Fragment } from 'react';
-import {
-  Image,
-  List,
-  Header,
-  Segment,
-  Container,
-  Icon,
-  Grid
-} from 'semantic-ui-react';
+import React from 'react';
+import { List, Header, Segment, Container, Icon, Grid } from 'semantic-ui-react';
 
 const Footer: React.FC = () => {
   return (
-    <Segment
-      inverted
-      vertical
-      style={{ padding: '5em 0em', marginTop: '10em' }}
-    >
+    <Segment inverted vertical style={{ padding: '5em 0em', marginTop: '10em' }}>
       <Container>
         <Grid divided inverted stackable>
           <Grid.Row>
@@ -41,10 +29,7 @@ const Footer: React.FC = () => {
               <Header as="h4" inverted>
                 Footer Header
               </Header>
-              <p>
-                Extra space for a call to action inside the footer that could
-                help re-engage users.
-              </p>
+              <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
             </Grid.Column>
           </Grid.Row>
         </Grid>

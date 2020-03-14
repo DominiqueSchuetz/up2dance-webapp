@@ -1,10 +1,10 @@
+import React, { useState } from 'react';
 import { Image, Button, Icon, Container, Header } from 'semantic-ui-react';
 import { ApplicationUserAction } from '../../../store/types/user.types';
-import React, { Fragment, useState } from 'react';
 import { ModalDialog } from '../../ModalDialog';
 import { Register } from '../../Register';
 import { IUser } from '../../../models';
-import { UserDeleteDialog } from '../';
+import { UserDeleteDialog } from '..';
 
 type IStateProps = {
   readonly user: IUser;
@@ -12,10 +12,7 @@ type IStateProps = {
 };
 
 type IDispatchProps = {
-  onUpdateUser?(
-    id: string,
-    userFormData: FormData
-  ): Promise<ApplicationUserAction>;
+  onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
   onDeleteUser(id: string): Promise<ApplicationUserAction>;
 };
 
@@ -47,19 +44,9 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
   };
 
   const renderModalComponent: JSX.Element = deleteDialog ? (
-    <UserDeleteDialog
-      user={user}
-      handleCancelUser={handleSpecialEvent}
-      onDeleteUser={onDeleteUser}
-      headerText="User Löschen"
-    />
+    <UserDeleteDialog user={user} handleCancelUser={handleSpecialEvent} onDeleteUser={onDeleteUser} headerText="User Löschen" />
   ) : (
-    <Register
-      user={user}
-      handleCancelUser={handleSpecialEvent}
-      onUpdateUser={onUpdateUser}
-      headerText="User Editieren"
-    />
+    <Register user={user} handleCancelUser={handleSpecialEvent} onUpdateUser={onUpdateUser} headerText="User Editieren" />
   );
 
   const cardButtonGroup: JSX.Element = (
@@ -72,12 +59,7 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
           </Button.Content>
         </Button>
         <Button.Or />
-        <Button
-          name="delete"
-          animated
-          color="grey"
-          onClick={openModalDialogDeleteForm}
-        >
+        <Button name="delete" animated color="grey" onClick={openModalDialogDeleteForm}>
           <Button.Content visible>Löschen</Button.Content>
           <Button.Content hidden>
             <Icon name="trash alternate outline" />
@@ -88,28 +70,17 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
   );
 
   return (
-    <Fragment>
-      <ModalDialog
-        trigger={isAuthenticated ? cardButtonGroup : null}
-        modalStatus={modalStatus.modalOpen}
-        onClose={onCloseEvent}
-      >
+    <>
+      <ModalDialog trigger={isAuthenticated ? cardButtonGroup : null} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
         {renderModalComponent}
       </ModalDialog>
-      <Image
-        fluid
-        centered
-        bordered
-        circular
-        src={refId ? 'http://localhost:8080/api/media/' + refId : ''}
-        size="medium"
-      />
+      <Image centered bordered circular src={refId ? `http://localhost:8080/api/media/${refId}` : ''} size="medium" />
 
       <Header textAlign="center">{user.firstName}</Header>
       <Container text>
         <p>{user.comment}</p>
       </Container>
-    </Fragment>
+    </>
   );
 };
 

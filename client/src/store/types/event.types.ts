@@ -1,6 +1,6 @@
+import { Action } from 'redux';
 import { IEvent, IResponse } from '../../models';
 import { EReduxActionTypesEvent } from '../../enums';
-import { Action } from 'redux';
 
 export interface IReduxBaseAction extends Action {
   type: EReduxActionTypesEvent;

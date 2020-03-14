@@ -1,13 +1,5 @@
-import React, { useState, useRef, Fragment, useEffect } from 'react';
-import {
-  Image,
-  ImageProps,
-  Segment,
-  Form,
-  Header,
-  Button,
-  Icon
-} from 'semantic-ui-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Image, ImageProps, Segment, Form, Header, Button, Icon } from 'semantic-ui-react';
 
 interface IStateProps {
   id: string;
@@ -19,95 +11,57 @@ interface IStateProps {
   getImageObjectFromComponent?: any;
 }
 
-interface IDispatchProps {}
-
-const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const {
-    id,
-    circular,
-    name,
-    size,
-    refId,
-    getImageObjectFromComponent
-  } = props;
-
-  const [filePath, setFilePath] = useState<any | undefined>(undefined);
-  const [fileName, setFileName] = useState<string | undefined>('');
-  const [file, setFile] = useState<{ file: any }>({ file: '' });
+const FileUpload: React.FC<IStateProps> = (props) => {
+  const { id, circular, name, size, refId, getImageObjectFromComponent } = props;
+  const [file, setFile] = useState<{ file: string }>({ file: '' });
   const [imgId, setImgId] = useState<string | undefined>('');
 
-  const inputRef: any = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setImgId(refId);
   }, [refId]);
 
-  const imageUploaded = (
-    <Image src={file.file} size={size} circular={circular} centered />
-  );
-  const imageUploaded2 = (
-    <Image
-      src={'http://localhost:8080/api/media/' + imgId}
-      size={size}
-      centered
-      circular={circular}
-    />
-  );
+  const imageUploaded = <Image src={file.file} size={size} circular={circular} centered />;
+  const imageUploaded2 = <Image src={`http://localhost:8080/api/media/${imgId}`} size={size} centered circular={circular} />;
 
   const uplaodImage = (
-    <Fragment>
+    <>
       <Header icon>
         <Icon name="upload" />
         <h4>Du hast bis jetzt noch kein Bild hochgeladen.</h4>
       </Header>
       <br />
-      <Button primary onClick={() => inputRef.current.click()}>
+      <Button primary onClick={() => inputRef.current!.click()}>
         Foto hinzufügen
       </Button>
-    </Fragment>
+    </>
   );
 
-  const handleUploadAction = async (event: any) => {
-    const naiveFileName: string = Object(event.target.files)[0].name;
-    const fileNameWithoutType = naiveFileName.substring(
-      0,
-      naiveFileName.lastIndexOf('.')
-    );
-    const file: File = event.target.files[0];
+  const handleUploadAction = (event: React.ChangeEvent<HTMLInputElement & FileList>) => {
+    const nativeFileName: string = event.target.files![0].name;
+    const fileNameWithoutType = nativeFileName.substring(0, nativeFileName.lastIndexOf('.'));
+    const mediaFile: File = event.target.files![0];
 
-    setFilePath(file);
-    setFileName(fileNameWithoutType);
-    setFile({ file: URL.createObjectURL(event.target.files[0]) });
-
-    getImageObjectFromComponent({ file, fileNameWithoutType });
-  };
-
-  const resetFile = () => {
-    const file = document.querySelector(`#${id}`);
-    Object(file).value = '';
+    setFile({ file: URL.createObjectURL(event.target.files![0]) });
+    getImageObjectFromComponent({ mediaFile, fileNameWithoutType });
   };
 
   const handleRemove = () => {
     setFile({ file: '' });
-    setFilePath(undefined);
     setImgId(undefined);
-    resetFile();
+    const image = document.querySelector(`#${id}`);
+    Object(image).value = '';
   };
 
   return (
-    <Fragment>
-      <Fragment>
-        <Segment textAlign="center">
-          {file.file ? imageUploaded : imgId ? imageUploaded2 : uplaodImage}
-        </Segment>
-        <Form.Button
-          fluid
-          onClick={handleRemove}
-          style={{ marginBottom: '15px' }}
-        >
+    <>
+      <>
+        <Segment textAlign="center">{file.file ? imageUploaded : imgId ? imageUploaded2 : uplaodImage}</Segment>
+        <Form.Button fluid onClick={handleRemove} style={{ marginBottom: '15px' }}>
           Bild verwerfen
         </Form.Button>
-      </Fragment>
+      </>
       <input
         id={id}
         type="file"
@@ -117,7 +71,7 @@ const FileUpload: React.FC<IStateProps & IDispatchProps> = (props) => {
         name={name}
         onChange={handleUploadAction}
       />
-    </Fragment>
+    </>
   );
 };
 

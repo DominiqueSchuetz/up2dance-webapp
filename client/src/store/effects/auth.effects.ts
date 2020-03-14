@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+import { isEmpty } from 'lodash';
 import { Effect, IAuthUser, IResponse, ISignInUserData } from '../../models';
 import { isUserAuthenticatedService, signInUserService } from '../../services';
 import {
@@ -5,26 +7,16 @@ import {
   doIsUserAuthenticatedSucceededAction,
   doIsUserAuthenticatedFailedAction,
   doIsUserAuthenticatedErrorAction,
-  doSignOutUserSucceeded
-} from '../actions/auth.action';
-import {
+  doSignOutUserSucceeded,
   doSignInUserStarted,
   doSignInUserSucceeded,
   doSignInUserFailed,
   doSignInUserError,
   doSignInUserEnded
 } from '../actions/auth.action';
-import { toast } from 'react-toastify';
-import {
-  removeAndClearJwtTokenFromBrowser,
-  addJwtTokenToApplication
-} from '../../lib';
-import { isEmpty } from 'lodash/fp';
+import { removeAndClearJwtTokenFromBrowser, addJwtTokenToApplication } from '../../lib';
 
-export const effetIsUserAuthenticated = (): Effect => async (
-  dispatch,
-  getState
-) => {
+export const effetIsUserAuthenticated = (): Effect => async (dispatch, getState) => {
   dispatch(doIsUserAuthenticatedStartedAction());
   try {
     const payload: IResponse<IAuthUser> = await isUserAuthenticatedService();
@@ -40,35 +32,24 @@ export const effetIsUserAuthenticated = (): Effect => async (
         success: false,
         errorCode: 5,
         errorMessage: e,
-        message:
-          'Ein Error trat bei der Authentifizierung von einem Benutzer auf.',
+        message: 'Ein Error trat bei der Authentifizierung von einem Benutzer auf.',
         items: null,
         item: null
       })
     );
     removeAndClearJwtTokenFromBrowser();
-    toast.error(
-      'Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮'
-    );
+    toast.error('Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮');
   }
 };
 
 //
 // ──────────────────────────────────────────────────────────────── SIGN_IN User ─────
 //
-export const effectSignIn = (authData: ISignInUserData): Effect => async (
-  dispatch
-) => {
+export const effectSignIn = (authData: ISignInUserData): Effect => async (dispatch) => {
   dispatch(doSignInUserStarted());
   try {
-    const payload: IResponse<null, IAuthUser> = await signInUserService(
-      authData
-    );
-    const {
-      isAuthenticated,
-      authUser,
-      jwtToken
-    } = payload.authPayload as IAuthUser;
+    const payload: IResponse<null, IAuthUser> = await signInUserService(authData);
+    const { isAuthenticated, authUser, jwtToken } = payload.authPayload as IAuthUser;
 
     if (isAuthenticated && !isEmpty(authUser)) {
       dispatch(doSignInUserSucceeded(payload));
@@ -87,17 +68,14 @@ export const effectSignIn = (authData: ISignInUserData): Effect => async (
         success: false,
         errorCode: 5,
         errorMessage: error,
-        message:
-          'Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮',
+        message: 'Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮',
         items: null,
         item: null
       })
     );
     dispatch(doSignInUserEnded());
     removeAndClearJwtTokenFromBrowser();
-    toast.error(
-      'Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮'
-    );
+    toast.error('Ein Error trat bei der Authentifizierung von einem Benutzer auf 🤮');
   }
 };
 
@@ -105,12 +83,10 @@ export const effectSignIn = (authData: ISignInUserData): Effect => async (
 // ──────────────────────────────────────────────────────────────── SIGN_OUT User ─────
 //
 export const effectSignOut = (): Effect => async (dispatch, getState) => {
-  const firstName = Object(getState()).authReducer.payload.authPayload.authUser
-    .firstName;
   try {
     dispatch(doSignOutUserSucceeded());
     removeAndClearJwtTokenFromBrowser();
-    toast.success(`${firstName}, du bist erfolgreich ausgeloggt`);
+    toast.success('Du bist erfolgreich ausgeloggt');
   } catch (error) {
     dispatch(doSignInUserError(error));
     toast.error('Ein Error trat beim ausloggen eines Benutzer auf 🤮');

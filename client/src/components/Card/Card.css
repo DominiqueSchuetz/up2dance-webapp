@@ -84,8 +84,7 @@
   width: 85px;
   height: 85px;
   border: 3px solid #f1f8fd;
-  box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.07),
-    -20px -20px 20px rgba(255, 255, 255, 0.7), 6px 6px 6px rgba(0, 0, 0, 0.09),
+  box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.07), -20px -20px 20px rgba(255, 255, 255, 0.7), 6px 6px 6px rgba(0, 0, 0, 0.09),
     -6px -6px 6px rgba(255, 255, 255, 0.9);
 }
 
@@ -100,8 +99,7 @@
   top: 30px;
   left: 30px;
   margin: -27.5px 0 0 -27.5px;
-  box-shadow: inset 5px 5px 5px rgba(0, 0, 0, 0.07),
-    inset -5px -5px 5px rgba(255, 255, 255, 0.7);
+  box-shadow: inset 5px 5px 5px rgba(0, 0, 0, 0.07), inset -5px -5px 5px rgba(255, 255, 255, 0.7);
 }
 
 .acc {

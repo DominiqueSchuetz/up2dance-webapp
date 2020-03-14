@@ -1,6 +1,6 @@
+import { Action } from 'redux';
 import { IMedia, IResponse } from '../../models';
 import { EReduxActionTypesMedia } from '../../enums';
-import { Action } from 'redux';
 
 export interface IReduxBaseAction extends Action {
   type: EReduxActionTypesMedia;

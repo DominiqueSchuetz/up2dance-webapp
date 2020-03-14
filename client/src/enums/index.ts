@@ -152,3 +152,13 @@ export enum EKindOfEventAction {
   UPDATE_EVENT,
   CUSTOMER_EVENT
 }
+
+export enum EGoogleMapsTypes {
+  locality = 'locality',
+  administrativeAreaLevel1 = 'administrative_area_level_1',
+  sublocalityLevel1 = 'sublocality_level_1',
+  sublocalityLevel2 = 'sublocality_level_2',
+  route = 'route',
+  postalCode = 'postal_code',
+  streetNumber = 'street_number'
+}

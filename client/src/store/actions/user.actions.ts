@@ -35,23 +35,17 @@ export const doListUsersStarted = (): IReduxListUsersStartedAction => ({
   type: EReduxActionTypesUser.LIST_USERS_STARTED
 });
 
-export const doListUsersSucceeded = (
-  payload: IResponse<IUser>
-): IReduxListUsersSucceededAction => ({
+export const doListUsersSucceeded = (payload: IResponse<IUser>): IReduxListUsersSucceededAction => ({
   type: EReduxActionTypesUser.LIST_USERS_SUCCEEDED,
   payload
 });
 
-export const doListUsersFailed = (
-  payload: IResponse<IUser>
-): IReduxListUsersFailedAction => ({
+export const doListUsersFailed = (payload: IResponse<IUser>): IReduxListUsersFailedAction => ({
   type: EReduxActionTypesUser.LIST_USERS_FAILED,
   payload
 });
 
-export const doListUsersError = (
-  payload: IResponse<IUser>
-): IReduxListUsersErrorAction => ({
+export const doListUsersError = (payload: IResponse<IUser>): IReduxListUsersErrorAction => ({
   type: EReduxActionTypesUser.LIST_USERS_ERROR,
   payload
 });
@@ -67,23 +61,17 @@ export const doAddUserStarted = (): IReduxAddUserStartedAction => ({
   type: EReduxActionTypesUser.ADD_USER_STARTED
 });
 
-export const doAddUserSucceeded = (
-  payload: IResponse<IUser>
-): IReduxAddUserSucceededAction => ({
+export const doAddUserSucceeded = (payload: IResponse<IUser>): IReduxAddUserSucceededAction => ({
   type: EReduxActionTypesUser.ADD_USER_SUCCEEDED,
   payload
 });
 
-export const doAddUserFailed = (
-  payload: IResponse<IUser>
-): IReduxAddUserFailedAction => ({
+export const doAddUserFailed = (payload: IResponse<IUser>): IReduxAddUserFailedAction => ({
   type: EReduxActionTypesUser.ADD_USER_FAILED,
   payload
 });
 
-export const doAddUserError = (
-  payload: IResponse<IUser>
-): IReduxAddUserErrorAction => ({
+export const doAddUserError = (payload: IResponse<IUser>): IReduxAddUserErrorAction => ({
   type: EReduxActionTypesUser.ADD_USER_ERROR,
   payload
 });
@@ -99,23 +87,17 @@ export const doUpdateUserStarted = (): IReduxUpdateUserStartedAction => ({
   type: EReduxActionTypesUser.UPDATE_USER_STARTED
 });
 
-export const doUpdateUserSucceeded = (
-  payload: IResponse<IUser>
-): IReduxUpdateUserSucceededAction => ({
+export const doUpdateUserSucceeded = (payload: IResponse<IUser>): IReduxUpdateUserSucceededAction => ({
   type: EReduxActionTypesUser.UPDATE_USER_SUCCEEDED,
   payload
 });
 
-export const doUpdateUserFailed = (
-  payload: IResponse<IUser>
-): IReduxUpdateUserFailedAction => ({
+export const doUpdateUserFailed = (payload: IResponse<IUser>): IReduxUpdateUserFailedAction => ({
   type: EReduxActionTypesUser.UPDATE_USER_FAILED,
   payload
 });
 
-export const doUpdateUserError = (
-  payload: IResponse<IUser>
-): IReduxUpdateUserErrorAction => ({
+export const doUpdateUserError = (payload: IResponse<IUser>): IReduxUpdateUserErrorAction => ({
   type: EReduxActionTypesUser.UPDATE_USER_ERROR,
   payload
 });
@@ -131,23 +113,17 @@ export const doRemoveUserStarted = (): IReduxRemoveUserStartedAction => ({
   type: EReduxActionTypesUser.REMOVE_USER_STARTED
 });
 
-export const doRemoveUserSucceeded = (
-  payload: IResponse<IUser>
-): IReduxRemoveUserSucceededAction => ({
+export const doRemoveUserSucceeded = (payload: IResponse<IUser>): IReduxRemoveUserSucceededAction => ({
   type: EReduxActionTypesUser.REMOVE_USER_SUCCEEDED,
   payload
 });
 
-export const doRemoveUserFailed = (
-  payload: IResponse<IUser>
-): IReduxRemoveUserFailedAction => ({
+export const doRemoveUserFailed = (payload: IResponse<IUser>): IReduxRemoveUserFailedAction => ({
   type: EReduxActionTypesUser.REMOVE_USER_FAILED,
   payload
 });
 
-export const doRemoveUserError = (
-  payload: IResponse<IUser>
-): IReduxRemoveUserErrorAction => ({
+export const doRemoveUserError = (payload: IResponse<IUser>): IReduxRemoveUserErrorAction => ({
   type: EReduxActionTypesUser.REMOVE_USER_ERROR,
   payload
 });
@@ -163,23 +139,17 @@ export const doRegisterUserStarted = (): IReduxRegisterUserStartedAction => ({
   type: EReduxActionTypesUser.REGISTER_USER_STARTED
 });
 
-export const doRegisterUserSucceeded = (
-  payload: IResponse<IUser>
-): IReduxRegisterUserSucceededAction => ({
+export const doRegisterUserSucceeded = (payload: IResponse<IUser>): IReduxRegisterUserSucceededAction => ({
   type: EReduxActionTypesUser.REGISTER_USER_SUCCEEDED,
   payload
 });
 
-export const doRegisterUserFailed = (
-  payload: IResponse<IUser>
-): IReduxRegisterUserFailedAction => ({
+export const doRegisterUserFailed = (payload: IResponse<IUser>): IReduxRegisterUserFailedAction => ({
   type: EReduxActionTypesUser.REGISTER_USER_FAILED,
   payload
 });
 
-export const doRegisterUserError = (
-  payload: IResponse<IUser>
-): IReduxRegisterUserErrorAction => ({
+export const doRegisterUserError = (payload: IResponse<IUser>): IReduxRegisterUserErrorAction => ({
   type: EReduxActionTypesUser.REGISTER_USER_ERROR,
   payload
 });

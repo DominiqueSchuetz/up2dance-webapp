@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { isNil } from 'lodash';
 import { Grid, Header, Image, Message, Modal } from 'semantic-ui-react';
 import { ApplicationUserAction } from '../../store/types/user.types';
 import { IUser } from '../../models';
-import { RegisterForm } from './';
-import { isNil } from 'lodash';
+import { RegisterForm } from '.';
 
 interface IStateProps {
   user?: IUser;
@@ -12,11 +12,8 @@ interface IStateProps {
 
 interface IDispatchProps {
   onRegisterUser?(userFormData: FormData): Promise<ApplicationUserAction>;
-  onUpdateUser?(
-    id: string,
-    userFormData: FormData
-  ): Promise<ApplicationUserAction>;
-  handleCancelUser(): any;
+  onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
+  handleCancelUser(): unknown;
 }
 
 const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
@@ -46,14 +43,14 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
   );
 
   const updateUser = (
-    <Fragment>
+    <>
       <Modal.Header>{headerText}</Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <RegisterForm user={user} onUpdateUser={onUpdateUser} />
         </Modal.Description>
       </Modal.Content>
-    </Fragment>
+    </>
   );
 
   const renderRegisterComponent = updateForm ? updateUser : createNewUser;

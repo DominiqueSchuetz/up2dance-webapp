@@ -1,25 +1,15 @@
-import { ApplicationEventAction } from '../../../store/types/event.types';
+import React, { useState, useEffect } from 'react';
+import { Form, CheckboxProps, Segment, Icon, Radio, Dropdown, Modal, Button, DropdownProps, InputOnChangeData } from 'semantic-ui-react';
 import { DateInput, TimeInput } from 'semantic-ui-calendar-react';
-import React, { Fragment, useState, useEffect } from 'react';
+import { isNil } from 'lodash';
+import moment from 'moment';
+// tslint:disable-next-line: no-submodule-imports
+import 'moment/locale/de';
+import { ApplicationEventAction } from '../../../store/types/event.types';
 import { EKindOfEventAction } from '../../../enums';
 import { IAddress, IEvent } from '../../../models';
 import { IEventType } from '../../../interfaces';
 import { GoogleMaps } from '../../GoogleMaps';
-import { isNil } from 'lodash';
-import moment from 'moment';
-import 'moment/locale/de';
-import {
-  Form,
-  CheckboxProps,
-  Segment,
-  Icon,
-  Radio,
-  Dropdown,
-  Modal,
-  Button,
-  DropdownProps,
-  InputOnChangeData
-} from 'semantic-ui-react';
 
 type IStateProps = {
   readonly headerText?: string;
@@ -69,16 +59,7 @@ const admissionChargeObject: any = [
 const DURATION = 200;
 
 const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const {
-    handleCancelEvent,
-    onAddEvent,
-    updateEvent,
-    headerText,
-    event,
-    kindOfAction,
-    getEventObjectFromForm,
-    showToggleHidden
-  } = props;
+  const { handleCancelEvent, onAddEvent, updateEvent, headerText, event, kindOfAction, getEventObjectFromForm, showToggleHidden } = props;
   const [eventName, setEventName] = useState<string>('');
   const [eventType, setEventType] = useState<string | undefined>(undefined);
   const [eventDate, setEventDate] = useState<string>('');
@@ -86,9 +67,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   const [timeEnd, setTimeEnd] = useState<string | undefined>('');
   const [hidden, setHiddenFlag] = useState<boolean>(false);
   const [money, setMoney] = useState<string>('');
-  const [admissionCharge, setAdmissionCharge] = useState<string | undefined>(
-    'nicht bekannt'
-  );
+  const [admissionCharge, setAdmissionCharge] = useState<string | undefined>('nicht bekannt');
   const [actualDate, setActualDate] = useState<string>('');
   const [switchState, setSwitchState] = useState<boolean>(false);
   // const [ kindOfEvent, setkindOfEvent ] = useState<IEventType>();
@@ -114,47 +93,28 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
       setHiddenFlag(event.hidden!);
       setAddress(event.address);
     }
-  }, [event]);
+  }, [event, showToggleHidden]);
 
-  const handleOnChangeAdmissionCharge = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData
-  ) => {
-    if (!!switchState && +event.target.value <= 200) {
-      setMoney(event.target.value);
-      //setAdmissionCharge(event.target.value);
+  const handleOnChangeAdmissionCharge = (switchStatus: React.ChangeEvent<HTMLInputElement>) => {
+    if (!!switchState && +switchStatus.target.value <= 200) {
+      setMoney(switchStatus.target.value);
     } else {
       setMoney('');
     }
   };
 
-  const handleOnChangeHidden = (
-    event: React.FormEvent<HTMLInputElement>,
-    data: CheckboxProps | undefined
-  ) => {
+  const handleOnChangeHidden = (_: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => {
     data!.checked ? setHiddenFlag(true) : setHiddenFlag(false);
   };
 
-  const onGetAddress = (address: IAddress) => {
-    console.log('onAddress ', address);
-    address.city.length > 3 ? setAddress(address) : setAddress(undefined);
+  const onGetAddress = (gooleMapsAddress: IAddress) => {
+    gooleMapsAddress?.city!?.length > 3 ? setAddress(gooleMapsAddress) : setAddress(undefined);
   };
 
-  const handleOnSubmit = (
-    e:
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
-      | React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleOnSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const entry = money.length > 0 && !switchState ? money : admissionCharge;
-
-    // if (!showToggleHidden) {
-    // 	console.log("war hier !!!");
-
-    // 	setHiddenFlag(true);
-    // }
-
     const newEvent: IEvent = {
       eventName,
       eventType,
@@ -181,23 +141,21 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
     handleCancelEvent();
   };
 
-  const handleOnKeyDown = (event: React.KeyboardEvent) => {
-    event.preventDefault();
+  const handleOnKeyDown = (keyDownEvent: React.KeyboardEvent) => {
+    keyDownEvent.preventDefault();
     return false;
   };
 
-  const handleOnKeyDownAdmissionCharge = (event: React.KeyboardEvent) => {
+  const handleOnKeyDownAdmissionCharge = (keyDownEvent: React.KeyboardEvent) => {
     const regExpr = new RegExp('^[0-9]+$');
-    if (!regExpr.test(event.key)) {
-      event.preventDefault();
-      return false;
+    if (!regExpr.test(keyDownEvent.key)) {
+      keyDownEvent.preventDefault();
     }
+    return false;
   };
 
-  const handleOnDateTime = (
-    e: React.SyntheticEvent<HTMLElement, Event>,
-    data: any
-  ) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleOnDateTime = (e: React.SyntheticEvent<HTMLElement, Event>, data: any) => {
     switch (data!.name) {
       case 'eventDate':
         setEventDate(data!.value);
@@ -213,13 +171,11 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
     }
   };
 
-  const handleOnChange = (
-    event: React.ChangeEvent<HTMLInputElement> | any,
-    data: DropdownProps | InputOnChangeData | any
-  ) => {
-    switch (event.target.name || data.name) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleOnChange = (changeEvent: React.ChangeEvent<HTMLInputElement> | any, data: DropdownProps | InputOnChangeData | any) => {
+    switch (changeEvent.target.name || data.name) {
       case 'eventName':
-        setEventName(event.target.value);
+        setEventName(changeEvent.target.value);
         break;
       case 'eventType':
         setEventType(data.value);
@@ -240,14 +196,14 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   };
 
   return (
-    <Fragment>
+    <>
       <Modal.Header>{headerText}</Modal.Header>
       <Modal.Content scrolling>
         <Modal.Description>
           <Form autoComplete="off" onSubmit={handleOnSubmit}>
             <Form.Group widths="equal">
               <Form.Input
-                error={eventName.length > 0 ? false : true}
+                error={!(eventName.length > 0)}
                 required
                 fluid
                 placeholder="Veranstaltungsname"
@@ -276,7 +232,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
             <Segment.Group>
               <Segment>
                 <DateInput
-                  error={eventDate!.length > 0 ? false : true}
+                  error={!(eventDate!.length > 0)}
                   preserveViewMode={true}
                   popupPosition="bottom left"
                   closable
@@ -347,7 +303,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
               <Segment>
                 <Form.Field>
                   <Form.Input
-                    error={money.length !== 0 ? false : true}
+                    error={money.length === 0}
                     onChange={handleOnChangeAdmissionCharge}
                     onKeyDown={handleOnKeyDownAdmissionCharge}
                     disabled={!switchState}
@@ -360,24 +316,14 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
             <Segment.Group>
               <Form.Field>
                 <Segment>
-                  <GoogleMaps
-                    hasSearchBox
-                    storedAddress={address!}
-                    getAddress={onGetAddress}
-                  />
+                  <GoogleMaps hasSearchBox storedAddress={address!} getAddress={onGetAddress} />
                 </Segment>
               </Form.Field>
             </Segment.Group>
             {showToggleHidden && (
               <Segment.Group>
                 <Segment>
-                  <Radio
-                    type="radio"
-                    onChange={handleOnChangeHidden}
-                    toggle
-                    checked={hidden}
-                    label="Nicht auf der Website anzeigen"
-                  />
+                  <Radio type="radio" onChange={handleOnChangeHidden} toggle checked={hidden} label="Nicht auf der Website anzeigen" />
                 </Segment>
               </Segment.Group>
             )}
@@ -394,15 +340,10 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           labelPosition="right"
           content="Speichern"
           onClick={handleOnSubmit}
-          disabled={
-            !eventName ||
-            !eventDate ||
-            !address ||
-            (switchState && !money.length)
-          }
+          disabled={!eventName || !eventDate || !address || (switchState && !money.length)}
         />
       </Modal.Actions>
-    </Fragment>
+    </>
   );
 };
 

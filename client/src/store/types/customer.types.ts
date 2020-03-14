@@ -1,6 +1,6 @@
+import { Action } from 'redux';
 import { EReduxActionTypesCustomer } from '../../enums';
 import { IResponse, ICustomer } from '../../models';
-import { Action } from 'redux';
 
 export interface IReduxBaseAction extends Action {
   type: EReduxActionTypesCustomer;
@@ -20,7 +20,4 @@ export interface IReduxCreateCustomerAction extends IReduxBaseAction {
   payload: IResponse<ICustomer>;
 }
 
-export type ApplicationCustomersAction =
-  | IReduxLoadCustomersAction
-  | IReduxErrorCustomersAction
-  | IReduxCreateCustomerAction;
+export type ApplicationCustomersAction = IReduxLoadCustomersAction | IReduxErrorCustomersAction | IReduxCreateCustomerAction;

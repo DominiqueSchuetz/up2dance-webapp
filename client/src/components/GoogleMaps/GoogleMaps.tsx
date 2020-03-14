@@ -1,20 +1,15 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/first */
+import React, { useState, useEffect } from 'react';
 import { Segment, Form, Dimmer, Loader } from 'semantic-ui-react';
-import React, { useState, useEffect, Fragment } from 'react';
-import {
-  GoogleMap,
-  useLoadScript,
-  StandaloneSearchBox,
-  Marker
-} from '@react-google-maps/api';
-// const ScriptLoaded = require("../../../node_modules/@react-google-maps/api/src/docs/ScriptLoaded").default;
-// import ScriptLoaded from "@react-google-maps/api/src/docs/ScriptLoaded";
-import mapStylesDarkMode from './darkMode.json';
-import { IAddress } from '../../models';
-import { isNil, isEmpty } from 'lodash';
-import { getTimes } from 'suncalc';
+import { GoogleMap, useLoadScript, StandaloneSearchBox, Marker } from '@react-google-maps/api';
 import moment from 'moment';
+import { getTimes } from 'suncalc';
+// tslint:disable-next-line: no-submodule-imports
 import 'moment/locale/de';
+import { IAddress } from '../../models';
+import { EGoogleMapsTypes } from '../../enums';
+import mapStylesDarkMode from './darkMode.json';
 
 interface IStateProps {
   hasSearchBox?: boolean;
@@ -36,36 +31,35 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
   });
 
   const [zoom, setZoom] = useState(14);
-  const [searchBox, setStandaloneSearchBox] = useState<
-    google.maps.places.SearchBox
-  >();
+  const [searchBox, setStandaloneSearchBox] = useState<google.maps.places.SearchBox>();
   const [postion, setPosition] = useState({ lat: 51.48217, lng: 11.9658 });
-  const [formatted_address, setFormatted_address] = useState<string>('');
+  const [formattedAddress, setFormattedAddress] = useState<string>('');
   const [address, setAddress] = useState<IAddress>({
     streetName: '',
     streetNumber: '',
     zipCode: '',
     city: '',
     state: '2',
-    formatted_address: '',
+    formattedAddress: '',
     location: { coordinates: [] }
   });
 
   useEffect(() => {
     if (storedAddress) {
       setPosition({
-        lat: storedAddress.location.coordinates[1],
-        lng: storedAddress.location.coordinates[0]
+        lat: storedAddress?.location!.coordinates[1],
+        lng: storedAddress?.location!.coordinates[0]
       });
-      setAddress(storedAddress);
-      setFormatted_address(storedAddress.formatted_address!);
+      // setAddress(storedAddress);
+      // setFormattedAddress(storedAddress.formattedAddress!);
       setZoom(17);
+      setFormattedAddress(storedAddress.formattedAddress!);
     }
-  }, [storedAddress]);
+    getAddress(address);
+  }, [storedAddress, address, getAddress]);
 
-  const handleOnChangeSearchbox = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const onLoadMap = (searchbox: google.maps.places.SearchBox) => setStandaloneSearchBox(searchbox);
+  const handleOnChangeSearchbox = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length === 0) {
       setAddress({
         streetName: '',
@@ -77,96 +71,42 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
       });
       setPosition({ lat: 51.48217, lng: 11.9658 });
       setZoom(14);
-      setFormatted_address('');
-      getAddress(address);
+      setFormattedAddress('');
     } else {
-      setFormatted_address(event.target.value);
-    }
-  };
-
-  const mapGetPlacesToAddress = (
-    address_components: google.maps.GeocoderAddressComponent[],
-    newPostion: { lng: number; lat: number },
-    formatted_address: string
-  ) => {
-    switch (+address_components.length) {
-      case 2:
-        setAddress({
-          city: address_components[0].long_name,
-          state: address_components[1].long_name,
-          formatted_address,
-          location: { coordinates: [newPostion.lng, newPostion.lat] }
-        });
-        setZoom(14);
-        break;
-      case 4:
-        setAddress({
-          streetName: address_components[0].long_name,
-          city: address_components[1].long_name,
-          state: address_components[2].long_name,
-          zipCode: address_components[3].long_name,
-          formatted_address,
-          location: { coordinates: [newPostion.lng, newPostion.lat] }
-        });
-        setZoom(17);
-        break;
-      case 5:
-        setAddress({
-          streetNumber: address_components[0].long_name,
-          streetName: address_components[1].long_name,
-          city: address_components[2].long_name,
-          state: address_components[3].long_name,
-          zipCode: address_components[4].long_name,
-          formatted_address,
-          location: { coordinates: [newPostion.lng, newPostion.lat] }
-        });
-        setZoom(18);
-        break;
-      default:
-        break;
+      getAddress(address);
+      setFormattedAddress(event.target.value);
     }
   };
 
   const handleOnPlaceChanged = () => {
-    if (
-      !isEmpty(searchBox!.getPlaces()[0]) &&
-      !isNil(searchBox!.getPlaces()[0])
-    ) {
-      const addressComponents:
-        | google.maps.GeocoderAddressComponent[]
-        | undefined = searchBox!.getPlaces()[0].address_components;
-      const formatted_address: string | undefined = searchBox!.getPlaces()[0]
-        .formatted_address;
-
-      const lngLat = searchBox!.getPlaces()[0].geometry!.location;
+    if (searchBox?.getPlaces()[0]) {
+      const getPlacesFromMapsApi: google.maps.GeocoderAddressComponent[] | undefined = searchBox?.getPlaces()[0].address_components;
+      const getPlacesFormattedAddress: string | undefined = searchBox?.getPlaces()[0]?.formatted_address;
+      const lngLat = searchBox?.getPlaces()[0].geometry!.location;
       const newPostion: { lng: number; lat: number } = {
-        lng: lngLat.lng(),
-        lat: lngLat.lat()
+        lng: lngLat?.lng(),
+        lat: lngLat?.lat()
       };
-      if (addressComponents) {
-        const types = [
-          'street_number',
-          'route',
-          'locality',
-          'administrative_area_level_1',
-          'postal_code'
-        ];
-        const filterByMapTypes: google.maps.GeocoderAddressComponent[] = [];
 
-        // Filter map types
-        addressComponents.forEach((o: google.maps.GeocoderAddressComponent) => {
-          o.types.forEach((e: string) => {
-            if (types.includes(e)) {
-              filterByMapTypes.push(o);
-            }
-          });
-        });
-        mapGetPlacesToAddress(filterByMapTypes, newPostion, formatted_address!);
-        setPosition(newPostion);
-        getAddress(address);
-      } else {
-        return;
+      if (!getPlacesFromMapsApi!.length || !getPlacesFormattedAddress) {
+        return new Error('Could not connect to google maps api');
       }
+
+      setAddress({
+        streetNumber: hasAttribute(EGoogleMapsTypes.streetNumber, getPlacesFromMapsApi!),
+        streetName: hasAttribute(EGoogleMapsTypes.route, getPlacesFromMapsApi!),
+        city: hasAttribute(EGoogleMapsTypes.locality, getPlacesFromMapsApi!),
+        sublocalityLevel1: hasAttribute(EGoogleMapsTypes.sublocalityLevel1, getPlacesFromMapsApi!),
+        sublocalityLevel2: hasAttribute(EGoogleMapsTypes.sublocalityLevel2, getPlacesFromMapsApi!),
+        state: hasAttribute(EGoogleMapsTypes.administrativeAreaLevel1, getPlacesFromMapsApi!),
+        zipCode: hasAttribute(EGoogleMapsTypes.postalCode, getPlacesFromMapsApi!),
+        formattedAddress: getPlacesFormattedAddress,
+        location: { coordinates: [newPostion.lng, newPostion.lat] }
+      });
+
+      setFormattedAddress(getPlacesFormattedAddress!);
+      setPosition(newPostion);
+      getAddress(address);
     }
   };
 
@@ -178,25 +118,19 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
   };
 
   const renderMap = () => (
-    // <ScriptLoaded>
-    <Fragment>
+    <>
       {hasSearchBox && (
         <Segment.Group>
           <Segment>
-            <StandaloneSearchBox
-              onLoad={(searchbox: google.maps.places.SearchBox) =>
-                setStandaloneSearchBox(searchbox)
-              }
-              onPlacesChanged={handleOnPlaceChanged}
-            >
+            <StandaloneSearchBox onLoad={onLoadMap} onPlacesChanged={handleOnPlaceChanged}>
               <Form.Input
                 onKeyDown={handleOnKeyDown}
-                error={address.city.length > 0 ? false : true}
+                error={!formattedAddress}
                 type="text"
                 iconPosition="left"
                 icon="map"
                 placeholder="Adresse"
-                value={formatted_address}
+                value={formattedAddress}
                 onChange={handleOnChangeSearchbox}
               />
             </StandaloneSearchBox>
@@ -206,7 +140,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 
       <GoogleMap
         id="google-maps"
-        // options={checkDarkMode() ? { styles: mapStylesDarkMode } : {}}
+        options={checkDarkMode() ? { styles: mapStylesDarkMode as never[] } : {}}
         zoom={zoom}
         center={postion}
         mapContainerStyle={{ height: '30em', width: '100%' }}
@@ -214,8 +148,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
       >
         {true && <Marker position={postion} />}
       </GoogleMap>
-    </Fragment>
-    // </ScriptLoaded>
+    </>
   );
 
   if (loadError) {
@@ -235,4 +168,10 @@ export default GoogleMaps;
 const checkDarkMode = (): boolean => {
   const { sunset, sunriseEnd } = getTimes(new Date(), 51.48217, 11.9658);
   return moment().isAfter(sunset) || moment().isBefore(sunriseEnd);
+};
+
+// eslint-disable-next-line max-len
+const hasAttribute = (key: string, getPlace: google.maps.GeocoderAddressComponent[]): string | undefined => {
+  const type = getPlace.filter((o) => o.types.includes(key));
+  return type[0]?.long_name || undefined;
 };

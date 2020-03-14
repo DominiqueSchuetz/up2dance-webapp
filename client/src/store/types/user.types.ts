@@ -1,12 +1,10 @@
-import { IUser, IResponse, IAuthUser } from '../../models';
-import { EReduxActionTypesUser } from '../../enums';
 import { Action } from 'redux';
+import { IUser, IResponse } from '../../models';
+import { EReduxActionTypesUser } from '../../enums';
 
 export interface IReduxBaseAction extends Action {
   type: EReduxActionTypesUser;
 }
-
-const test = '';
 
 //
 // ────────────────────────────────────────────────────────────── LIST USERS ─────

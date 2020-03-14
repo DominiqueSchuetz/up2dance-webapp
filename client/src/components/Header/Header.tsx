@@ -1,8 +1,8 @@
-import React, { useEffect, useState, Children } from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { IReduxSignOutUserAction } from '../../store/types/auth.types';
 import { NavbarDesktop, NavbarMobile } from '../Navbar';
 import { IUser } from '../../models';
-import { useLocation } from 'react-router-dom';
 
 type IStateProps = {
   readonly user: IUser;
@@ -11,23 +11,23 @@ type IStateProps = {
 
 type IDispatchProps = {
   onSignOut(): IReduxSignOutUserAction;
-  onIsUserAuthenticated(): any;
+  onIsUserAuthenticated(): unknown;
 };
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const { onIsUserAuthenticated, children } = props;
+  const { user, isAuthenticated, onIsUserAuthenticated, children } = props;
   const myCurrentLocation = useLocation();
 
   useEffect(() => {
     onIsUserAuthenticated();
-  }, []);
+  }, [onIsUserAuthenticated]);
 
   return (
     <div>
-      <NavbarDesktop pathName={myCurrentLocation.pathname}>
+      <NavbarDesktop isAuthenticated={isAuthenticated} user={user} pathName={myCurrentLocation.pathname}>
         {children}
       </NavbarDesktop>
-      <NavbarMobile pathName={myCurrentLocation.pathname}>
+      <NavbarMobile isAuthenticated={isAuthenticated} user={user} pathName={myCurrentLocation.pathname}>
         {children}
       </NavbarMobile>
     </div>

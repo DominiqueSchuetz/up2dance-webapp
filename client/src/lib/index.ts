@@ -6,6 +6,7 @@ export const isEmailValid = (email: string): boolean => {
 
 export const parseToDateFormat = (date: string): string => {
   const momentDateObject = moment(date, 'LL');
+  // eslint-disable-next-line no-underscore-dangle
   const parsedDate = moment(Object(momentDateObject)._d).format();
 
   return parsedDate;
@@ -19,7 +20,7 @@ export const filterByActualYear = (date: string): boolean => {
 };
 
 export const sortedArray = <T>(arrayOfDates: T[], key: string) => {
-  const sorted = arrayOfDates.slice().sort(function(a, b) {
+  const sorted = arrayOfDates.slice().sort((a, b) => {
     const c = new Date(parseToDateFormat(`${a}.${key}`));
     const d = new Date(parseToDateFormat(`${b}.${key}`));
     return +c - +d;
@@ -27,10 +28,7 @@ export const sortedArray = <T>(arrayOfDates: T[], key: string) => {
   return sorted;
 };
 
-export const removeString = (
-  originalString: string,
-  stringToRemove: string
-): string => {
+export const removeString = (originalString: string, stringToRemove: string): string => {
   return originalString.replace(new RegExp(stringToRemove, 'g'), '').trim();
 };
 

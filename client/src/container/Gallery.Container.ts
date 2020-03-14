@@ -1,16 +1,8 @@
-import {
-  effectListMedia,
-  effectAddMedia,
-  effectRemoveMedia
-} from '../store/effects/media.effects';
-import { Gallery } from '../components/Gallery';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import {
-  selectMediaPayloadIsLoading,
-  selectMedia,
-  selectIsUserAuthenticated
-} from '../store/selectors';
+import { effectListMedia, effectAddMedia, effectRemoveMedia } from '../store/effects/media.effects';
+import { Gallery } from '../components/Gallery';
+import { selectMediaPayloadIsLoading, selectMedia, selectIsUserAuthenticated } from '../store/selectors';
 
 const mapStateToProps = createStructuredSelector({
   isAuthenticated: selectIsUserAuthenticated,

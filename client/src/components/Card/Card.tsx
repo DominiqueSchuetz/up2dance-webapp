@@ -71,10 +71,8 @@ const Card: React.FC<StateProps> = (props) => {
         <div className="card-body">
           <div className="desc">
             <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolore,
-              eius voluptatem. Ipsum modi ad quo, suscipit nemo non sequi fugiat
-              voluptatibus repudiandae totam itaque nam quas aliquid tempore
-              blanditiis dolorum.
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolore, eius voluptatem. Ipsum modi ad quo, suscipit nemo non sequi
+              fugiat voluptatibus repudiandae totam itaque nam quas aliquid tempore blanditiis dolorum.
             </p>
           </div>
         </div>

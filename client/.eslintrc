@@ -14,7 +14,10 @@
   },
   "rules": {
     "no-param-reassign": 0,
+    "no-nested-ternary": 0,
+    "no-underscore-dangle": 0,
     "object-curly-spacing": ["warn", "always"],
+    "import/no-cycle": 0,
     "no-unused-vars": [
       "error",
       {
@@ -38,7 +41,7 @@
     "max-len": [
       "warn",
       {
-        "code": 80,
+        "code": 130,
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true,
         "ignoreComments": true
@@ -54,13 +57,7 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": [
-          "**/*.test.js",
-          "**/*.test.jsx",
-          "**/*.test.ts",
-          "**/*.test.tsx",
-          "src/tests/**/*"
-        ]
+        "devDependencies": ["**/*.test.js", "**/*.test.jsx", "**/*.test.ts", "**/*.test.tsx", "src/tests/**/*"]
       }
     ],
     "react/jsx-props-no-spreading": "off",

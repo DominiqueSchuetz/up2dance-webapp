@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import {
   doListEventsStarted,
   doListEventsSucceeded,
@@ -20,14 +21,8 @@ import {
   doRemoveEventError,
   doRemoveEventEnded
 } from '../actions/event.actions';
-import {
-  listEventsService,
-  addEventService,
-  updateEventService,
-  deleteEventService
-} from '../../services';
+import { listEventsService, addEventService, updateEventService, deleteEventService } from '../../services';
 import { Effect, IEvent, IResponse } from '../../models';
-import { toast } from 'react-toastify';
 
 //
 // ────────────────────────────────────────────────────────────── LIST EVENTS ─────
@@ -91,16 +86,12 @@ export const effectAddEvent = (event: IEvent): Effect => async (dispatch) => {
 //
 // ──────────────────────────────────────────────────────────────── UPDATE EVENT ─────
 //
-export const effectUpdateEvent = (id: string, event: IEvent): Effect => async (
-  dispatch
-) => {
+export const effectUpdateEvent = (id: string, event: IEvent): Effect => async (dispatch) => {
   dispatch(doUpdateEventStarted());
   try {
     const payload: IResponse<IEvent> = await updateEventService(id, event);
     if (payload.success && payload.errorCode === 0) {
       dispatch(doUpdateEventSucceeded(payload));
-      console.log('UPDATE => ', payload);
-
       toast.success(`${payload.message}`);
     } else {
       dispatch(doUpdateEventFailed(payload));

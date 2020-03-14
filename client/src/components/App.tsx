@@ -22,11 +22,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'semantic-ui-css/semantic.min.css';
 
 const composeEnhancer = composeWithDevTools({});
-const reduxStore: Store = createStore(
-  rootReducer,
-  {},
-  composeEnhancer(applyMiddleware(thunk as ThunkMiddleware))
-);
+const reduxStore: Store = createStore(rootReducer, {}, composeEnhancer(applyMiddleware(thunk as ThunkMiddleware)));
+// eslint-disable-next-line no-console
 reduxStore.subscribe(() => console.log('redux store', reduxStore.getState()));
 
 const App: React.FC = () => {
@@ -39,42 +36,12 @@ const App: React.FC = () => {
             <main>
               <Switch>
                 <Suspense fallback={<div>Loading...</div>}>
-                  <Route
-                    path="/"
-                    exact={true}
-                    strict={true}
-                    component={EventContainer}
-                  />
-                  <Route
-                    path="/"
-                    exact={true}
-                    strict={true}
-                    component={UserContainer}
-                  />
-                  <Route
-                    path="/"
-                    exact={true}
-                    strict={true}
-                    component={GalleryContainer}
-                  />
-                  <Route
-                    path="/"
-                    exact={true}
-                    strict={true}
-                    component={CustomerContainer}
-                  />
-                  <Route
-                    path="/login"
-                    exact={true}
-                    strict={true}
-                    component={LoginContainer}
-                  />
-                  <Route
-                    path="/register"
-                    exact={true}
-                    strict={true}
-                    component={RegisterContainer}
-                  />
+                  <Route path="/" exact={true} strict={true} component={EventContainer} />
+                  <Route path="/" exact={true} strict={true} component={UserContainer} />
+                  <Route path="/" exact={true} strict={true} component={GalleryContainer} />
+                  <Route path="/" exact={true} strict={true} component={CustomerContainer} />
+                  <Route path="/login" exact={true} strict={true} component={LoginContainer} />
+                  <Route path="/register" exact={true} strict={true} component={RegisterContainer} />
                 </Suspense>
               </Switch>
             </main>

@@ -1,19 +1,11 @@
-import {
-  Header,
-  Segment,
-  Button,
-  Image,
-  Form,
-  DropdownProps,
-  InputOnChangeData,
-  Icon
-} from 'semantic-ui-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Segment, Button, Form, DropdownProps, InputOnChangeData } from 'semantic-ui-react';
 import { ApplicationUserAction } from '../../store/types/user.types';
 import { IUser, IRegisterUserData, IReduxState } from '../../models';
-import React, { Fragment, useState, useRef, useEffect } from 'react';
 import { EBandMemberInstrument } from '../../enums';
 import { isEmailValid } from '../../lib';
-import { NavLink } from 'react-router-dom';
 import { FileUpload } from '../FileUpload';
 
 interface IStateProps {
@@ -23,10 +15,7 @@ interface IStateProps {
 
 interface IDispatchProps {
   onRegisterUser?(userFormData: FormData): Promise<ApplicationUserAction>;
-  onUpdateUser?(
-    id: string,
-    userFormData: FormData
-  ): Promise<ApplicationUserAction>;
+  onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
 }
 
 const instrumentOption = [
@@ -87,18 +76,12 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
     setIsUpdatedComponent(true);
   }, [user]);
 
-  const getImageObjectFromComponent = (imageObject: {
-    file: any;
-    fileNameWithoutType: any;
-  }) => {
+  const getImageObjectFromComponent = (imageObject: { file: any; fileNameWithoutType: any }) => {
     setFilePath(imageObject.file);
     setFileName(imageObject.fileNameWithoutType);
   };
 
-  const handleOnChange = (
-    event: React.ChangeEvent<HTMLInputElement> | any,
-    data: DropdownProps | InputOnChangeData | any
-  ) => {
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | any, data: DropdownProps | InputOnChangeData | any) => {
     switch (event.target.name || data.name) {
       case 'firstName':
         setFirstName(event.target.value);
@@ -127,7 +110,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   };
 
   const handleRegister = () => {
-    let userFormData: FormData = new FormData();
+    const userFormData: FormData = new FormData();
 
     userFormData.append('firstName', firstName);
     userFormData.append('lastName', lastName);
@@ -140,7 +123,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
     userFormData.append('comment', comment);
 
     if (isUpdatedComponent) {
-      onUpdateUser!(user!._id!, userFormData);
+      onUpdateUser!(user?._id!, userFormData);
     } else {
       onRegisterUser!(userFormData);
     }
@@ -164,7 +147,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           fluid
           placeholder="Vorname"
           onChange={handleOnChange}
-          error={firstName!.length > 1 ? false : true}
+          error={!(firstName!.length > 1)}
         />
         <Form.Input
           type="text"
@@ -173,7 +156,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           fluid
           placeholder="Nachname"
           onChange={handleOnChange}
-          error={lastName!.length > 1 ? false : true}
+          error={!(lastName!.length > 1)}
         />
         <FileUpload
           id="file-upload"
@@ -202,7 +185,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           iconPosition="left"
           placeholder="Email adresse"
           onChange={handleOnChange}
-          error={email!.length > 1 && isEmailValid(email) ? false : true}
+          error={!(email!.length > 1 && isEmailValid(email))}
         />
         <Form.Input
           type="password"
@@ -213,7 +196,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           iconPosition="left"
           placeholder="Password"
           onChange={handleOnChange}
-          error={email!.length > 4 ? false : true}
+          error={!(email!.length > 4)}
         />
         <Form.Input
           type="password"
@@ -224,15 +207,9 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           iconPosition="left"
           placeholder="Secret-Key"
           onChange={handleOnChange}
-          error={email!.length > 4 ? false : true}
+          error={!(email!.length > 4)}
         />
-        <Form.TextArea
-          style={{ minHeight: 200 }}
-          name="comment"
-          value={comment}
-          placeholder="Kommentar..."
-          onChange={handleOnChange}
-        />
+        <Form.TextArea style={{ minHeight: 200 }} name="comment" value={comment} placeholder="Kommentar..." onChange={handleOnChange} />
         <Button
           as={NavLink}
           to={isUpdatedComponent ? '#' : '/login'}
@@ -241,9 +218,7 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           fluid
           size="large"
           onClick={handleRegister}
-          disabled={
-            !firstName || !lastName || !email || !password || !secretKey
-          }
+          disabled={!firstName || !lastName || !email || !password || !secretKey}
         >
           Registrieren
         </Button>

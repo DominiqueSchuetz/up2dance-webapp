@@ -9,6 +9,7 @@ import {
   DropdownProps,
   InputOnChangeData,
   Message,
+  Image,
   List
 } from 'semantic-ui-react';
 import { ApplicationCustomersAction } from '../../store/types/customer.types';
@@ -37,9 +38,9 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
   const [companyName, setCompanyName] = useState<string>('');
   const [comment, setComment] = useState<string>('');
 
-  const getEventObjectFromForm = (event: IEvent) => {
-    setEvent(event);
-    setAddress(event.address);
+  const getEventObjectFromForm = (formEvent: IEvent) => {
+    setEvent(formEvent);
+    setAddress(formEvent.address);
   };
 
   const openModalDialog = (): void => {
@@ -54,28 +55,25 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
     onCloseEvent();
   };
 
-  const handleOnChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    data: DropdownProps | InputOnChangeData
-  ) => {
-    switch (event.target.name || data.name) {
+  const handleOnChange = (changeEvent: React.ChangeEvent<HTMLInputElement>, data: DropdownProps | InputOnChangeData) => {
+    switch (changeEvent.target.name || data.name) {
       case 'firstName':
-        setFirstName(event.target.value);
+        setFirstName(changeEvent.target.value);
         break;
       case 'lastName':
-        setLastName(event.target.value);
+        setLastName(changeEvent.target.value);
         break;
       case 'companyName':
-        setCompanyName(event.target.value);
+        setCompanyName(changeEvent.target.value);
         break;
       case 'email':
-        setEmail(event.target.value);
+        setEmail(changeEvent.target.value);
         break;
       case 'phone':
-        setPhone(event.target.value);
+        setPhone(changeEvent.target.value);
         break;
       case 'comment':
-        setComment(event.target.value);
+        setComment(changeEvent.target.value);
         break;
       default:
         break;
@@ -94,16 +92,7 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
     };
     onCreateCustomer(customerObject);
 
-    resetFormFields(
-      setFirstName,
-      setLastName,
-      setCompanyName,
-      setEmail,
-      setPhone,
-      setComment,
-      setEvent,
-      setAddress
-    );
+    resetFormFields(setFirstName, setLastName, setCompanyName, setEmail, setPhone, setComment, setEvent, setAddress);
   };
 
   const eventTriggerButton = (
@@ -119,122 +108,14 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
     </Form.Button>
   );
 
-  const ListExampleIcon = (event: IEvent) => (
+  const ListExampleIcon = (eventList: IEvent) => (
     <List bulleted>
-      {event && event.eventName && <List.Item content={event.eventName} />}
-      {event && event.eventType && <List.Item content={event.eventType} />}
-      {event && event.eventDate && <List.Item content={event.eventDate} />}
-      {event && event.timeStart && <List.Item content={event.timeStart} />}
-      {event && event.timeEnd && <List.Item content={event.timeEnd} />}
+      {eventList?.eventName && <List.Item content={eventList.eventName} />}
+      {eventList?.eventType && <List.Item content={eventList.eventType} />}
+      {eventList?.eventDate && <List.Item content={eventList.eventDate} />}
+      {eventList?.timeStart && <List.Item content={eventList.timeStart} />}
+      {eventList?.timeEnd && <List.Item content={eventList.timeEnd} />}
     </List>
-  );
-
-  const CustomerForm = () => (
-    <Form autoComplete="off">
-      <Form.Group widths="equal">
-        <Form.Field
-          id="form-input-control-first-name"
-          // error={firstName.length > 2 ? false : true}
-          required
-          control={Input}
-          name="firstName"
-          value={firstName}
-          onChange={handleOnChange}
-          label="Vorname"
-          placeholder="Vorname"
-        />
-        <Form.Field
-          id="form-input-control-last-name"
-          // error={lastName.length > 2 ? false : true}
-          required
-          control={Input}
-          name="lastName"
-          value={lastName}
-          onChange={handleOnChange}
-          label="Nachname"
-          placeholder="Nachname"
-        />
-        <Form.Input
-          id="form-input-control-company-name"
-          control={Input}
-          name="companyName"
-          value={companyName}
-          onChange={handleOnChange}
-          label="Unternehmen/Firma"
-          placeholder="Unternehmen/Firma"
-        />
-      </Form.Group>
-      <Form.Group widths="equal">
-        <Form.Field
-          id="form-input-control-email"
-          //error={email!.length > 6 && isEmailValid(email) ? false : true}
-          required
-          control={Input}
-          name="email"
-          value={email}
-          onChange={handleOnChange}
-          label="Email"
-          placeholder="Email"
-        />
-        <Message
-          warning
-          header="Could you check something   !"
-          list={[
-            'That e-mail has been subscribed, but you have not yet clicked the verification link in your e-mail.'
-          ]}
-        />
-        <Form.Field
-          id="form-input-control-phone"
-          type="number"
-          control={Input}
-          name="phone"
-          value={phone}
-          onChange={handleOnChange}
-          label="Telefon"
-          placeholder="Telefon"
-        />
-      </Form.Group>
-      <ModalDialog
-        trigger={eventTriggerButton}
-        modalStatus={modalStatus.modalOpen}
-        onClose={onCloseEvent}
-      >
-        <EventCardForm
-          event={event}
-          showToggleHidden={false}
-          headerText="Veranstaltungsdetails"
-          handleCancelEvent={handleCancelEvent}
-          kindOfAction={{ kind: EKindOfEventAction.CUSTOMER_EVENT }}
-          getEventObjectFromForm={getEventObjectFromForm}
-        />
-      </ModalDialog>
-      {ListExampleIcon(event!)}
-      {address && (
-        <GoogleMaps
-          hasSearchBox={false}
-          storedAddress={address!}
-          getAddress={() => {}}
-        />
-      )}
-      <Form.Field
-        style={{ minHeight: 200 }}
-        id="form-textarea-control-comment"
-        control={TextArea}
-        name="comment"
-        value={comment}
-        onChange={handleOnChange}
-        label="Kommentar"
-        placeholder="Kommentar"
-      />
-      <Form.Field
-        id="form-button-control-public"
-        control={Button}
-        onClick={submitFormCustomer}
-        content="Anfrage absenden"
-        color={firstName && lastName && isEmailValid(email) ? 'green' : 'red'}
-        disabled={!firstName || !lastName || !isEmailValid(email)}
-      />
-    </Form>
   );
 
   return (
@@ -242,7 +123,99 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
       <Header className="headline" textAlign="center">
         ANFRAGE SENDEN
       </Header>
-      <Container>{CustomerForm()}</Container>
+      <Image className="header-space-bottom" src="./images/contact.svg" centered />
+      <Container>
+        <Form autoComplete="off">
+          <Form.Group widths="equal">
+            <Form.Field
+              id="form-input-control-first-name"
+              required
+              control={Input}
+              name="firstName"
+              value={firstName}
+              onChange={handleOnChange}
+              label="Vorname"
+              placeholder="Vorname"
+            />
+            <Form.Field
+              id="form-input-control-last-name"
+              required
+              control={Input}
+              name="lastName"
+              value={lastName}
+              onChange={handleOnChange}
+              label="Nachname"
+              placeholder="Nachname"
+            />
+            <Form.Input
+              id="form-input-control-company-name"
+              control={Input}
+              name="companyName"
+              value={companyName}
+              onChange={handleOnChange}
+              label="Unternehmen/Firma"
+              placeholder="Unternehmen/Firma"
+            />
+          </Form.Group>
+          <Form.Group widths="equal">
+            <Form.Field
+              id="form-input-control-email"
+              required
+              control={Input}
+              name="email"
+              value={email}
+              onChange={handleOnChange}
+              label="Email"
+              placeholder="Email"
+            />
+            <Message
+              warning
+              header="Could you check something   !"
+              list={['That e-mail has been subscribed, but you have not yet clicked the verification link in your e-mail.']}
+            />
+            <Form.Field
+              id="form-input-control-phone"
+              type="number"
+              control={Input}
+              name="phone"
+              value={phone}
+              onChange={handleOnChange}
+              label="Telefon"
+              placeholder="Telefon"
+            />
+          </Form.Group>
+          <ModalDialog trigger={eventTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
+            <EventCardForm
+              event={event}
+              showToggleHidden={false}
+              headerText="Veranstaltungsdetails"
+              handleCancelEvent={handleCancelEvent}
+              kindOfAction={{ kind: EKindOfEventAction.CUSTOMER_EVENT }}
+              getEventObjectFromForm={getEventObjectFromForm}
+            />
+          </ModalDialog>
+          {ListExampleIcon(event!)}
+          {address && <GoogleMaps hasSearchBox={false} storedAddress={address!} />}
+          <Form.Field
+            style={{ minHeight: 200 }}
+            id="form-textarea-control-comment"
+            control={TextArea}
+            name="comment"
+            value={comment}
+            onChange={handleOnChange}
+            label="Kommentar"
+            placeholder="Kommentar"
+          />
+          <Form.Field
+            id="form-button-control-public"
+            control={Button}
+            onClick={submitFormCustomer}
+            content="Anfrage absenden"
+            color={firstName && lastName && isEmailValid(email) ? 'green' : 'red'}
+            disabled={!firstName || !lastName || !isEmailValid(email)}
+          />
+        </Form>
+      </Container>
     </>
   );
 };

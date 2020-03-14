@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/indent */
 import { ThunkAction } from 'redux-thunk';
 import { ApplicationReducerState } from '../store/reducers';
 import { ApplicationEventAction } from '../store/types/event.types';
@@ -5,7 +7,6 @@ import { ApplicationUserAction } from '../store/types/user.types';
 import { ApplicationMediaAction } from '../store/types/media.types';
 import { ApplicationCustomersAction } from '../store/types/customer.types';
 import { ApplicationAuthAction } from '../store/types/auth.types';
-import { string } from 'prop-types';
 
 export interface ApplicationState<T, S = null> {
   isLoading: boolean;
@@ -33,13 +34,15 @@ export interface IResponse<T, S = null> {
 }
 
 export interface IAddress {
-  streetName?: string;
-  streetNumber?: string;
-  zipCode?: string;
-  city: string;
-  state: string;
-  formatted_address?: string | undefined;
-  location: { coordinates: number[] };
+  streetNumber?: string | undefined | null;
+  streetName?: string | undefined | null;
+  city: string | undefined | null;
+  sublocalityLevel1?: string | undefined | null;
+  sublocalityLevel2?: string | undefined | null;
+  zipCode?: string | undefined | null;
+  state: string | undefined | null;
+  formattedAddress?: string | undefined;
+  location?: { coordinates: number[] } | undefined | null;
 }
 
 export interface IEvent {
@@ -125,9 +128,5 @@ export type Effect = ThunkAction<
   any,
   ApplicationReducerState,
   any,
-  | ApplicationEventAction
-  | ApplicationUserAction
-  | ApplicationMediaAction
-  | ApplicationCustomersAction
-  | ApplicationAuthAction
+  ApplicationEventAction | ApplicationUserAction | ApplicationMediaAction | ApplicationCustomersAction | ApplicationAuthAction
 >;

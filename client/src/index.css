@@ -33,6 +33,10 @@
   /* padding-bottom: 1.2em; */
 }
 
+.header-space-bottom {
+  margin-bottom: 7em;
+}
+
 .customer-form-modal {
   padding: 2.4em 0;
 }

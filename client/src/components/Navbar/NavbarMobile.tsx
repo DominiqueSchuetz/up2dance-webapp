@@ -1,19 +1,9 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { useState } from 'react';
-import { IUser } from '../../models';
-import {
-  Button,
-  Container,
-  Icon,
-  Menu,
-  Responsive,
-  Segment,
-  Sidebar
-} from 'semantic-ui-react';
-import {
-  IReduxSignOutUserAction,
-  IReduxIsUserAuthenticated
-} from '../../store/types/auth.types';
 import { NavLink } from 'react-router-dom';
+import { Button, Container, Icon, Menu, Responsive, Segment, Sidebar, Image } from 'semantic-ui-react';
+import { IUser } from '../../models';
+import { IReduxSignOutUserAction } from '../../store/types/auth.types';
 
 type IStateProps = {
   readonly user?: IUser;
@@ -23,20 +13,11 @@ type IStateProps = {
 
 type IDispatchProps = {
   onSignOut?(): IReduxSignOutUserAction;
-  onIsUserAuthenticated?(): any;
+  onIsUserAuthenticated?(): unknown;
 };
 
 const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const {
-    isAuthenticated,
-    user,
-    onSignOut,
-    onIsUserAuthenticated,
-    children,
-    pathName
-  } = props;
-  const [instrumentSymbol, setInstrumentSymbol] = useState<string>('🌞');
-
+  const { isAuthenticated, user, children, pathName } = props;
   const [fixedState, setFixedState] = useState<{ sidebarOpened: boolean }>({
     sidebarOpened: false
   });
@@ -48,19 +29,11 @@ const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
   return (
     <Responsive
       as={Sidebar.Pushable}
-      getWidth={() =>
-        window.innerWidth || (Responsive.onlyTablet.minWidth as number)
-      }
+      // tslint:disable-next-line: jsx-no-lambda
+      getWidth={() => window.innerWidth || (Responsive.onlyTablet.minWidth as number)}
       maxWidth={Responsive.onlyMobile.maxWidth}
     >
-      <Sidebar
-        as={Menu}
-        animation="push"
-        inverted
-        onHide={handleSidebarHide}
-        vertical
-        visible={sidebarOpened}
-      >
+      <Sidebar as={Menu} animation="push" inverted onHide={handleSidebarHide} vertical visible={sidebarOpened}>
         <Menu.Item as={NavLink} to="/" active>
           Home
         </Menu.Item>
@@ -73,27 +46,22 @@ const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
 
       <Sidebar.Pusher dimmed={sidebarOpened}>
         {pathName === '/' && (
-          <Segment
-            inverted
-            textAlign="center"
-            style={{ minHeight: 350, padding: '1em 0em' }}
-            vertical
-          >
+          <Segment inverted textAlign="center" style={{ minHeight: 350, padding: '1em 0em' }} vertical>
             <Container>
               <Menu inverted pointing secondary size="large">
                 <Menu.Item onClick={handleToggle}>
                   <Icon name="sidebar" />
                 </Menu.Item>
                 <Menu.Item position="right">
+                  <Menu.Item>
+                    {isAuthenticated && user!.refId && (
+                      <Image size="mini" circular src={`http://localhost:8080/api/media/${user!.refId}`} />
+                    )}
+                  </Menu.Item>
                   <Button as={NavLink} to="/login" inverted>
                     Log in
                   </Button>
-                  <Button
-                    as={NavLink}
-                    to="/register"
-                    inverted
-                    style={{ marginLeft: '0.5em' }}
-                  >
+                  <Button as={NavLink} to="/register" inverted style={{ marginLeft: '0.5em' }}>
                     Sign Up
                   </Button>
                 </Menu.Item>

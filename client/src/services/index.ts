@@ -1,13 +1,5 @@
-import {
-  ISignInUserData,
-  IResponse,
-  IEvent,
-  IUser,
-  IRegisterUserData,
-  IMedia,
-  ICustomer,
-  IAuthUser
-} from '../models';
+/* eslint-disable @typescript-eslint/indent */
+import { ISignInUserData, IResponse, IEvent, IUser, IRegisterUserData, IMedia, ICustomer, IAuthUser } from '../models';
 import {
   GET_ALL_EVENTS_API,
   GET_ALL_USERS_API,
@@ -40,9 +32,7 @@ export const listEventsService = async (): Promise<IResponse<IEvent>> => {
   return responsePayload;
 };
 
-export const addEventService = async (
-  event: IEvent
-): Promise<IResponse<IEvent>> => {
+export const addEventService = async (event: IEvent): Promise<IResponse<IEvent>> => {
   const HEADER = {
     method: 'POST',
     headers: {
@@ -52,16 +42,11 @@ export const addEventService = async (
     body: JSON.stringify(event)
   };
   const createNewEvent: Response = await fetch(CREATE_EVENT_API, HEADER);
-  const responsePayload: Promise<IResponse<
-    IEvent
-  >> = await createNewEvent.json();
+  const responsePayload: Promise<IResponse<IEvent>> = await createNewEvent.json();
   return responsePayload;
 };
 
-export const updateEventService = async (
-  id: string,
-  event: IEvent
-): Promise<IResponse<IEvent>> => {
+export const updateEventService = async (id: string, event: IEvent): Promise<IResponse<IEvent>> => {
   const HEADER = {
     method: 'PUT',
     headers: {
@@ -71,15 +56,11 @@ export const updateEventService = async (
     body: JSON.stringify(event)
   };
   const updateNewEvent: Response = await fetch(UPDATE_EVENT_API + id, HEADER);
-  const responsePayload: Promise<IResponse<
-    IEvent
-  >> = await updateNewEvent.json();
+  const responsePayload: Promise<IResponse<IEvent>> = await updateNewEvent.json();
   return responsePayload;
 };
 
-export const deleteEventService = async (
-  id: string
-): Promise<IResponse<IEvent>> => {
+export const deleteEventService = async (id: string): Promise<IResponse<IEvent>> => {
   const HEADER = {
     method: 'DELETE',
     headers: {
@@ -105,25 +86,18 @@ export const listUsersService = async (): Promise<IResponse<IUser>> => {
   return responsePayload;
 };
 
-export const updateUserService = async (
-  id: string,
-  userFormData: FormData
-): Promise<IResponse<IRegisterUserData>> => {
+export const updateUserService = async (id: string, userFormData: FormData): Promise<IResponse<IRegisterUserData>> => {
   const HEADER = {
     method: 'PUT',
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
     body: userFormData
   };
   const updateUser: Response = await fetch(UPDATE_USER_API + id, HEADER);
-  const responsePayload: Promise<IResponse<
-    IRegisterUserData
-  >> = await updateUser.json();
+  const responsePayload: Promise<IResponse<IRegisterUserData>> = await updateUser.json();
   return responsePayload;
 };
 
-export const deleteUserService = async (
-  id: string
-): Promise<IResponse<IUser>> => {
+export const deleteUserService = async (id: string): Promise<IResponse<IUser>> => {
   const HEADER = {
     method: 'DELETE',
     headers: {
@@ -136,40 +110,29 @@ export const deleteUserService = async (
   return responsePayload;
 };
 
-export const registerUserService = async (
-  userFormData: FormData
-): Promise<IResponse<IRegisterUserData>> => {
+export const registerUserService = async (userFormData: FormData): Promise<IResponse<IRegisterUserData>> => {
   const HEADER = {
     method: 'POST',
     body: userFormData
   };
 
   const postRegisterUser: Response = await fetch(REGISER_USERS_API, HEADER);
-  const responsePayload: Promise<IResponse<
-    IRegisterUserData
-  >> = await postRegisterUser.json();
+  const responsePayload: Promise<IResponse<IRegisterUserData>> = await postRegisterUser.json();
   return responsePayload;
 };
 
-export const signInUserService = async (
-  userData: ISignInUserData
-): Promise<IResponse<null, IAuthUser>> => {
+export const signInUserService = async (userData: ISignInUserData): Promise<IResponse<null, IAuthUser>> => {
   const HEADER = {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(userData)
   };
   const postSignInUser: Response = await fetch(POST_USER_SIGN_IN_API, HEADER);
-  const responsePayload: Promise<IResponse<
-    null,
-    IAuthUser
-  >> = await postSignInUser.json();
+  const responsePayload: Promise<IResponse<null, IAuthUser>> = await postSignInUser.json();
   return responsePayload;
 };
 
-export const isUserAuthenticatedService = async (): Promise<IResponse<
-  IAuthUser
->> => {
+export const isUserAuthenticatedService = async (): Promise<IResponse<IAuthUser>> => {
   const HEADER = {
     method: 'GET',
     headers: {
@@ -177,13 +140,8 @@ export const isUserAuthenticatedService = async (): Promise<IResponse<
       authorization: `Bearer ${localStorage.getItem('token')}`
     }
   };
-  const isUserAuthenticatedEvent: Response = await fetch(
-    IS_USER_AUTHENTICATED_API,
-    HEADER
-  );
-  const responsePayload: Promise<IResponse<
-    IAuthUser
-  >> = await isUserAuthenticatedEvent.json();
+  const isUserAuthenticatedEvent: Response = await fetch(IS_USER_AUTHENTICATED_API, HEADER);
+  const responsePayload: Promise<IResponse<IAuthUser>> = await isUserAuthenticatedEvent.json();
   return responsePayload;
 };
 
@@ -200,9 +158,7 @@ export const listMediaService = async (): Promise<IResponse<IMedia>> => {
   return responsePayload;
 };
 
-export const addMediaService = async (
-  userFormData: FormData
-): Promise<IResponse<IMedia>> => {
+export const addMediaService = async (userFormData: FormData): Promise<IResponse<IMedia>> => {
   const HEADER = {
     method: 'POST',
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -210,16 +166,11 @@ export const addMediaService = async (
   };
 
   const postMediaService: Response = await fetch(CREATE_MEDIA_API, HEADER);
-  const responsePayload: Promise<IResponse<
-    IMedia
-  >> = await postMediaService.json();
+  const responsePayload: Promise<IResponse<IMedia>> = await postMediaService.json();
   return responsePayload;
 };
 
-export const updateMediaService = async (
-  id: string,
-  mediaFormData: FormData
-): Promise<IResponse<IMedia>> => {
+export const updateMediaService = async (id: string, mediaFormData: FormData): Promise<IResponse<IMedia>> => {
   const HEADER = {
     method: 'PUT',
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -227,15 +178,11 @@ export const updateMediaService = async (
   };
 
   const updateMedia: Response = await fetch(UPDATE_MEDIA_API + id, HEADER);
-  const responsePayload: Promise<IResponse<
-    IRegisterUserData
-  >> = await updateMedia.json();
+  const responsePayload: Promise<IResponse<IRegisterUserData>> = await updateMedia.json();
   return responsePayload;
 };
 
-export const getMediaByIdService = async (
-  id: string
-): Promise<IResponse<IMedia>> => {
+export const getMediaByIdService = async (id: string): Promise<IResponse<IMedia>> => {
   const HEADER = {
     method: 'GET',
     headers: { 'content-type': 'application/json' }
@@ -245,9 +192,7 @@ export const getMediaByIdService = async (
   return responsePayload;
 };
 
-export const deleteMediaService = async (
-  id: string
-): Promise<IResponse<IMedia>> => {
+export const deleteMediaService = async (id: string): Promise<IResponse<IMedia>> => {
   const HEADER = {
     method: 'DELETE',
     headers: {
@@ -263,17 +208,13 @@ export const deleteMediaService = async (
 //
 // ? ─────────────────────────────────────────────────────────────────── CUSTOMERS ─────
 //
-export const creatCustomerService = async (
-  customer: ICustomer
-): Promise<IResponse<ICustomer>> => {
+export const creatCustomerService = async (customer: ICustomer): Promise<IResponse<ICustomer>> => {
   const HEADER = {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(customer)
   };
   const createNewCustomer: Response = await fetch(CREATE_CUSTOMER_API, HEADER);
-  const responsePayload: Promise<IResponse<
-    ICustomer
-  >> = await createNewCustomer.json();
+  const responsePayload: Promise<IResponse<ICustomer>> = await createNewCustomer.json();
   return responsePayload;
 };

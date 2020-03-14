@@ -1,28 +1,9 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import PropTypes, { InferType } from 'prop-types';
+/* eslint-disable react/jsx-curly-newline */
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Button, Container, Image, Menu, Responsive, Segment, Visibility } from 'semantic-ui-react';
 import { IUser } from '../../models';
-import {
-  Button,
-  Container,
-  Divider,
-  Dropdown,
-  Grid,
-  Header as SemanticHeader,
-  Icon,
-  Image,
-  List,
-  Menu,
-  Responsive,
-  Segment,
-  Sidebar,
-  Visibility
-} from 'semantic-ui-react';
-import {
-  IReduxSignOutUserAction,
-  IReduxIsUserAuthenticated
-} from '../../store/types/auth.types';
-import car from '../../images/background-1.jpg';
+import { IReduxSignOutUserAction } from '../../store/types/auth.types';
 
 type IStateProps = {
   readonly user?: IUser;
@@ -35,8 +16,7 @@ type IDispatchProps = {
 };
 
 const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const { isAuthenticated, user, onSignOut, children, pathName } = props;
-  const [instrumentSymbol, setInstrumentSymbol] = useState<string>('🌞');
+  const { isAuthenticated, user, children, pathName } = props;
 
   const [fixedState, setFixedState] = useState<{ fixed: boolean }>({
     fixed: false
@@ -48,30 +28,14 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <Responsive
-      getWidth={() =>
-        window.innerWidth || (Responsive.onlyTablet.minWidth as number)
-      }
+      // tslint:disable-next-line: jsx-no-lambda
+      getWidth={() => window.innerWidth || (Responsive.onlyTablet.minWidth as number)}
       minWidth={Responsive.onlyTablet.minWidth}
     >
       {pathName === '/' && (
-        <Visibility
-          once={false}
-          onBottomPassed={showFixedMenu}
-          onBottomPassedReverse={hideFixedMenu}
-        >
-          <Segment
-            inverted
-            textAlign="center"
-            style={{ minHeight: 700, padding: '1em 0em' }}
-            vertical
-          >
-            <Menu
-              fixed={fixed ? 'top' : undefined}
-              inverted={!fixed}
-              pointing={!fixed}
-              secondary={!fixed}
-              size="large"
-            >
+        <Visibility once={false} onBottomPassed={showFixedMenu} onBottomPassedReverse={hideFixedMenu}>
+          <Segment inverted textAlign="center" style={{ minHeight: 700, padding: '1em 0em' }} vertical>
+            <Menu fixed={fixed ? 'top' : undefined} inverted pointing={!fixed} secondary={!fixed} size="large">
               <Container>
                 <Menu.Item as={NavLink} to="/">
                   Home
@@ -82,30 +46,13 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
                 <Menu.Item position="right">
                   <Menu.Item>
                     {isAuthenticated && user!.refId && (
-                      <Image
-                        size="mini"
-                        circular
-                        src={'http://localhost:8080/api/media/' + user!.refId}
-                      />
-                    )}
-                    {isAuthenticated && user!.firstName && (
-                      <span>
-                        {user!.firstName
-                          ? `Hey, ${user!.firstName} ` + ` ${instrumentSymbol}`
-                          : ''}
-                      </span>
+                      <Image size="mini" circular src={`http://localhost:8080/api/media/${user!.refId}`} />
                     )}
                   </Menu.Item>
                   <Button as={NavLink} to="/login" inverted={!fixed} primary>
                     Log in
                   </Button>
-                  <Button
-                    as={NavLink}
-                    to="/register"
-                    inverted={!fixed}
-                    primary={fixed}
-                    style={{ marginLeft: '0.5em' }}
-                  >
+                  <Button as={NavLink} to="/register" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
                     Sign Up
                   </Button>
                 </Menu.Item>

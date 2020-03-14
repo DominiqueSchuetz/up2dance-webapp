@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import App from './components/App';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+
+// tslint:disable-next-line: no-var-requires
 require('dotenv').config();
 
 ReactDOM.render(<App />, document.getElementById('root'));
