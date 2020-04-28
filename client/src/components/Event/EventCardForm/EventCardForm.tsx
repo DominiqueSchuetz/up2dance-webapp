@@ -61,6 +61,7 @@ const DURATION = 200;
 const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   const { handleCancelEvent, onAddEvent, updateEvent, headerText, event, kindOfAction, getEventObjectFromForm, showToggleHidden } = props;
   const [eventName, setEventName] = useState<string>('');
+  const [venue, setVenue] = useState<string>('');
   const [eventType, setEventType] = useState<string | undefined>(undefined);
   const [eventDate, setEventDate] = useState<string>('');
   const [timeStart, setTimeStart] = useState<string | undefined>('');
@@ -74,9 +75,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   const [address, setAddress] = useState<IAddress | undefined>(undefined);
 
   useEffect(() => {
-    const date = moment(Date.now())
-      .locale('de')
-      .format('LL');
+    const date = moment(Date.now()).locale('de').format('LL');
     setActualDate(date);
 
     if (!showToggleHidden) {
@@ -85,6 +84,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
 
     if (!isNil(event)) {
       setEventName(event.eventName);
+      setVenue(event.venue!);
       setEventType(event.eventType);
       setEventDate(event.eventDate);
       setTimeStart(event.timeStart);
@@ -117,6 +117,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
     const entry = money.length > 0 && !switchState ? money : admissionCharge;
     const newEvent: IEvent = {
       eventName,
+      venue,
       eventType,
       eventDate: eventDate!,
       timeStart,
@@ -177,6 +178,9 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
       case 'eventName':
         setEventName(changeEvent.target.value);
         break;
+      case 'venue':
+        setVenue(changeEvent.target.value);
+        break;
       case 'eventType':
         setEventType(data.value);
         break;
@@ -209,6 +213,17 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
                 placeholder="Veranstaltungsname"
                 name="eventName"
                 value={eventName}
+                onChange={handleOnChange}
+              />
+            </Form.Group>
+            <Form.Group widths="equal">
+              <Form.Input
+                error={!(venue.length > 0)}
+                required
+                fluid
+                placeholder="Name der Location"
+                name="venue"
+                value={venue}
                 onChange={handleOnChange}
               />
             </Form.Group>
@@ -340,7 +355,7 @@ const EventCardForm: React.FC<IStateProps & IDispatchProps> = (props) => {
           labelPosition="right"
           content="Speichern"
           onClick={handleOnSubmit}
-          disabled={!eventName || !eventDate || !address || (switchState && !money.length)}
+          disabled={!eventName || !venue || !eventDate || !address || (switchState && !money.length)}
         />
       </Modal.Actions>
     </>

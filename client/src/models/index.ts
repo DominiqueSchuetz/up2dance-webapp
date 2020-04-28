@@ -49,6 +49,7 @@ export interface IEvent {
   _id?: string | undefined;
   address: IAddress | undefined;
   eventName: string;
+  venue?: string | undefined;
   eventType?: string | undefined;
   eventDate: string;
   timeStart?: string | undefined;

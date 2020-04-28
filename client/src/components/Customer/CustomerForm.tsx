@@ -123,7 +123,7 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
       <Header className="headline" textAlign="center">
         ANFRAGE SENDEN
       </Header>
-      <Image className="header-space-bottom" src="./images/contact.svg" centered />
+      <Image className="header-space-bottom" src="./images/contact.svg" size="huge" centered />
       <Container>
         <Form autoComplete="off">
           <Form.Group widths="equal">

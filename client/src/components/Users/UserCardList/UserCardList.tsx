@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 import { isArray } from 'lodash';
 import React, { useEffect } from 'react';
-import { Segment, Dimmer, Loader, Header, Grid } from 'semantic-ui-react';
+import { Segment, Dimmer, Loader, Header, Grid, Image } from 'semantic-ui-react';
 import { ApplicationUserAction, IReduxListUsersAction } from '../../../store/types/user.types';
 import { IUser } from '../../../models';
 import { UserCard } from '..';
@@ -55,9 +55,17 @@ const UserCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <section>
-      <Header className="headline" textAlign="center">
-        MITGLIEDER
-      </Header>
+      <Header className="headline" textAlign="center" as="h1" content="WAS" />
+      <Grid>
+        <Grid.Row columns={3}>
+          <Image className="header-space-bottom" src="./images/wedding.svg" size="large" centered />
+          <Image className="header-space-bottom" src="./images/birthday.svg" size="large" centered />
+          <Image className="header-space-bottom" src="./images/party.svg" size="large" centered />
+        </Grid.Row>
+      </Grid>
+
+      <Header className="headline" textAlign="center" as="h1" content="BAND" />
+
       <Grid stackable columns={4} stretched doubling centered>
         <Grid.Row>{renderUserCards(users)}</Grid.Row>
       </Grid>

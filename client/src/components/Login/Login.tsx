@@ -60,7 +60,9 @@ const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
             </Segment>
           </Form>
           <Message>
-            Noch nicht registriert? <a href="/register">Registrieren</a>
+            <div>
+              <a href="/">Zurück zum Start</a>
+            </div>
           </Message>
         </Grid.Column>
       </Grid>

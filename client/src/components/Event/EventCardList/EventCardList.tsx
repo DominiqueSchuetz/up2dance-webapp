@@ -94,10 +94,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <section>
-      <Header className="headline" textAlign="center">
-        KONZERTE
-      </Header>
-      <Image className="header-space-bottom" src="./images/events.svg" centered />
+      <Image className="header-space-bottom" src="./images/events.svg" size="huge" centered />
       <Container textAlign="center">
         <ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
           <EventCardForm

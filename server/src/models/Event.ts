@@ -22,6 +22,11 @@ class EventSchema extends Schema {
           enum: ['Öffentliche Veranstaltung', 'Geschlossene Veranstaltung'],
           default: 'Öffentliche Veranstaltung'
         },
+        venue: {
+          type: String,
+          required: false,
+          trim: true
+        },
         paSystem: {
           required: false,
           type: Boolean

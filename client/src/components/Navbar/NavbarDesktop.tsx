@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Button, Container, Image, Menu, Responsive, Segment, Visibility } from 'semantic-ui-react';
+import { VideoHeader } from '../VideoHeader';
 import { IUser } from '../../models';
 import { IReduxSignOutUserAction } from '../../store/types/auth.types';
 
@@ -16,7 +17,7 @@ type IDispatchProps = {
 };
 
 const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const { isAuthenticated, user, children, pathName } = props;
+  const { isAuthenticated, user, children, pathName, onSignOut } = props;
 
   const [fixedState, setFixedState] = useState<{ fixed: boolean }>({
     fixed: false
@@ -26,6 +27,22 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
   const showFixedMenu = () => setFixedState({ fixed: true });
   const { fixed } = fixedState;
 
+  const isLoggedIn =
+    isAuthenticated && user?.firstName ? (
+      <Button inverted={!fixed} primary onClick={onSignOut}>
+        Log out
+      </Button>
+    ) : (
+      <>
+        <Button as={NavLink} to="/login" inverted={!fixed} primary>
+          Log in
+        </Button>
+        <Button as={NavLink} to="/register" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
+          Sign Up
+        </Button>
+      </>
+    );
+
   return (
     <Responsive
       // tslint:disable-next-line: jsx-no-lambda
@@ -34,7 +51,7 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
     >
       {pathName === '/' && (
         <Visibility once={false} onBottomPassed={showFixedMenu} onBottomPassedReverse={hideFixedMenu}>
-          <Segment inverted textAlign="center" style={{ minHeight: 700, padding: '1em 0em' }} vertical>
+          <Segment inverted textAlign="center" style={{ minHeight: '100vh', padding: '1em 0em' }} vertical>
             <Menu fixed={fixed ? 'top' : undefined} inverted pointing={!fixed} secondary={!fixed} size="large">
               <Container>
                 <Menu.Item as={NavLink} to="/">
@@ -49,15 +66,11 @@ const NavbarDesktop: React.FC<IStateProps & IDispatchProps> = (props) => {
                       <Image size="mini" circular src={`http://localhost:8080/api/media/${user!.refId}`} />
                     )}
                   </Menu.Item>
-                  <Button as={NavLink} to="/login" inverted={!fixed} primary>
-                    Log in
-                  </Button>
-                  <Button as={NavLink} to="/register" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                  </Button>
+                  {isLoggedIn}
                 </Menu.Item>
               </Container>
             </Menu>
+            <VideoHeader />
           </Segment>
         </Visibility>
       )}

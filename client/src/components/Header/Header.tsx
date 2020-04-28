@@ -15,7 +15,7 @@ type IDispatchProps = {
 };
 
 const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const { user, isAuthenticated, onIsUserAuthenticated, children } = props;
+  const { user, isAuthenticated, onIsUserAuthenticated, onSignOut, children } = props;
   const myCurrentLocation = useLocation();
 
   useEffect(() => {
@@ -24,10 +24,10 @@ const Header: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <div>
-      <NavbarDesktop isAuthenticated={isAuthenticated} user={user} pathName={myCurrentLocation.pathname}>
+      <NavbarDesktop isAuthenticated={isAuthenticated} user={user} onSignOut={onSignOut} pathName={myCurrentLocation.pathname}>
         {children}
       </NavbarDesktop>
-      <NavbarMobile isAuthenticated={isAuthenticated} user={user} pathName={myCurrentLocation.pathname}>
+      <NavbarMobile isAuthenticated={isAuthenticated} user={user} onSignOut={onSignOut} pathName={myCurrentLocation.pathname}>
         {children}
       </NavbarMobile>
     </div>

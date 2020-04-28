@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Button, Container, Icon, Menu, Responsive, Segment, Sidebar, Image } from 'semantic-ui-react';
+import { VideoHeader } from '../VideoHeader';
 import { IUser } from '../../models';
 import { IReduxSignOutUserAction } from '../../store/types/auth.types';
 
@@ -17,7 +18,7 @@ type IDispatchProps = {
 };
 
 const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const { isAuthenticated, user, children, pathName } = props;
+  const { isAuthenticated, user, children, pathName, onSignOut } = props;
   const [fixedState, setFixedState] = useState<{ sidebarOpened: boolean }>({
     sidebarOpened: false
   });
@@ -25,6 +26,22 @@ const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
   const handleSidebarHide = () => setFixedState({ sidebarOpened: false });
   const handleToggle = () => setFixedState({ sidebarOpened: true });
   const { sidebarOpened } = fixedState;
+
+  const isLoggedIn =
+    isAuthenticated && user?.firstName ? (
+      <Button inverted primary onClick={onSignOut}>
+        Log out
+      </Button>
+    ) : (
+      <>
+        <Button as={NavLink} to="/login" inverted primary>
+          Log in
+        </Button>
+        <Button as={NavLink} to="/register" inverted style={{ marginLeft: '0.5em' }}>
+          Sign Up
+        </Button>
+      </>
+    );
 
   return (
     <Responsive
@@ -46,7 +63,7 @@ const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
 
       <Sidebar.Pusher dimmed={sidebarOpened}>
         {pathName === '/' && (
-          <Segment inverted textAlign="center" style={{ minHeight: 350, padding: '1em 0em' }} vertical>
+          <Segment inverted textAlign="center" style={{ minHeight: '100vh', padding: '1em 0em' }} vertical>
             <Container>
               <Menu inverted pointing secondary size="large">
                 <Menu.Item onClick={handleToggle}>
@@ -58,15 +75,11 @@ const NavbarMobile: React.FC<IStateProps & IDispatchProps> = (props) => {
                       <Image size="mini" circular src={`http://localhost:8080/api/media/${user!.refId}`} />
                     )}
                   </Menu.Item>
-                  <Button as={NavLink} to="/login" inverted>
-                    Log in
-                  </Button>
-                  <Button as={NavLink} to="/register" inverted style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                  </Button>
+                  {isLoggedIn}
                 </Menu.Item>
               </Menu>
             </Container>
+            <VideoHeader />
           </Segment>
         )}
         {children}

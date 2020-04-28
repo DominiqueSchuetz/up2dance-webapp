@@ -86,7 +86,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
           <Card.Header>{event.eventDate}</Card.Header>
           <Card.Header textAlign="center" content={event.eventName} />
           <Card.Meta>im</Card.Meta>
-          <Card.Header textAlign="center" content="Objekt 5" />
+          <Card.Header textAlign="center" content={event.venue} />
           <Card.Meta>um</Card.Meta>
           <Card.Header>{event.timeStart}</Card.Header>
           <Card.Meta>in</Card.Meta>

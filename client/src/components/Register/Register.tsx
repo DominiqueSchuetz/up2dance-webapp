@@ -36,7 +36,7 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
         </Header>
         <RegisterForm onRegisterUser={onRegisterUser} />
         <Message>
-          Du bist schon registriert? <a href="/login">Login</a>
+          <a href="/">Zurück zum Start</a>
         </Message>
       </Grid.Column>
     </Grid>

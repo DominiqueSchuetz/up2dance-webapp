@@ -9,6 +9,7 @@
   --card-content-color: #424242;
   --main-color: #336699;
   --color: #333;
+  --header-primary-color: #3a4052;
 }
 
 @media (min-width: 1200px) {
