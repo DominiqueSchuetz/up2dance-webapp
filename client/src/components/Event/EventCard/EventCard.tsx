@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Card, Button, Icon, Container } from 'semantic-ui-react';
-import { ApplicationEventAction } from '../../../store/types/event.types';
+/* eslint-disable consistent-return */
+import React, { ReactNode, useState } from 'react';
+import './event-card.css';
+import { Button, Icon } from 'semantic-ui-react';
 import { IEvent } from '../../../models';
-import { ModalDialog } from '../../ModalDialog';
+import { ApplicationEventAction } from '../../../store/types/event.types';
 import { EventDeleteDialog, EventCardForm } from '..';
 import { EKindOfEventAction } from '../../../enums';
+import { ModalDialog } from '../../ModalDialog';
 
 type IStateProps = {
   readonly event: IEvent;
@@ -57,7 +59,7 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
   );
 
   const cardButtonGroup: JSX.Element = (
-    <Button.Group widths="16">
+    <Button.Group widths="16" style={{ marginTop: '2rem' }}>
       <Button name="edit" animated onClick={openModalDialogEditForm}>
         <Button.Content visible>Editieren</Button.Content>
         <Button.Content hidden>
@@ -75,27 +77,49 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
   );
 
   return (
-    <Container textAlign="center">
-      <ModalDialog trigger={isAuthenticated ? cardButtonGroup : null} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
-        {renderModalComponent}
-      </ModalDialog>
-      <Card centered raised>
-        <Card.Content className="card-content" textAlign="center">
-          <Icon name="chess rock" size="small" color="orange" />
-          <Card.Meta>Am</Card.Meta>
-          <Card.Header>{event.eventDate}</Card.Header>
-          <Card.Header textAlign="center" content={event.eventName} />
-          <Card.Meta>im</Card.Meta>
-          <Card.Header textAlign="center" content={event.venue} />
-          <Card.Meta>um</Card.Meta>
-          <Card.Header>{event.timeStart}</Card.Header>
-          <Card.Meta>in</Card.Meta>
-          <Card.Description>{address!.city}</Card.Description>
-          <Icon size="small" name="heart" color="orange" />
-        </Card.Content>
-      </Card>
-    </Container>
+    <>
+      <div className="card-container">
+        <ModalDialog trigger={isAuthenticated ? cardButtonGroup : null} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
+          {renderModalComponent}
+        </ModalDialog>
+        <div className="card">
+          <div className="card__main-content">
+            <h5 className="card__timeStart"> {`${event.timeStart} Uhr`} </h5>
+            <h2 className="card__venue">{event.venue}</h2>
+            <h5 className="card__event-name">{event.eventName}</h5>
+          </div>
+          <div className="card__date">
+            <span>{event.eventDate}</span>
+          </div>
+          <div className="card__address">
+            <span>{`${address?.streetName} ${address?.streetNumber}`} </span>
+            <span>{`${address?.zipCode} ${address?.city}`} </span>
+          </div>
+          <i className="fas fa-arrow-right" />
+          <div className="pic" />
+          {renderDots(23)}
+          <div className="social">
+            <i className="fab fa-facebook-f" />
+            <i className="fab fa-twitter" />
+            <i className="fab fa-instagram" />
+          </div>
+          <button type="button" aria-label="_" />
+        </div>
+      </div>
+    </>
   );
 };
 
 export default EventCard;
+
+const renderDots = (numberOfDots: number): ReactNode => {
+  if (numberOfDots < 1) return;
+
+  return (
+    <ul>
+      {Array.from(Array(numberOfDots)).map((_) => (
+        <li key={_} />
+      ))}
+    </ul>
+  );
+};

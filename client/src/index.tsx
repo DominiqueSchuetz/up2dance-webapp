@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import './index.css';
+import './sass/main-styles.css';
 import * as serviceWorker from './serviceWorker';
 
 // tslint:disable-next-line: no-var-requires

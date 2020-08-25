@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Grid } from 'semantic-ui-react';
+import Fade from 'react-reveal/Fade';
 import moment from 'moment';
 import './styles.css';
 
@@ -43,71 +44,78 @@ const Counter: React.FC<IStateProps> = (props) => {
     return null;
   }
 
+  if (+days! - 1 === 0) {
+    setDays(undefined);
+  }
+
+  if (+hours! - 1 === 0 && !days) {
+    setHours(undefined);
+  }
+
   return (
-    <section>
-      <Grid celled="internally" columns={4} textAlign="center" relaxed divided stretched stackable container />
-      <div>
-        <div className="countdown-wrapper">
-          {days && (
-            <div className="countdown-item">
-              <SVGCircle radius={daysRadius} />
-              {days}
-              <span>days</span>
-            </div>
-          )}
-          {hours && (
-            <div className="countdown-item">
-              <SVGCircle radius={hoursRadius} />
-              {hours}
-              <span>hours</span>
-            </div>
-          )}
-          {minutes && (
-            <div className="countdown-item">
-              <SVGCircle radius={minutesRadius} />
-              {minutes}
-              <span>minutes</span>
-            </div>
-          )}
-          {seconds && (
-            <div className="countdown-item">
-              <SVGCircle radius={secondsRadius} />
-              {seconds}
-              <span>seconds</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+    <div className="countdown-wrapper">
+      {days && (
+        <Fade top>
+          <div className="countdown-item">
+            <SVGCircle radius={daysRadius} />
+            {+days - 1}
+            <span>Tage</span>
+          </div>
+        </Fade>
+      )}
+      {hours && (
+        <Fade bottom>
+          <div className="countdown-item">
+            <SVGCircle radius={hoursRadius} />
+            {+hours - 1}
+            <span>Stunden</span>
+          </div>
+        </Fade>
+      )}
+      {minutes && (
+        <Fade left>
+          <div className="countdown-item">
+            <SVGCircle radius={minutesRadius} />
+            {minutes}
+            <span>Minuten</span>
+          </div>
+        </Fade>
+      )}
+      {seconds && (
+        <Fade right>
+          <div className="countdown-item">
+            <SVGCircle radius={secondsRadius} />
+            {seconds}
+            <span>Sekunden</span>
+          </div>
+        </Fade>
+      )}
+    </div>
   );
 };
 
 const SVGCircle = ({ radius }) => (
-  <svg className='countdown-svg'>
-    <path fill="none" stroke="#fff" strokeWidth="4" d={describeArc(50, 50, 48, 0, radius)} />
+  <svg className="countdown-svg">
+    <path fill="none" stroke="gold" strokeWidth="2.4" d={describeArc(50, 50, 28, 0, radius)} />
   </svg>
 );
 
-function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
+  const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
 
   return {
-    x: centerX + (radius * Math.cos(angleInRadians)),
-    y: centerY + (radius * Math.sin(angleInRadians))
+    x: centerX + radius * Math.cos(angleInRadians),
+    y: centerY + radius * Math.sin(angleInRadians)
   };
 }
 
-function describeArc(x, y, radius, startAngle, endAngle){
-
+function describeArc(x: number, y: number, radius: number, startAngle: number, endAngle: number) {
   const start = polarToCartesian(x, y, radius, endAngle);
   const end = polarToCartesian(x, y, radius, startAngle);
 
   const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
 
-  const d = [
-    'M', start.x, start.y, 
-    'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
-  ].join(' ');
+  const d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(' ');
 
   return d;
 }
@@ -117,20 +125,3 @@ function mapNumber(number: any, inMin: number, inMax: number, outMin: number, ou
 }
 
 export default Counter;
-
-{
-  /* <Grid.Row stretched>
-          <Grid.Column width={4}>
-            <h3>14 Tage</h3>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <h3>12 Stunden</h3>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <h3>43 Minuten</h3>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <h3>15 Sekunden</h3>
-          </Grid.Column>
-        </Grid.Row> */
-}

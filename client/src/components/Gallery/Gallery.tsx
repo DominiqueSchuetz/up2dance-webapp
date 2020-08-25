@@ -24,7 +24,7 @@ let NAME: string | undefined;
 
 const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
   const { media, isAuthenticated, onListMedia, onAddMedia, onRemoveMedia, isMediaLoading } = props;
-  const [modalStatus, setModalStaus] = useState<{ modalOpen: boolean }>({
+  const [modalStatus, setModalStatus] = useState<{ modalOpen: boolean }>({
     modalOpen: false
   });
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +76,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
-        <Button color="black" onClick={() => setModalStaus({ modalOpen: false })}>
+        <Button color="black" onClick={() => setModalStatus({ modalOpen: false })}>
           Abbrechen
         </Button>
         <Button
@@ -86,7 +86,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
           content="Löschen"
           onClick={() => {
             onRemoveMedia(FILE_ID!);
-            setModalStaus({ modalOpen: false });
+            setModalStatus({ modalOpen: false });
           }}
         />
       </Modal.Actions>
@@ -107,7 +107,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
                 size="large"
                 centered
                 src={`http://localhost:8080/api/media/${mapMedia._id}`}
-                label={isAuthenticated ? deleteImage(mapMedia, setModalStaus) : undefined}
+                label={isAuthenticated ? deleteImage(mapMedia, setModalStatus) : undefined}
               />
             </Grid.Column>
           ));
@@ -136,7 +136,7 @@ const Gallery: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <section>
-      <ModalDialog modalStatus={modalStatus.modalOpen} onClose={() => setModalStaus({ modalOpen: false })}>
+      <ModalDialog modalStatus={modalStatus.modalOpen} onClose={() => setModalStatus({ modalOpen: false })}>
         {renderDeleteMessage}
       </ModalDialog>
 
@@ -156,7 +156,7 @@ export default Gallery;
 
 const deleteImage = (
   mapMedia: IMedia,
-  setModalStaus: React.Dispatch<
+  setModalStatus: React.Dispatch<
     React.SetStateAction<{
       modalOpen: boolean;
     }>
@@ -166,7 +166,7 @@ const deleteImage = (
     corner: 'right',
     icon: { name: 'delete', color: 'black' },
     onClick: () => {
-      setModalStaus({ modalOpen: true });
+      setModalStatus({ modalOpen: true });
       FILE_ID = mapMedia._id!;
       NAME = mapMedia.fileName!;
     }

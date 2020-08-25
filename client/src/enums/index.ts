@@ -127,22 +127,11 @@ export enum EReduxActionTypesCustomer {
   CREATE_CUSTOMER = 'CREATE_CUSTOMER'
 }
 
-export enum EBandMemberInstrumentSymbol {
-  VOCAL = '🎤',
-  VOCAL_AND_GUITAR = '🎤+ 🎸',
-  KEYS = '🎹',
-  GUITAR_LEAD = '🎸',
-  GUITAR_SOLO = '🎸',
-  BASS_GUITAR = '🎸',
-  DRUMS = '🥁'
-}
-
 export enum EBandMemberInstrument {
   VOCAL = 'Gesang',
   VOCAL_AND_GUITAR = 'Gesang/Gitarre',
   KEYS = 'Keyboard/Synths',
-  GUITAR_LEAD = 'Gitarre(Lead)',
-  GUITAR_SOLO = 'Gitarre(Solo)',
+  GUITAR = 'Gitarre',
   BASS_GUITAR = 'Bass',
   DRUMS = 'Schlagzeug'
 }
@@ -162,3 +151,62 @@ export enum EGoogleMapsTypes {
   postalCode = 'postal_code',
   streetNumber = 'street_number'
 }
+
+export enum EEventTargetName {
+  firstName = 'firstName',
+  lastName = 'lastName',
+  email = 'email',
+  password = 'password',
+  secretKey = 'secretKey',
+  comment = 'comment',
+  socialMediaUrl = 'socialMediaUrl',
+  fileName = 'fileName',
+  instrument = 'instrument',
+  filePath = 'filePath'
+}
+
+interface IInstrument {
+  key: number;
+  text: string;
+  value: string | number;
+  emoji?: string;
+}
+
+export const instrumentOption: IInstrument[] = [
+  {
+    key: 1,
+    text: EBandMemberInstrument.VOCAL,
+    value: EBandMemberInstrument.VOCAL,
+    emoji: '🎤'
+  },
+  {
+    key: 2,
+    text: EBandMemberInstrument.VOCAL_AND_GUITAR,
+    value: EBandMemberInstrument.VOCAL_AND_GUITAR,
+    emoji: '🎤 🎸'
+  },
+  {
+    key: 3,
+    text: EBandMemberInstrument.KEYS,
+    value: EBandMemberInstrument.KEYS,
+    emoji: '🎹'
+  },
+  {
+    key: 4,
+    text: EBandMemberInstrument.GUITAR,
+    value: EBandMemberInstrument.GUITAR,
+    emoji: '🎸'
+  },
+  {
+    key: 5,
+    text: EBandMemberInstrument.BASS_GUITAR,
+    value: EBandMemberInstrument.BASS_GUITAR,
+    emoji: '🎸'
+  },
+  {
+    key: 6,
+    text: EBandMemberInstrument.DRUMS,
+    value: EBandMemberInstrument.DRUMS,
+    emoji: '🥁'
+  }
+];

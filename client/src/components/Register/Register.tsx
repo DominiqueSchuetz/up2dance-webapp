@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { isNil } from 'lodash';
-import { Grid, Header, Image, Message, Modal } from 'semantic-ui-react';
+import { Modal } from 'semantic-ui-react';
 import { ApplicationUserAction } from '../../store/types/user.types';
 import { IUser } from '../../models';
 import { RegisterForm } from '.';
 
-interface IStateProps {
-  user?: IUser;
-  headerText?: string;
-}
+type IStateProps = {
+  readonly user?: IUser;
+  readonly headerText?: string;
+};
 
 interface IDispatchProps {
   onRegisterUser?(userFormData: FormData): Promise<ApplicationUserAction>;
   onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
-  handleCancelUser(): unknown;
 }
 
 const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
@@ -28,19 +27,7 @@ const Register: React.FC<IStateProps & IDispatchProps> = (props) => {
     }
   }, [user]);
 
-  const createNewUser = (
-    <Grid textAlign="center" verticalAlign="middle">
-      <Grid.Column style={{ maxWidth: 950 }}>
-        <Header as="h2" color="teal" textAlign="center">
-          <Image src="images/avatar/large/matthew.png" /> Register
-        </Header>
-        <RegisterForm onRegisterUser={onRegisterUser} />
-        <Message>
-          <a href="/">Zurück zum Start</a>
-        </Message>
-      </Grid.Column>
-    </Grid>
-  );
+  const createNewUser = <RegisterForm onRegisterUser={onRegisterUser} />;
 
   const updateUser = (
     <>

@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { instrumentOption } from '../enums';
 
 export const isEmailValid = (email: string): boolean => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -40,4 +41,14 @@ export const removeAndClearJwtTokenFromBrowser = (): void => {
 export const addJwtTokenToApplication = (jwtToken: string): void => {
   localStorage.clear();
   localStorage.setItem('token', jwtToken);
+};
+
+export const chooseEmoji = (instrument: string): string => {
+  let emoji: string = '😻';
+  for (const iterator of instrumentOption) {
+    if (instrument === iterator.text) {
+      emoji = iterator.emoji!;
+    }
+  }
+  return emoji;
 };

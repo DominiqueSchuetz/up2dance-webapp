@@ -1,0 +1,3 @@
+@mixin calculateFontSize() {
+  font-size: calc(var(--vh) / var(--vh));
+}

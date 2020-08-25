@@ -1,3 +1,4 @@
+// tslint:disable-next-line: no-submodule-imports
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/first */
 import React, { useState, useEffect } from 'react';
@@ -5,15 +6,14 @@ import { Segment, Form, Dimmer, Loader } from 'semantic-ui-react';
 import { GoogleMap, useLoadScript, StandaloneSearchBox, Marker } from '@react-google-maps/api';
 import moment from 'moment';
 import { getTimes } from 'suncalc';
-// tslint:disable-next-line: no-submodule-imports
-import 'moment/locale/de';
 import { IAddress } from '../../models';
 import { EGoogleMapsTypes } from '../../enums';
 import mapStylesDarkMode from './darkMode.json';
+import 'moment/locale/de';
 
 interface IStateProps {
   hasSearchBox?: boolean;
-  getAddress?: any;
+  getAddress?: (e: IAddress) => void;
   storedAddress: IAddress;
 }
 
@@ -55,7 +55,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
       setZoom(17);
       setFormattedAddress(storedAddress.formattedAddress!);
     }
-    getAddress(address);
+    getAddress!(address);
   }, [storedAddress, address, getAddress]);
 
   const onLoadMap = (searchbox: google.maps.places.SearchBox) => setStandaloneSearchBox(searchbox);
@@ -73,7 +73,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
       setZoom(14);
       setFormattedAddress('');
     } else {
-      getAddress(address);
+      getAddress!(address);
       setFormattedAddress(event.target.value);
     }
   };
@@ -106,7 +106,7 @@ const GoogleMaps: React.FC<IStateProps> = (props) => {
 
       setFormattedAddress(getPlacesFormattedAddress!);
       setPosition(newPostion);
-      getAddress(address);
+      getAddress!(address);
     }
   };
 

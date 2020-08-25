@@ -1,0 +1,66 @@
+@mixin responsiveHero($breakPoint: 767px) {
+  @media all and (orientation: portrait) {
+    :root {
+      font-size: calc(0.5em + 1vw);
+    }
+
+    .hero {
+      height: 100vh;
+    }
+
+    .main-heading,
+    .sub-heading,
+    .play-button {
+      & h1 {
+        font-size: 6vw;
+        font-weight: 600;
+      }
+    }
+
+    .main-heading {
+      margin-top: 9em;
+      padding: 0 2em;
+    }
+    .sub-heading {
+      margin-top: 4em;
+      padding: 0 4em;
+    }
+    .play-button {
+      //   top: 70vh;
+      & span.btn {
+        font-size: 4vw;
+        font-weight: 600;
+      }
+    }
+  }
+
+  @media all and (orientation: landscape) {
+    :root {
+      font-size: calc(0.5em + 1vw);
+    }
+    .main-heading,
+    .sub-heading,
+    .play-button {
+      & h1 {
+        font-size: 6vw;
+        font-weight: 600;
+      }
+    }
+
+    .main-heading {
+      margin-top: 9em;
+      padding: 0 2em;
+    }
+    .sub-heading {
+      margin-top: 4em;
+      padding: 0 2em;
+    }
+    .play-button {
+      //   top: 70vh;
+      & span.btn {
+        font-size: 4vw;
+        font-weight: 600;
+      }
+    }
+  }
+}

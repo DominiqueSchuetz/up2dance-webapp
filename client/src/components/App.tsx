@@ -14,7 +14,8 @@ import {
   GalleryContainer,
   CustomerContainer,
   EventContainer,
-  HeaderContainer
+  LandingPageContainer
+  // HeaderContainer
 } from '../container';
 import { rootReducer } from '../store/reducers';
 import { Footer } from './Footer';
@@ -31,23 +32,25 @@ const App: React.FC = () => {
     <Provider store={reduxStore}>
       <Router>
         <ToastContainer autoClose={5000} />
-        <HeaderContainer>
-          <Container>
-            <main>
-              <Switch>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <Route path="/" exact={true} strict={true} component={EventContainer} />
-                  <Route path="/" exact={true} strict={true} component={UserContainer} />
-                  <Route path="/" exact={true} strict={true} component={GalleryContainer} />
-                  <Route path="/" exact={true} strict={true} component={CustomerContainer} />
-                  <Route path="/login" exact={true} strict={true} component={LoginContainer} />
-                  <Route path="/register" exact={true} strict={true} component={RegisterContainer} />
-                </Suspense>
-              </Switch>
-            </main>
-          </Container>
-          <Route path="/" exact={true} strict={true} component={Footer} />
-        </HeaderContainer>
+        {/* <HeaderContainer> */}
+        {/* <Container> */}
+        <main>
+          <Switch>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Route path="/" exact={true} strict={true} component={LandingPageContainer} />
+              <Route path="/" exact={true} strict={true} component={EventContainer} />
+              <Route path="/login" exact={true} strict={true} component={LoginContainer} />
+              {/* <Route path="/" exact={true} strict={true} component={EventContainer} />
+              <Route path="/" exact={true} strict={true} component={UserContainer} />
+              <Route path="/" exact={true} strict={true} component={GalleryContainer} />
+              <Route path="/" exact={true} strict={true} component={CustomerContainer} />
+              <Route path="/register" exact={true} strict={true} component={RegisterContainer} /> */}
+            </Suspense>
+          </Switch>
+        </main>
+        {/* </Container> */}
+        <Route path="/" exact={true} strict={true} component={Footer} />
+        {/* </HeaderContainer> */}
       </Router>
     </Provider>
   );

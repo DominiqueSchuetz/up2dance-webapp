@@ -1,0 +1,507 @@
+@import '../../sass/variables';
+@import '../../sass/mixins/breakpoints';
+@import './animations/animations';
+@import './mobile/navigation';
+@import './mobile/hero';
+
+.hero-container {
+  // min-height: 667px;
+  width: 100%;
+  height: 135vh;
+  color: $third-color;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: $main-color;
+  // opacity: 0.87;
+  // border-radius: 0% 0% 0% 0%;
+  // mix-blend-mode: multiply;
+  position: relative;
+
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 0;
+  //   width: inherit;
+  //   height: 10vh;
+  //   background: #fff;
+  //   clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  //   z-index: 999999999999;
+  // }
+
+  // & .image-layer {
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   z-index: -9;
+  //   width: 100%;
+  //   height: 100%;
+  //   object-fit: cover;
+  //   opacity: 0.8;
+  // }
+
+  // &::after {
+  //   content: '';
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   width: inherit;
+  //   height: 100%;
+  //   // background: url('/images/concert-hand-heart.jpg') no-repeat;
+  //   opacity: 0.15;
+  //   background-size: cover;
+  //   background-position: bottom;
+  // }
+
+  & .main-heading span {
+    color: tomato;
+    font-style: italic;
+  }
+
+  // Responsive
+  @include media('<phone') {
+    font-size: 1rem !important;
+    flex-direction: column;
+  }
+  @include media('>phone', '<tablet') {
+    font-size: 1.4rem !important;
+    flex-direction: column;
+  }
+  @include media('>tablet', '<desktop') {
+    font-size: 1.7rem !important;
+    height: 100vh;
+  }
+  @include media('>desktop') {
+    font-size: 1.7rem !important;
+    height: 100vh;
+  }
+}
+
+.hero-claim {
+  height: inherit;
+  flex: 0 0 50vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  // position: relative;
+}
+
+.hero-counter {
+  height: inherit;
+  flex: 0 0 50vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform-origin: right;
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+  background: url('/images/56.jpg') center no-repeat;
+  background-size: cover;
+  // background: #fff;
+  @include media('<phone') {
+    position: absolute;
+    bottom: 0vh;
+    width: 100%;
+    height: 50vh;
+    clip-path: polygon(0 0, 100% 24%, 100% 100%, 0 100%, 0 0);
+  }
+  @include media('>phone', '<tablet') {
+    position: absolute;
+    bottom: 0vh;
+    width: 100%;
+    height: 60vh;
+    clip-path: polygon(0 0, 100% 24%, 100% 100%, 0 100%, 0 0);
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+  }
+  &__headline {
+    margin-top: 4em;
+    text-transform: uppercase;
+    color: white;
+    z-index: 9;
+    & h1 {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+.main-heading,
+.sub-heading {
+  height: fit-content;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  line-height: 1.6;
+}
+
+.main-heading {
+  @include media('<phone') {
+    position: absolute;
+    top: 15vh;
+    max-width: 85%;
+  }
+
+  & h1 {
+    @include media('<phone') {
+      font-size: inherit;
+    }
+  }
+
+  @include media('>phone', '<tablet') {
+    position: absolute;
+    top: 15vh;
+    max-width: 85%;
+  }
+
+  & h1 {
+    @include media('>phone', '<tablet') {
+      font-size: inherit;
+    }
+  }
+
+  @include media('>=tablet', '<desktop') {
+    position: absolute;
+    top: 21vh;
+    max-width: 45%;
+  }
+
+  & h1 {
+    @include media('>tablet', '<=desktop') {
+      font-size: inherit;
+    }
+  }
+
+  @include media('>desktop') {
+    position: absolute;
+    top: 21vh;
+    max-width: 45%;
+  }
+
+  & h1 {
+    @include media('>desktop') {
+      font-size: inherit;
+    }
+  }
+}
+
+.sub-heading {
+  @include media('<phone') {
+    position: absolute;
+    top: 40vh;
+    max-width: 85%;
+  }
+  & h1 {
+    @include media('<phone') {
+      font-size: inherit;
+    }
+  }
+
+  @include media('>phone', '<tablet') {
+    position: absolute;
+    top: 40vh;
+    max-width: 85%;
+  }
+
+  & h1 {
+    @include media('>phone', '<tablet') {
+      font-size: inherit;
+    }
+  }
+
+  @include media('>=tablet', '<desktop') {
+    position: absolute;
+    top: 52vh;
+    max-width: 45%;
+  }
+
+  & h1 {
+    @include media('>tablet', '<desktop') {
+      font-size: inherit;
+    }
+  }
+
+  @include media('>desktop') {
+    position: absolute;
+    top: 52vh;
+    max-width: 45%;
+  }
+
+  & h1 {
+    @include media('>desktop') {
+      font-size: inherit;
+    }
+  }
+}
+
+.play-button {
+  z-index: 9;
+  height: 4em;
+  & a {
+    cursor: pointer;
+    & i {
+      color: $second-color;
+      font-size: 4rem;
+      transition: all 0.5s;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+  @include media('<phone') {
+    position: absolute;
+    top: 59vh;
+  }
+  @include media('>=phone', '<=tablet') {
+    position: absolute;
+    top: 62vh;
+  }
+  @include media('>=tablet', '<=desktop') {
+    position: absolute;
+    top: 82vh;
+  }
+  @include media('>desktop') {
+    position: absolute;
+    top: 82vh;
+  }
+}
+
+.trailer {
+  position: fixed;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
+  z-index: 99999;
+  background: rgba($color: #000000, $alpha: 0.95);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+
+  & iframe {
+    outline: none;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+  }
+}
+
+.trailer.active {
+  position: absolute;
+  top: 0;
+  margin-top: 0;
+  z-index: 99999;
+  transition: 0.75s ease-in-out;
+  visibility: visible;
+  opacity: 1;
+
+  & i.close-video-player {
+    position: absolute;
+    top: 1.9em;
+    z-index: 99999999999999;
+    align-self: center;
+    cursor: pointer;
+    color: white;
+    font-size: 2rem;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.counter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 360px;
+  background: url('/images/56.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: 'Krona One', sans-serif;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.45);
+  }
+  & h1 {
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+    line-height: 1.6;
+    color: $main-color;
+    z-index: 9;
+    font-family: 'Krona One', sans-serif;
+  }
+}
+
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100vw;
+  height: 65px;
+  padding: 6vh 10vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9999;
+  transition: 0.55s ease-in-out;
+  color: #000;
+
+  a {
+    text-transform: uppercase;
+    color: inherit;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $third-color;
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    .nav-link {
+      transition: opacity 0.4s ease-in-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      &:nth-of-type(2) {
+        transition-delay: 0.1s;
+      }
+
+      &:nth-of-type(3) {
+        transition-delay: 0.2s;
+      }
+
+      &:nth-of-type(4) {
+        transition-delay: 0.3s;
+      }
+
+      &:nth-of-type(5) {
+        transition-delay: 0.4s;
+      }
+
+      &:nth-of-type(6) {
+        transition-delay: 0.5s;
+      }
+
+      a {
+        margin: 0.2rem;
+        margin-left: 1.2rem;
+        padding: 1rem 0.5rem;
+      }
+      a:hover {
+        transform: scale(0.9);
+        background: transparent;
+        transition: opacity 0.4s ease-in-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        color: $third-color;
+      }
+      a:active {
+        transform: scale(1.1);
+        background: transparent;
+        transition: opacity 0.4s ease-in-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        color: $third-color;
+      }
+    }
+    .user-image {
+      & img {
+        margin-left: 37px;
+        // margin: 22.975px;
+      }
+    }
+    .social-media-icons {
+      display: none;
+    }
+  }
+
+  .menu-icon {
+    position: relative;
+    padding: 26px 10px;
+    cursor: pointer;
+    z-index: 1;
+    display: none;
+    &__line {
+      display: block;
+      position: relative;
+      background: tomato;
+      height: 3px;
+      width: 45px;
+      border-radius: 4px;
+      transition: background 0.8s ease;
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        background: tomato;
+        height: 100%;
+        width: 100%;
+        border-radius: 4px;
+        transition: background 0.8s ease;
+      }
+      &::before {
+        transform: translatey(-8px);
+      }
+      &::after {
+        transform: translatey(8px);
+      }
+    }
+  }
+  .menu-btn {
+    position: absolute;
+    top: -500px;
+    &:focus ~ .menu-icon {
+      .menu-icon__line {
+        &::before {
+          transform: translatey(-11px);
+        }
+        &::after {
+          transform: translatey(11px);
+        }
+      }
+    }
+  }
+  &.scrolled {
+    height: 8vh;
+    background: $main-color;
+    color: #fff !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+    .menu-icon {
+      &__line,
+      &__line::before,
+      &__line::after {
+        background: $second-color;
+      }
+    }
+  }
+}
+
+.logo {
+  color: $second-color;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+// Responsive Section
+@include responsiveNavigation(940px);

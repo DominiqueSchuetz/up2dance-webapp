@@ -1,72 +1,67 @@
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+// eslint-disable-next-line import/no-unresolved
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Grid, Header, Segment, Button, Image, Form, Message, Container } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 import { ISignInUserData, IUser, IReduxState } from '../../models';
 import { IReduxSignInUserAction } from '../../store/types/auth.types';
+import { Register } from '../Register';
+import { SignInForm } from '../SignIn';
+import './styles.css';
 
-interface IStateProps {
-  userPayload: IReduxState<IUser>;
-}
-
-interface IDispatchProps {
+type IStateProps = { readonly userPayload: IReduxState<IUser> };
+type IDispatchProps = {
   onSignin(userData: ISignInUserData): Promise<IReduxSignInUserAction>;
-}
+  onRegisterUser(userFormData: FormData);
+};
 
 const Login: React.FC<IStateProps & IDispatchProps> = (props) => {
-  const { onSignin } = props;
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const { onSignin, onRegisterUser } = props;
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.name === 'email' ? setEmail(e.target.value) : setPassword(e.target.value);
-  };
-
-  const handleLogin = () => {
-    onSignin({ email, password });
+  const toggleForm = () => {
+    const container = document.querySelector('.login-container');
+    const form = document.querySelectorAll('form')[1];
+    form.classList.toggle('active');
+    container?.classList.toggle('active');
   };
 
   return (
-    <Container>
-      <Grid textAlign="center" verticalAlign="middle">
-        <Grid.Column>
-          <Header as="h2" color="teal" textAlign="center">
-            <Image src="images/avatar/large/matthew.png" /> Log-in
-          </Header>
-          <Form size="large">
-            <Segment stacked>
-              <Form.Input
-                type="text"
-                name="email"
-                defaultValue={email}
-                fluid
-                icon="user"
-                iconPosition="left"
-                placeholder="E-mail address"
-                onChange={handleOnChange}
-              />
-              <Form.Input
-                type="password"
-                name="password"
-                defaultValue={password}
-                fluid
-                icon="lock"
-                iconPosition="left"
-                placeholder="Password"
-                onChange={handleOnChange}
-              />
-              <Button as={NavLink} to="/" primary color="teal" fluid size="large" onClick={handleLogin}>
-                Login
-              </Button>
-            </Segment>
-          </Form>
-          <Message>
-            <div>
-              <a href="/">Zurück zum Start</a>
-            </div>
-          </Message>
-        </Grid.Column>
-      </Grid>
-    </Container>
+    <section className="login-section">
+      <div className="login-container">
+        <div className="user signinBx">
+          <div className="imgBx">
+            <img src="./images/left_side.jpg" width="auto" height="700px" alt="pic_1" />
+          </div>
+          <div className="formBx">
+            <Button as={NavLink} to="/" size="tiny" basic color="orange" labelPosition="left" icon="left chevron" content="Back" />
+            <h2 className="signin-text">Sign In</h2>
+            <SignInForm onSignin={onSignin} />
+            <p className="signup">
+              Noch nicht registriert?{' '}
+              <a href="#" onClick={toggleForm}>
+                Sign up.
+              </a>
+            </p>
+          </div>
+        </div>
+        <div className="user signupBx">
+          <div className="formBx">
+            <Button as={NavLink} to="/" size="tiny" basic color="orange" labelPosition="left" icon="left chevron" content="Back" />
+            <h2 className="signup-text">Create an account</h2>
+            <Register onRegisterUser={onRegisterUser} />
+            <p className="signin">
+              Du bist schon registriert?{' '}
+              <a href="#" onClick={toggleForm}>
+                Sign in.
+              </a>
+            </p>
+          </div>
+          <div className="imgBx">
+            <img src="./images/right_side.jpg" alt="pic_2" width="400px" height="700px" />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 

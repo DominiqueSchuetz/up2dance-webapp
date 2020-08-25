@@ -1,3 +1,4 @@
+export { default as LandingPageContainer } from './LandingPage.Container';
 export { default as UserContainer } from './User.Container';
 export { default as LoginContainer } from './Login.Container';
 export { default as EventContainer } from './Event.Container';

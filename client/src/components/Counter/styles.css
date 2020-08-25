@@ -3,34 +3,38 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  z-index: 9;
 }
 
 .countdown-item {
   color: #fff;
-  font-size: 40px;
+  font-size: 1.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  line-height: 30px;
+  /* line-height: 30px; */
   margin: 10px;
-  padding-top: 10px;
+  /* padding-top: 10px; */
   position: relative;
-  width: 100px;
+  width: 127px;
   height: 100px;
 }
 
 .countdown-item span {
   color: #fff;
-  font-size: 12px;
-  font-weight: 600;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 1px 8px;
+  font-size: 0.9rem;
   text-transform: uppercase;
+  position: absolute;
+  top: 88px;
 }
 
 .countdown-svg {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 14px;
   width: 100px;
   height: 100px;
 }

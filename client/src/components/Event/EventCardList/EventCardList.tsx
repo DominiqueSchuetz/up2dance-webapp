@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Dimmer, Loader, Header, Container, Image, Grid } from 'semantic-ui-react';
+import { Button, Dimmer, Loader, Header, Container, Grid } from 'semantic-ui-react';
 import { isArray } from 'lodash';
 import { ApplicationEventAction } from '../../../store/types/event.types';
 import { IEvent } from '../../../models';
@@ -46,7 +46,15 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
   const modalTriggerButton = (
     <>
       {isAuthenticated && (
-        <Button circular content="Neues Event" icon="add" labelPosition="right" color="blue" onClick={openModalDialogEditForm} />
+        <Button
+          circular
+          content="Neues Event"
+          icon="add"
+          labelPosition="right"
+          color="blue"
+          onClick={openModalDialogEditForm}
+          style={{ marginTop: '2rem', background: 'tomato' }}
+        />
       )}
     </>
   );
@@ -77,7 +85,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
       return (
         <>
           <Header as="h2">
-            Es gibt derzeit keine Events...{' '}
+            Es gibt derzeit keine Events....{' '}
             <span role="img" aria-label="sleeping-emoji">
               😴
             </span>
@@ -94,8 +102,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <section>
-      <Image className="header-space-bottom" src="./images/events.svg" size="huge" centered />
-      <Container textAlign="center">
+      <Container textAlign="center" style={{ background: 'gold' }}>
         <ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
           <EventCardForm
             showToggleHidden
@@ -105,10 +112,8 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
             handleCancelEvent={handleCancelEvent}
           />
         </ModalDialog>
+        {renderEventCards(events)}
       </Container>
-      <Grid stackable columns={4} stretched doubling centered>
-        <Grid.Row>{renderEventCards(events)}</Grid.Row>
-      </Grid>
     </section>
   );
 };

@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap");
+:root {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-size: 1em;
+}
+
+*,
+::before,
+::after {
+  -webkit-box-sizing: inherit;
+          box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+body {
+  font-family: "Raleway", sans-serif;
+}
+
+main {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Raleway", sans-serif;
+}
+
+span {
+  font-family: "Open Sans", sans-serif;
+}
+
+p,
+a {
+  font-family: "Open Sans", sans-serif;
+}
+
+.ui.input {
+  width: 100%;
+}
+
+.ui.primary.button,
+.ui.primary.buttons .button {
+  background: tomato !important;
+}
+
+.ui.medium.image {
+  max-width: 280px !important;
+  max-height: 280px !important;
+}
+
+.Toastify__toast-container {
+  z-index: 99999999999999999999 !important;
+}
+
+.Toastify__toast--success {
+  background: tomato !important;
+}
+
+.Toastify__toast-body {
+  text-transform: uppercase !important;
+}
+/*# sourceMappingURL=main-styles.css.map */

@@ -67,13 +67,19 @@ export interface IMedia {
   isUserPicture?: boolean;
 }
 
+export interface ISocialMediaUrl {
+  facebookUrl?: string;
+  instagramUrl?: string;
+}
+
 export interface IUser {
   _id?: string | undefined;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   refId?: string | undefined;
   instrument?: string | undefined;
   email: string;
+  socialMediaUrl: ISocialMediaUrl | undefined;
   password?: string | undefined;
   comment?: string | undefined;
 }
@@ -102,6 +108,7 @@ export interface IRegisterUserData {
   media?: IMedia;
   instrument?: string | undefined;
   email: string;
+  socialMediaUrl: ISocialMediaUrl | undefined;
   password: string;
   secretKey: string;
   comment?: string | undefined;

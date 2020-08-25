@@ -46,7 +46,7 @@ const UserCard: React.FC<IStateProps & IDispatchProps> = (props) => {
   const renderModalComponent: JSX.Element = deleteDialog ? (
     <UserDeleteDialog user={user} handleCancelUser={handleSpecialEvent} onDeleteUser={onDeleteUser} headerText="User Löschen" />
   ) : (
-    <Register user={user} handleCancelUser={handleSpecialEvent} onUpdateUser={onUpdateUser} headerText="User Editieren" />
+    <Register user={user} onUpdateUser={onUpdateUser} headerText="User Editieren" />
   );
 
   const cardButtonGroup: JSX.Element = (

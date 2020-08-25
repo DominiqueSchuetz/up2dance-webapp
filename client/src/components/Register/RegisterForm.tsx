@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Segment, Button, Form, DropdownProps, InputOnChangeData } from 'semantic-ui-react';
+import { Button, Form, DropdownProps, InputOnChangeData, Icon, Container, Input } from 'semantic-ui-react';
 import { ApplicationUserAction } from '../../store/types/user.types';
-import { IUser, IRegisterUserData, IReduxState } from '../../models';
-import { EBandMemberInstrument } from '../../enums';
+import { IUser, IRegisterUserData, IReduxState, ISocialMediaUrl } from '../../models';
+import { EEventTargetName, instrumentOption } from '../../enums';
 import { isEmailValid } from '../../lib';
 import { FileUpload } from '../FileUpload';
+import { ModalDialog } from '../ModalDialog';
 
 interface IStateProps {
   registerPayload?: IReduxState<IRegisterUserData>;
@@ -18,109 +19,96 @@ interface IDispatchProps {
   onUpdateUser?(id: string, userFormData: FormData): Promise<ApplicationUserAction>;
 }
 
-const instrumentOption = [
-  {
-    text: EBandMemberInstrument.VOCAL,
-    value: EBandMemberInstrument.VOCAL
-  },
-  {
-    text: EBandMemberInstrument.VOCAL_AND_GUITAR,
-    value: EBandMemberInstrument.VOCAL_AND_GUITAR
-  },
-  {
-    text: EBandMemberInstrument.KEYS,
-    value: EBandMemberInstrument.KEYS
-  },
-  {
-    text: EBandMemberInstrument.GUITAR_LEAD,
-    value: EBandMemberInstrument.GUITAR_LEAD
-  },
-  {
-    text: EBandMemberInstrument.GUITAR_SOLO,
-    value: EBandMemberInstrument.GUITAR_SOLO
-  },
-  {
-    text: EBandMemberInstrument.BASS_GUITAR,
-    value: EBandMemberInstrument.BASS_GUITAR
-  },
-  {
-    text: EBandMemberInstrument.DRUMS,
-    value: EBandMemberInstrument.DRUMS
-  }
-];
-
 const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
   const { user, onRegisterUser, onUpdateUser } = props;
 
   const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [refId, setRefId] = useState<string>('');
+  const [refId, setRefId] = useState<string | undefined>('');
+  const [instrument, setInstrument] = useState<string | undefined>();
   const [filePath, setFilePath] = useState<any | undefined>(undefined);
-  const [fileName, setFileName] = useState<string | undefined>('');
-
+  const [fileName, setFileName] = useState<string | undefined>(undefined);
+  const [socialMediaUrl, setSocialMediaUrl] = useState<ISocialMediaUrl | undefined>({ facebookUrl: '', instagramUrl: '' });
+  const [modalFacebookIsOpen, setModalFacebookIsOpen] = useState<boolean>(false);
+  const [resetImage, setResetImage] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
   const [secretKey, setSecretKey] = useState<string>('');
-  const [comment, setComment] = useState<string>('');
+  const [comment, setComment] = useState<string | undefined>(undefined);
   const [isUpdatedComponent, setIsUpdatedComponent] = useState<boolean>(false);
+  const [modalStatus, setModalStatus] = useState<{ modalOpen: boolean }>({
+    modalOpen: false
+  });
 
   useEffect(() => {
     if (!user) {
       return;
     }
     setFirstName(user.firstName);
-    setLastName(user.lastName);
     setEmail(user.email);
     setRefId(user.refId!);
     setComment(user.comment!);
+    setSocialMediaUrl(user.socialMediaUrl!);
     setIsUpdatedComponent(true);
   }, [user]);
 
-  const getImageObjectFromComponent = (imageObject: { file: any; fileNameWithoutType: any }) => {
-    setFilePath(imageObject.file);
+  const getImageObjectFromComponent = (imageObject: { mediaFile: any; fileNameWithoutType: any }) => {
+    setFilePath(imageObject.mediaFile);
     setFileName(imageObject.fileNameWithoutType);
+    addCssState();
   };
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | any, data: DropdownProps | InputOnChangeData | any) => {
     switch (event.target.name || data.name) {
-      case 'firstName':
+      case EEventTargetName.firstName:
         setFirstName(event.target.value);
         break;
-      case 'lastName':
-        setLastName(event.target.value);
-        break;
-      case 'fileName':
-        setFileName(event.target.value);
-        break;
-      case 'email':
+      case EEventTargetName.email:
         setEmail(event.target.value);
         break;
-      case 'password':
+      case EEventTargetName.password:
         setPassword(event.target.value);
         break;
-      case 'secretKey':
+      case EEventTargetName.secretKey:
         setSecretKey(event.target.value);
         break;
-      case 'comment':
+      case EEventTargetName.instrument:
+        setInstrument(data.value);
+        break;
+      case EEventTargetName.fileName:
+        setFileName(event.target.value);
+        break;
+      case EEventTargetName.comment:
         setComment(event.target.value);
         break;
-      default:
+      case EEventTargetName.socialMediaUrl:
+        modalFacebookIsOpen
+          ? setSocialMediaUrl({ facebookUrl: event.target.value, instagramUrl: socialMediaUrl!.instagramUrl })
+          : setSocialMediaUrl({ facebookUrl: socialMediaUrl!.facebookUrl, instagramUrl: event.target.value });
         break;
     }
   };
 
+  const isOkayButtonPressed = () => {
+    setModalStatus({ modalOpen: false });
+  };
+
   const handleRegister = () => {
     const userFormData: FormData = new FormData();
+    const socialUrl: ISocialMediaUrl = { facebookUrl: socialMediaUrl?.facebookUrl, instagramUrl: socialMediaUrl?.instagramUrl };
 
-    userFormData.append('firstName', firstName);
-    userFormData.append('lastName', lastName);
-    userFormData.append('filePath', filePath);
-    userFormData.append('fileName', fileName!);
+    userFormData.append(EEventTargetName.firstName, firstName);
+    userFormData.append(EEventTargetName.filePath, filePath);
+    userFormData.append(EEventTargetName.fileName, fileName!);
     userFormData.append('isUserPicture', JSON.stringify(true));
-    userFormData.append('email', email);
-    userFormData.append('password', password);
-    userFormData.append('secretKey', secretKey);
-    userFormData.append('comment', comment);
+    userFormData.append(EEventTargetName.email, email);
+    userFormData.append(EEventTargetName.password, password);
+    userFormData.append(EEventTargetName.secretKey, secretKey);
+    userFormData.append(EEventTargetName.instrument, instrument!);
+
+    if (socialMediaUrl?.facebookUrl || socialMediaUrl?.instagramUrl || comment) {
+      userFormData.append(EEventTargetName.socialMediaUrl, JSON.stringify(socialUrl));
+      userFormData.append(EEventTargetName.comment, comment!);
+    }
 
     if (isUpdatedComponent) {
       onUpdateUser!(user?._id!, userFormData);
@@ -129,102 +117,149 @@ const RegisterForm: React.FC<IStateProps & IDispatchProps> = (props) => {
     }
 
     setFirstName('');
-    setLastName('');
     setEmail('');
     setPassword('');
+    setInstrument('');
     setSecretKey('');
-    setRefId('');
+    setRefId(undefined);
+    setFileName('');
+    setFilePath(undefined);
     setComment('');
+    setSocialMediaUrl({ facebookUrl: '', instagramUrl: '' });
+    setResetImage(true);
+    removeCssState();
+  };
+
+  const openModalDialogEditForm = (e: any): void => {
+    setModalStatus({ modalOpen: true });
+    e.target.id === 'facebook' ? setModalFacebookIsOpen(true) : setModalFacebookIsOpen(false);
+  };
+
+  const modalTriggerButton = (
+    <Container textAlign="center" fluid>
+      <Icon id="facebook" name="facebook f" color="black" size="large" onClick={openModalDialogEditForm} />
+      <Icon id="instagram" name="instagram" color="black" size="large" onClick={openModalDialogEditForm} />
+    </Container>
+  );
+
+  const onCloseEvent = (): void => {
+    setModalStatus({ modalOpen: false });
   };
 
   return (
-    <Form autoComplete="off" size="large">
-      <Segment stacked>
-        <Form.Input
+    <Form autoComplete="off">
+      <Form.Input
+        type="text"
+        name={EEventTargetName.firstName}
+        value={firstName}
+        fluid
+        placeholder="Vorname"
+        onChange={handleOnChange}
+        error={!(firstName!.length > 1)}
+      />
+      <FileUpload
+        id="file-upload"
+        name={EEventTargetName.filePath}
+        size="medium"
+        centered
+        refId={refId}
+        circular
+        getImageObjectFromComponent={getImageObjectFromComponent}
+        resetImageUpload={resetImage}
+      />
+      <Form.Dropdown
+        name={EEventTargetName.instrument}
+        clearable
+        placeholder="Instrument"
+        fluid
+        selection
+        options={instrumentOption}
+        onChange={handleOnChange}
+        value={instrument}
+      />
+      <ModalDialog
+        isOkayButtonPressed={isOkayButtonPressed}
+        headline="Gib deine Url ein"
+        trigger={modalTriggerButton}
+        modalStatus={modalStatus.modalOpen}
+        onClose={onCloseEvent}
+      >
+        <Input
           type="text"
-          name="firstName"
-          value={firstName}
-          fluid
-          placeholder="Vorname"
-          onChange={handleOnChange}
-          error={!(firstName!.length > 1)}
-        />
-        <Form.Input
-          type="text"
-          name="lastName"
-          value={lastName}
-          fluid
-          placeholder="Nachname"
-          onChange={handleOnChange}
-          error={!(lastName!.length > 1)}
-        />
-        <FileUpload
-          id="file-upload"
-          name="filePath"
-          size="medium"
-          centered
-          refId={refId}
-          circular
-          getImageObjectFromComponent={getImageObjectFromComponent}
-        />
-        <Form.Dropdown
-          name="instrument"
-          clearable
-          placeholder="Instrument"
-          fluid
-          selection
-          options={instrumentOption}
-          onChange={handleOnChange}
-        />
-        <Form.Input
-          type="text"
-          name="email"
-          value={email}
-          fluid
-          icon="user"
+          name={EEventTargetName.socialMediaUrl}
+          icon={modalFacebookIsOpen ? 'facebook f' : 'instagram'}
           iconPosition="left"
-          placeholder="Email adresse"
+          placeholder={modalFacebookIsOpen ? 'Facebook url...' : 'Instagram url...'}
+          value={modalFacebookIsOpen ? socialMediaUrl?.facebookUrl : socialMediaUrl?.instagramUrl}
           onChange={handleOnChange}
-          error={!(email!.length > 1 && isEmailValid(email))}
         />
-        <Form.Input
-          type="password"
-          name="password"
-          value={password}
-          fluid
-          icon="lock"
-          iconPosition="left"
-          placeholder="Password"
-          onChange={handleOnChange}
-          error={!(email!.length > 4)}
-        />
-        <Form.Input
-          type="password"
-          name="secretKey"
-          value={secretKey}
-          fluid
-          icon="lock"
-          iconPosition="left"
-          placeholder="Secret-Key"
-          onChange={handleOnChange}
-          error={!(email!.length > 4)}
-        />
-        <Form.TextArea style={{ minHeight: 200 }} name="comment" value={comment} placeholder="Kommentar..." onChange={handleOnChange} />
-        <Button
-          as={NavLink}
-          to={isUpdatedComponent ? '#' : '/login'}
-          primary
-          color="teal"
-          fluid
-          size="large"
-          onClick={handleRegister}
-          disabled={!firstName || !lastName || !email || !password || !secretKey}
-        >
-          Registrieren
-        </Button>
-      </Segment>
+      </ModalDialog>
+      <Form.Input
+        type="text"
+        name={EEventTargetName.email}
+        value={email}
+        fluid
+        icon="user"
+        iconPosition="left"
+        placeholder="Email adresse"
+        onChange={handleOnChange}
+        error={!(email!.length > 1 && isEmailValid(email))}
+      />
+      <Form.Input
+        type="password"
+        name={EEventTargetName.password}
+        value={password}
+        fluid
+        icon="lock"
+        iconPosition="left"
+        placeholder="Password"
+        onChange={handleOnChange}
+        error={!(email!.length > 4)}
+      />
+      <Form.Input
+        type="password"
+        name={EEventTargetName.secretKey}
+        value={secretKey}
+        fluid
+        icon="lock"
+        iconPosition="left"
+        placeholder="Secret-Key"
+        onChange={handleOnChange}
+        error={!(email!.length > 4)}
+      />
+
+      <Form.TextArea
+        style={{ minHeight: 200 }}
+        name={EEventTargetName.comment}
+        value={comment}
+        placeholder="Beschreibe dich selbst..."
+        onChange={handleOnChange}
+      />
+      <Button
+        as={NavLink}
+        to={isUpdatedComponent ? '#' : '/login'}
+        primary
+        fluid
+        size="large"
+        onClick={handleRegister}
+        disabled={!firstName || !email || !password || !secretKey}
+      >
+        Registrieren
+      </Button>
     </Form>
   );
 };
 
 export default RegisterForm;
+
+const addCssState = () => {
+  const signinNode = document.querySelector('.signin');
+  const form = document.querySelectorAll('form')[1];
+  signinNode?.classList.add('image-visible');
+  form.classList.add('image-visible');
+};
+
+const removeCssState = () => {
+  const signinNode = document.querySelector('.signin');
+  signinNode?.classList.remove('image-visible');
+};
