@@ -6,5 +6,8 @@
     "max-line-length": false,
     "indent": false,
     "trailing-comma": false,
+    "jsx-boolean-value": false,
+    "jsx-no-multiline-js": false,
+    "jsx-no-lambda": false
   }
 }

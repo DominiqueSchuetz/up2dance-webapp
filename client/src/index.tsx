@@ -1,11 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./components/App";
-import "./index.css";
-import * as serviceWorker from "./serviceWorker";
-require("dotenv").config();
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/App';
+import './sass/main-styles.css';
+import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById("root"));
+// tslint:disable-next-line: no-var-requires
+require('dotenv').config();
+
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

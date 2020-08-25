@@ -1,0 +1,277 @@
+section.login-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: gold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 20px;
+}
+
+section .login-container {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  background: #fff;
+  -webkit-box-shadow: 0 15px 50px rgba(51, 50, 50, 0.6);
+          box-shadow: 0 15px 50px rgba(51, 50, 50, 0.6);
+  overflow: hidden;
+}
+
+section .login-container .user {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+section .login-container .user .imgBx {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: gold;
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+section .login-container .user section .login-container .user .imgBx img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+section .login-container .user .formBx {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: #fff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 40px;
+  -webkit-transition: 1s;
+  transition: 1s;
+  overflow-y: auto;
+}
+
+section .login-container .user .formBx a.ui.orange.button {
+  position: absolute;
+  top: 45px;
+}
+
+section .login-container .user .formBx h2.signin-text,
+section .login-container .user .formBx h2.signup-text {
+  position: absolute;
+  top: 107px;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  width: 100%;
+  color: #555;
+}
+
+section .login-container .user .formBx form {
+  position: relative;
+  top: 74px;
+  height: auto;
+  overflow: hidden;
+  width: 100%;
+}
+
+section .login-container .user .formBx form.active {
+  position: relative;
+  top: 380px;
+  height: auto;
+  width: 100%;
+}
+
+section .login-container .user .formBx form.active.image-visible {
+  position: relative;
+  top: 484px;
+  height: auto;
+  width: 100%;
+}
+
+section .login-container .user .formBx form img.ui.header > .image:not(.icon),
+section .login-container .user .formBx .ui.header > img {
+  width: 21.5rem;
+}
+
+section .login-container .user .formBx form input {
+  position: relative;
+  width: 100%;
+  border: none;
+  outline: none;
+  margin: 8px 0;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+section .login-container .user .formBx form .ui.icon i {
+  opacity: 1;
+  font-size: 1rem;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  color: #555;
+}
+
+section .login-container .user .formBx form .social-media-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: 36px;
+}
+
+section .login-container .user .formBx form .social-media-wrapper a {
+  margin: 0 35px;
+}
+
+section .login-container .user .formBx form .social-media-wrapper a i {
+  opacity: 1;
+  color: #555;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+
+section .login-container .user .formBx p.signin {
+  position: relative;
+  top: 400px;
+  margin: 44px 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #555;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+section .login-container .user .formBx p.signin a {
+  font-weight: 600;
+  text-decoration: none;
+  color: tomato;
+}
+
+section .login-container .user .formBx p.signin.image-visible {
+  position: relative;
+  top: 527px;
+}
+
+section .login-container .user .formBx p.signup {
+  position: relative;
+  top: 156px;
+  margin: 44px 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #555;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+section .login-container .user .formBx p.signup a {
+  font-weight: 600;
+  text-decoration: none;
+  color: tomato;
+}
+
+section .login-container .signupBx .formBx form {
+  height: 500px;
+  overflow: visible;
+}
+
+section .login-container .signupBx .formBx form i {
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  margin: 20px 20px;
+  color: tomato;
+  cursor: pointer;
+}
+
+section .login-container .signupBx {
+  pointer-events: none;
+}
+
+section .login-container.active .signupBx {
+  pointer-events: initial;
+}
+
+section .login-container .signupBx .formBx {
+  left: 100%;
+}
+
+section .login-container.active .signupBx .formBx {
+  left: 0;
+}
+
+section .login-container .signupBx .imgBx {
+  left: -100%;
+}
+
+section .login-container.active .signupBx .imgBx {
+  left: 0;
+}
+
+section .login-container .signinpBx .formBx {
+  left: 0;
+}
+
+section .login-container.active .signinpBx .formBx {
+  left: 100%;
+}
+
+section .login-container .signinpBx .imgBx {
+  left: 0;
+}
+
+section .login-container.active .signinpBx .imgBx {
+  left: -100%;
+}
+
+@media screen and (max-width: 991px) {
+  section .login-container {
+    max-width: 400px;
+  }
+  section .login-container .imgBx {
+    display: none;
+  }
+  section .login-container .user .formBx {
+    width: 100%;
+  }
+  section .login-container .user .formBx form a.button {
+    width: 100%;
+  }
+}
+/*# sourceMappingURL=styles.css.map */
