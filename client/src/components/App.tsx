@@ -40,6 +40,7 @@ const App: React.FC = () => {
               <Route path="/" exact={true} strict={true} component={LandingPageContainer} />
               <Route path="/" exact={true} strict={true} component={EventContainer} />
               <Route path="/login" exact={true} strict={true} component={LoginContainer} />
+              <Route path="/" exact={true} strict={true} component={CustomerContainer} />
               {/* <Route path="/" exact={true} strict={true} component={EventContainer} />
               <Route path="/" exact={true} strict={true} component={UserContainer} />
               <Route path="/" exact={true} strict={true} component={GalleryContainer} />

@@ -103,7 +103,7 @@ const EventCardList: React.FC<IStateProps & IDispatchProps> = (props) => {
   return (
     <section>
       <Container textAlign="center" style={{ background: 'gold' }}>
-        <ModalDialog trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
+        <ModalDialog renderActionButtons={false} trigger={modalTriggerButton} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
           <EventCardForm
             showToggleHidden
             headerText="Neues Event"

@@ -78,10 +78,15 @@ const EventCard: React.FC<IStateProps & IDispatchProps> = (props) => {
 
   return (
     <>
+      <ModalDialog
+        renderActionButtons={false}
+        trigger={isAuthenticated ? cardButtonGroup : null}
+        modalStatus={modalStatus.modalOpen}
+        onClose={onCloseEvent}
+      >
+        {renderModalComponent}
+      </ModalDialog>
       <div className="card-container">
-        <ModalDialog trigger={isAuthenticated ? cardButtonGroup : null} modalStatus={modalStatus.modalOpen} onClose={onCloseEvent}>
-          {renderModalComponent}
-        </ModalDialog>
         <div className="card">
           <div className="card__main-content">
             <h5 className="card__timeStart"> {`${event.timeStart} Uhr`} </h5>

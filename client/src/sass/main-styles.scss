@@ -53,6 +53,44 @@ a {
   background: $second-color !important;
 }
 
+.ui.modals.active.visible {
+  z-index: 99999999999999999999999 !important;
+  & .content {
+    height: 100vh;
+    padding: 0 0.4rem !important;
+  }
+}
+
+.ui.modal .scrolling.content {
+  max-height: calc(83vh) !important;
+  overflow-x: hidden;
+}
+
+.ui.modal .actions {
+  margin-top: 1rem !important;
+}
+
+.ui.page.modals.dimmer.transition.visible.active.delete_dialog {
+  width: 100vw;
+}
+
+.ui.modal.transition.visible.active.delete_dialog {
+  height: 14rem !important;
+}
+
+.ui.modals.active.visible .content.delete_dialog {
+  z-index: 99999999999999999999999 !important;
+}
+
+.delete_dialog .ui.modal .scrolling.content {
+  max-height: calc(83vh) !important;
+  overflow-x: hidden;
+}
+
+.delete_dialog .ui.modal .actions {
+  margin-top: 1rem !important;
+}
+
 .ui.medium.image {
   max-width: 280px !important;
   max-height: 280px !important;
