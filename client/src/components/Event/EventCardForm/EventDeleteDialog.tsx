@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { ApplicationEventAction } from '../../../store/types/event.types';
 import { IEvent } from '../../../models';
@@ -16,6 +16,15 @@ type IDispatchProps = {
 const EventDeleteDialog: React.FC<IStateProps & IDispatchProps> = (props) => {
   const { event, handleCancelEvent, headerText, onRemoveEvent } = props;
 
+  useEffect(() => {
+    const modalDialog_1 = document.querySelector('.ui.page.modals.dimmer.transition.visible.active');
+    const modalDialog_2 = document.querySelector('.ui.page.modals.dimmer .ui.modal.transition.visible.active');
+    const modalDialog_3 = document.querySelector('.ui.modal.transition.visible.active .content');
+    modalDialog_1?.classList.add('delete_dialog');
+    modalDialog_2?.classList.add('delete_dialog');
+    modalDialog_3?.classList.add('delete_dialog');
+  }, []);
+
   const handleDeleteEvent = () => {
     onRemoveEvent!(event!._id!);
     handleCancelEvent();
@@ -24,7 +33,7 @@ const EventDeleteDialog: React.FC<IStateProps & IDispatchProps> = (props) => {
   return (
     <>
       <Modal.Header>{headerText}</Modal.Header>
-      <Modal.Content image>
+      <Modal.Content>
         <Modal.Description>
           <Header as="h2">
             <Header.Content>

@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  reactjs:
+    build: frontend
+    ports:
+      - '3000:3000'
+    container_name: front-container
+    restart: always
+  restify:
+    build: backend
+    ports:
+      - '8080:8080'
+    container_name: back-container
+    restart: always
+    links:
+      - database
+  database:
+    image: mongo:latest
+    container_name: database-container
+    ports:
+      - '27017:27017'
+    restart: always

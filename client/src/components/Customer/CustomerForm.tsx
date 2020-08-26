@@ -123,7 +123,6 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
       <Header className="headline" textAlign="center">
         ANFRAGE SENDEN
       </Header>
-      <Image className="header-space-bottom" src="./images/contact.svg" size="huge" centered />
       <Container>
         <Form autoComplete="off">
           <Form.Group widths="equal">
@@ -213,6 +212,7 @@ const CustomerForm: React.FC<IDispatchProps> = (props) => {
             content="Anfrage absenden"
             color={firstName && lastName && isEmailValid(email) ? 'green' : 'red'}
             disabled={!firstName || !lastName || !isEmailValid(email)}
+            style={{ margin: '2rem 0' }}
           />
         </Form>
       </Container>

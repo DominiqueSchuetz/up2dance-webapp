@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, ModalProps, Button } from 'semantic-ui-react';
 
 interface IStateProps {
+  renderActionButtons?: boolean;
   trigger?: React.ReactNode;
   modalStatus: boolean;
   headline?: string;
@@ -11,7 +12,7 @@ interface IStateProps {
 }
 
 const ModalDialog: React.FC<IStateProps> = (props) => {
-  const { modalStatus, onClose, trigger, headline, children, isOkayButtonPressed } = props;
+  const { modalStatus, onClose, trigger, headline, children, isOkayButtonPressed, renderActionButtons = true } = props;
   const [isModalOpen, setModalStatus] = useState<boolean | undefined>(modalStatus);
 
   useEffect(() => {
@@ -41,12 +42,14 @@ const ModalDialog: React.FC<IStateProps> = (props) => {
     >
       {headline && <Modal.Header>{headline}</Modal.Header>}
       <Modal.Content>{children}</Modal.Content>
-      <Modal.Actions>
-        <Button primary onClick={okayModal}>
-          OKAY
-        </Button>
-        <Button onClick={cancelModal}>ABBRECHEN</Button>
-      </Modal.Actions>
+      {renderActionButtons && (
+        <Modal.Actions>
+          <Button primary onClick={okayModal}>
+            OKAY
+          </Button>
+          <Button onClick={cancelModal}>ABBRECHEN</Button>
+        </Modal.Actions>
+      )}
     </Modal>
   );
 };
