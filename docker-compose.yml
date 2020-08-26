@@ -20,4 +20,4 @@ services:
     container_name: database-container
     ports:
       - '27017:27017'
-    restart: alwaysss
+    restart: always
